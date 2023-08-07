@@ -16,6 +16,18 @@
 pip install outpack
 ```
 
+## Development
+
+Useful hatch commands
+
+```
+hatch shell
+hatch run test
+hatch run cov
+hatch run lint:style
+hatch run lint:fmt
+```
+
 ## License
 
 `outpack` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.

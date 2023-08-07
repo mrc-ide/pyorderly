@@ -14,3 +14,8 @@ def test_can_read_config():
     assert local.name == "local"
     assert local.type == "local"
     assert local.args == {}
+
+
+def test_can_write_json():
+    cfg = read_config("example")
+    assert Config.from_json(cfg.to_json()) == cfg
