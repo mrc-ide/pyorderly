@@ -1,0 +1,1 @@
+{"schema_version":"0.1.0","core":{"path_archive":"archive","use_file_store":true,"require_complete_tree":false,"hash_algorithm":"sha256"},"logging":{"console":false,"threshold":"info"},"location":[{"name":"local","type":"local","args":{}}]}

@@ -1,0 +1,23 @@
+#!/usr/bin/env Rscript
+
+# Until we implement enough of outpack-py, we won't be able to
+# bootstrap our own example code to read, so this generates a little
+# example set.
+root <- gert::git_find()
+path <- file.path(root, "example")
+unlink(path, recursive = TRUE)
+orderly2::orderly_init(path, logging_console = FALSE, use_file_store = TRUE)
+
+path_src <- file.path(path, "src", "data")
+fs::dir_create(path_src)
+writeLines(
+  c("orderly2::orderly_parameters(a = NULL, b = NULL)",
+    "d <- data.frame(a = a, b = b)",
+    'write.csv(d, "data.csv")'),
+  file.path(path_src, "orderly.R"))
+
+for (a in 1:2) {
+  for (b in c("x", "y")) {
+    orderly2::orderly_run("data", list(a = a, b = b), root = path)
+  }
+}
