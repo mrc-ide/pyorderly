@@ -24,7 +24,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "dataclasses-json"
+]
 
 [project.urls]
 Documentation = "https://github.com/mrc-ide/outpack#readme"
