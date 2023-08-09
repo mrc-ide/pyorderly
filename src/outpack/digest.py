@@ -3,43 +3,43 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Hash:
+class Digest:
     algorithm: str
-    digest: str
+    value: str
 
     def __str__(self):
-        return f"{self.algorithm}:{self.digest}"
+        return f"{self.algorithm}:{self.value}"
 
 
-def hash_file(path, algorithm="sha256"):
+def digest_file(path, algorithm="sha256"):
     h = hashlib.new(algorithm)
     blocksize = 128 * h.block_size
     with open(path, "rb") as f:
         while chunk := f.read(blocksize):
             h.update(chunk)
-    return Hash(algorithm, h.hexdigest())
+    return Digest(algorithm, h.hexdigest())
 
 
-def hash_string(data, algorithm):
+def digest_string(data, algorithm):
     h = hashlib.new(algorithm)
     h.update(data.encode())
     h.hexdigest()
-    return Hash(algorithm, h.hexdigest())
+    return Digest(algorithm, h.hexdigest())
 
 
-def hash_parse(string):
-    if type(string) == Hash:
+def digest_parse(string):
+    if type(string) == Digest:
         return string
-    return Hash(*string.split(":"))
+    return Digest(*string.split(":"))
 
 
-def hash_validate(path, expected):
-    h = hash_parse(expected)
-    found = hash_file(path, h.algorithm)
+def digest_validate(path, expected):
+    h = digest_parse(expected)
+    found = digest_file(path, h.algorithm)
     if found != h:
         msg = "\n".join(
             [
-                f"Hash of '{path}' does not match:",
+                f"Digest of '{path}' does not match:",
                 f" - expected: {expected}",
                 f" - found: {found}",
             ]
