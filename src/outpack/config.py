@@ -28,10 +28,10 @@ class ConfigCore:
     require_complete_tree: bool
 
 
-# Note, using A002 and A003 noqa here to allow 'type' to be used as a
-# field name and argument; this keeps the class close to the json
-# names, and means that things read nicely (location.type rather than
-# location.location_type)
+# Note, using A002 (globally) and A003 noqa here to allow 'type' to be
+# used as a field name and argument; this keeps the class close to the
+# json names, and means that things read nicely (location.type rather
+# than location.location_type). A similar issue occurs with 'hash'
 @dataclass_json
 @dataclass
 class Location:
@@ -39,7 +39,7 @@ class Location:
     type: str  # noqa: A003
     args: Optional[dict] = None
 
-    def __init__(self, name, type, args=None):  # noqa: A002
+    def __init__(self, name, type, args=None):
         self.name = name
         self.type = type
         self.args = args
