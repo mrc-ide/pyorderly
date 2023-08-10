@@ -5,10 +5,10 @@ from dataclasses import dataclass
 @dataclass
 class Hash:
     algorithm: str
-    digest: str
+    value: str
 
     def __str__(self):
-        return f"{self.algorithm}:{self.digest}"
+        return f"{self.algorithm}:{self.value}"
 
 
 def hash_file(path, algorithm="sha256"):
