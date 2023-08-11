@@ -26,6 +26,7 @@ classifiers = [
 ]
 dependencies = [
   "dataclasses-json",
+  "importlib_resources",
   "jsonschema"
 ]
 
