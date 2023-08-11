@@ -101,6 +101,7 @@ select = [
   "ARG",
   "B",
   "C",
+  "D",
   "DTZ",
   "E",
   "EM",
@@ -132,6 +133,8 @@ ignore = [
   "S105", "S106", "S107",
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  # Don't require docstrings everywhere for now
+  "D100", "D101", "D103", "D104", "D105"
 ]
 unfixable = [
   # Don't touch unused imports
@@ -147,6 +150,9 @@ ban-relative-imports = "all"
 [tool.ruff.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
 
 [tool.coverage.run]
 source_pkgs = ["outpack", "tests"]
