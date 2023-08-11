@@ -25,7 +25,8 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "dataclasses-json"
+  "dataclasses-json",
+  "pygit2"
 ]
 
 [project.urls]
