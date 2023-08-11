@@ -23,6 +23,11 @@ def test_can_convert_from_none():
     assert SearchOptions.create(None) == SearchOptions()
 
 
+def test_can_convert_from_self():
+    obj = SearchOptions(["a", "b"], True)
+    assert SearchOptions.create(obj) == obj
+
+
 def test_can_convert_from_dict():
     assert SearchOptions.create({"allow_remote": True}) == SearchOptions(
         allow_remote=True

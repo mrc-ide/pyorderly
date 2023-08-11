@@ -33,9 +33,9 @@ class SearchOptions:
         ----------
         obj : any
             Typically this will be `None` (default construct the
-            `SearchOptions` object) or a `dict` with some of the
-            fields present in `SearchOptions`. An `TypeError` is thrown
-            if any other type is passed.
+            `SearchOptions` object), a `SearchOptions` object or a `dict`
+            with some of the fields present in `SearchOptions`. An
+            `TypeError` is thrown if any other type is passed.
 
         Returns
         -------
@@ -43,6 +43,8 @@ class SearchOptions:
         """
         if obj is None:
             return SearchOptions()
+        elif isinstance(obj, SearchOptions):
+            return obj
         elif isinstance(obj, dict):
             return SearchOptions(**obj)
         else:
