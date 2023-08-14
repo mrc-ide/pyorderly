@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 
@@ -12,3 +13,7 @@ def find_file_descend(filename, path):
         path = path.parent
 
     return None
+
+
+def iso_time_str(t):
+    return time.strftime("%Y%m%d-%H%M%S", time.gmtime(t))
