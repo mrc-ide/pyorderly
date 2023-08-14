@@ -134,7 +134,9 @@ ignore = [
   # Ignore complexity
   "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
   # Don't require docstrings everywhere for now
-  "D100", "D101", "D103", "D104", "D105"
+  "D100", "D101", "D103", "D104", "D105",
+  # Ignore shadowing
+  "A002"
 ]
 unfixable = [
   # Don't touch unused imports
