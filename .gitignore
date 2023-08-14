@@ -1,3 +1,5 @@
 *.pyc
 __pycache__
 .coverage*
+example/.outpack/index/outpack.rds
+example/draft/
