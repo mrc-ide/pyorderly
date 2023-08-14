@@ -1,0 +1,70 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Outpack configuration schema",
+    "description": "Common configuration settings. Implementations may add additional properties, but these are the core.",
+    "version": "0.1.0",
+
+    "type": "object",
+
+    "properties": {
+        "schema_version": {
+            "description": "Schema version, used to manage migrations",
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+
+        "core": {
+            "type": "object",
+            "properties": {
+                "path_archive": {
+                    "type": ["null", "string"]
+                },
+                "use_file_store": {
+                    "type": "boolean"
+                },
+                "require_complete_tree": {
+                    "type": "boolean"
+                },
+                "hash_algorithm": {
+                    "enum": ["md5", "sha1", "sha256", "sha384", "sha512"]
+                }
+            },
+            "required": ["path_archive", "use_file_store", "hash_algorithm"],
+            "additionalProperties": false
+        },
+
+        "logging": {
+            "type": "object",
+            "properties": {
+                "threshold": {
+                    "enum": ["info", "debug", "trace"]
+                },
+                "console": {
+                    "type": "boolean"
+                }
+            },
+            "required": ["threshold", "console"]
+        },
+
+        "location": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "args": {
+                        "type": "object"
+                    }
+                },
+                "required": ["name", "type", "args"]
+            }
+        }
+    },
+
+    "required": ["schema_version", "core", "location"]
+}
