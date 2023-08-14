@@ -3,18 +3,6 @@ from typing import Dict, List, Optional, Union
 
 from dataclasses_json import dataclass_json
 
-# @dataclass
-# @dataclass_json
-# class DependsFiles...
-
-# @dataclass
-# @dataclass_json
-# class Depends:
-#     id: str
-#     name: str
-#     query: str
-#     files: List[DependsFiles]
-
 
 @dataclass_json()
 @dataclass
