@@ -47,7 +47,19 @@ class MetadataCore:
     git: Optional[GitInfo]
 
 
+@dataclass_json()
+@dataclass
+class PacketLocation:
+    packet: str
+    time: float
+    hash: str  # noqa: A003
+
+
 def read_metadata_core(path):
     with open(path) as f:
-        s = f.read()
-    return MetadataCore.from_json(s.strip())
+        return MetadataCore.from_json(f.read().strip())
+
+
+def read_packet_location(path):
+    with open(path) as f:
+        return PacketLocation.from_json(f.read().strip())

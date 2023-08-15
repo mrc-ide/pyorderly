@@ -2,6 +2,7 @@ from outpack.metadata import (
     PacketDependsPath,
     PacketFile,
     read_metadata_core,
+    read_packet_location,
 )
 
 
@@ -43,3 +44,15 @@ def test_can_read_metadata_with_depends():
     assert d.depends[0].files == [
         PacketDependsPath(here="incoming.csv", there="data.csv")
     ]
+
+
+def test_can_read_location():
+    d = read_packet_location(
+        "example/.outpack/location/local/20230814-163026-ac5900c0"
+    )
+    assert d.packet == "20230814-163026-ac5900c0"
+    assert d.time == 1692030626.7001
+    assert (
+        d.hash
+        == "sha256:94809b0a23e2e1986304f112726ff20401000d51026f8fa85c7501ecd340b323"
+    )
