@@ -46,8 +46,11 @@ def _validate_same_core_configuration(now, then):
         return
     a = then.to_dict()
     b = now.to_dict()
-    err = [f"* '{f}' was {a[f]} but {b[f]} requested" for f in a.keys()
-           if a[f] != b[f]]
+    err = [
+        f"* '{f}' was {a[f]} but {b[f]} requested"
+        for f in a.keys()
+        if a[f] != b[f]
+    ]
     msg = "Trying to change configuration when re-initialising:\n" + "\n".join(
         err
     )
