@@ -11,13 +11,13 @@ def outpack_init(
     require_complete_tree=False,
 ):
     path = Path(path)
-    if path.exists():
-        if not path.is_dir():
-            msg = f"Path '{path}' already exists but is not a directory"
-            raise Exception(msg)
-        # As in orderly2, there are unresolved questions about if we
-        # allow initialising an outpack root into an existing
-        # directory. Here, we'll allow it.
+    if path.exists() and not path.is_dir():
+        msg = f"Path '{path}' already exists but is not a directory"
+        raise Exception(msg)
+
+    # As in orderly2, there are unresolved questions about if we
+    # allow initialising an outpack root into an existing
+    # directory. Here, we'll allow it.
 
     config = Config.new(
         path_archive=path_archive,
@@ -28,7 +28,7 @@ def outpack_init(
     path_outpack = path.joinpath(".outpack")
 
     if path_outpack.exists():
-        _validate_same_configuration(config, read_config(path))
+        _validate_same_core_configuration(config.core, read_config(path).core)
     else:
         path_outpack.mkdir(parents=True, exist_ok=True)
         path_outpack.joinpath("metadata").mkdir(parents=True, exist_ok=True)
@@ -41,14 +41,13 @@ def outpack_init(
     return path
 
 
-def _validate_same_configuration(now, then):
-    if now.core == then.core:
+def _validate_same_core_configuration(now, then):
+    if now == then:
         return
-    err = [
-        f"* {f} was {getattr(then, f)} but {getattr(now, f)} requested"
-        for f in now.fields()
-        if getattr(now, f) != getattr(then, f)
-    ]
+    a = then.to_dict()
+    b = now.to_dict()
+    err = [f"* '{f}' was {a[f]} but {b[f]} requested" for f in a.keys()
+           if a[f] != b[f]]
     msg = "Trying to change configuration when re-initialising:\n" + "\n".join(
         err
     )

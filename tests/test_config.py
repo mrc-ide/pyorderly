@@ -35,8 +35,9 @@ def test_can_create_new_config():
     assert not cfg.core.use_file_store
     assert not cfg.core.require_complete_tree
     assert len(cfg.location) == 1
-    assert cfg.location[0].name == "local"
-    assert cfg.location[0].type == "local"
+    assert list(cfg.location.keys()) == ["local"]
+    assert cfg.location["local"].name == "local"
+    assert cfg.location["local"].type == "local"
 
 
 def test_can_validate_dependent_values_in_new_config():

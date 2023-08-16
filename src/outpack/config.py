@@ -78,7 +78,7 @@ class Config:
             "sha256", path_archive, use_file_store, require_complete_tree
         )
         local = Location("local", "local")
-        return Config(version, core, [local])
+        return Config(version, core, {"local": local})
 
 
 def _config_path(root_path):
