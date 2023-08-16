@@ -8,16 +8,30 @@ path <- file.path(root, "example")
 unlink(path, recursive = TRUE)
 orderly2::orderly_init(path, logging_console = FALSE, use_file_store = TRUE)
 
-path_src <- file.path(path, "src", "data")
-fs::dir_create(path_src)
+path_src_data <- file.path(path, "src", "data")
+fs::dir_create(path_src_data)
 writeLines(
   c("orderly2::orderly_parameters(a = NULL, b = NULL)",
     "d <- data.frame(a = a, b = b)",
     'write.csv(d, "data.csv")'),
-  file.path(path_src, "orderly.R"))
+  file.path(path_src_data, "orderly.R"))
 
 for (a in 1:2) {
   for (b in c("x", "y")) {
     orderly2::orderly_run("data", list(a = a, b = b), root = path)
   }
 }
+
+path_src_depends <- file.path(path, "src", "depends")
+fs::dir_create(path_src_depends)
+writeLines(
+  c("orderly2::orderly_parameters(x = NULL)",
+    "orderly2::orderly_dependency(",
+    '  "data",',
+    "  quote(latest(parameter:a == this:x)),",
+    '  c(incoming.csv = "data.csv"))',
+    'd <- read.csv("incoming.csv")',
+    'writeLines(sprintf("%d - %s", d$a, d$b), "result.txt")'),
+  file.path(path_src_depends, "orderly.R"))
+
+orderly2::orderly_run("depends", list(x = 1), root = path)

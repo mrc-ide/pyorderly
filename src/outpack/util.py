@@ -1,3 +1,4 @@
+import datetime
 import time
 from pathlib import Path
 
@@ -17,3 +18,11 @@ def find_file_descend(filename, path):
 
 def iso_time_str(t):
     return time.strftime("%Y%m%d-%H%M%S", time.gmtime(t))
+
+
+def time_to_num(x):
+    return x.timestamp()
+
+
+def num_to_time(x):
+    return datetime.datetime.fromtimestamp(x, datetime.timezone.utc)
