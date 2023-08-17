@@ -4,11 +4,18 @@ from typing import Dict, Optional
 
 from dataclasses_json import config, dataclass_json
 
+from outpack.schema import outpack_schema_version
+
 
 def read_config(root_path):
     with open(_config_path(root_path)) as f:
         s = f.read()
     return Config.from_json(s.strip())
+
+
+def write_config(config, root_path):
+    with open(_config_path(root_path), "w") as f:
+        f.write(config.to_json())
 
 
 def _encode_location_dict(d):
@@ -55,6 +62,23 @@ class Config:
             encoder=_encode_location_dict, decoder=_decode_location_dict
         )
     )
+
+    @staticmethod
+    def new(
+        *,
+        path_archive="archive",
+        use_file_store=False,
+        require_complete_tree=False,
+    ):
+        if path_archive is None and not use_file_store:
+            msg = "If 'path_archive' is None, 'use_file_store' must be True"
+            raise Exception(msg)
+        version = outpack_schema_version()
+        core = ConfigCore(
+            "sha256", path_archive, use_file_store, require_complete_tree
+        )
+        local = Location("local", "local")
+        return Config(version, core, {"local": local})
 
 
 def _config_path(root_path):
