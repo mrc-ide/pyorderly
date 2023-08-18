@@ -6,7 +6,7 @@ from outpack.hash import hash_string
 from outpack.ids import outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import Root
-from outpack.schema import validate
+from outpack.schema import outpack_schema_version, validate
 from outpack.tools import git_info
 from outpack.util import all_normal_files
 
@@ -20,8 +20,9 @@ class Packet:
         self.parameters = parameters or {}
         self.depends = []
         self.files = []
-        self.time = {"begin": time.time()}
+        self.time = {"start": time.time()}
         self.git = git_info(self.path)
+        self.custom = None
         self.metadata = None
 
     def end(self, *, insert=True):
@@ -35,6 +36,7 @@ class Packet:
             for f in all_normal_files(self.path)
         ]
         self.metadata = self._build_metadata()
+        validate(self.metadata.to_dict(), "outpack/metadata.json")
         if insert:
             _insert(self.root, self.path, self.metadata)
         else:
@@ -42,6 +44,7 @@ class Packet:
 
     def _build_metadata(self):
         return MetadataCore(
+            outpack_schema_version(),
             self.id,
             self.name,
             self.parameters,
@@ -49,6 +52,7 @@ class Packet:
             self.files,
             self.depends,
             self.git,
+            self.custom,
         )
 
 

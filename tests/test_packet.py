@@ -23,7 +23,7 @@ def test_can_add_simple_packet(tmp_path):
     assert p.depends == []
     assert len(p.files) == 1
     assert p.files[0].path == "a"
-    assert list(p.time.keys()) == ["begin", "end"]
+    assert list(p.time.keys()) == ["start", "end"]
     assert p.git is None
 
     r = Root(root)
