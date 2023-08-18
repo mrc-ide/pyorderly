@@ -27,4 +27,4 @@ def test_can_validate_referenced_schemas():
 
 
 def test_can_get_schema_version():
-    assert outpack_schema_version() == "0.1.0"
+    assert outpack_schema_version() == "0.1.1"

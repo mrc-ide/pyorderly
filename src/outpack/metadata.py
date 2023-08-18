@@ -41,6 +41,7 @@ class PacketDepends:
 @dataclass_json()
 @dataclass
 class MetadataCore:
+    schema_version: str
     id: str  # noqa: A003
     name: str
     parameters: Dict[str, Union[bool, int, float, str]]
@@ -48,6 +49,7 @@ class MetadataCore:
     files: List[PacketFile]
     depends: List[PacketDepends]
     git: Optional[GitInfo]
+    custom: Optional[dict]
 
 
 @dataclass_json()
