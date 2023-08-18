@@ -17,7 +17,7 @@ def test_can_add_simple_packet(tmp_path):
     p = Packet(root, src, "data")
     p.end()
 
-    assert type(p.id) == str
+    assert isinstance(p.id, str)
     assert p.name == "data"
     assert p.parameters == {}
     assert p.depends == []
