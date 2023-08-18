@@ -22,32 +22,26 @@ class Packet:
         self.files = []
         self.time = {"begin": time.time()}
         self.git = git_info(self.path)
-        self._complete = False
-
-    def _metadata(self):
-        return MetadataCore(self.id, self.name, self.parameters,
-                            self.time, self.files, self.depends,
-                            self.git)
+        self.metadata = None
 
     def end(self, *, insert=True):
-        if self._complete:
-            msg = f"Packet {id} already ended"
+        if self.metadata:
+            msg = f"Packet '{id}' already ended"
             raise Exception(msg)
         self.time["end"] = time.time()
         hash_algorithm = self.root.config.core.hash_algorithm
         self.files = [PacketFile.from_file(self.path, f, hash_algorithm)
                       for f in all_normal_files(self.path)]
+        self.metadata = self._build_metadata()
         if insert:
-            _insert(self.root, self.path, self._metadata())
+            _insert(self.root, self.path, self.metadata)
         else:
-            _cancel(self.root, self.path, self._metadata())
-        self._complete = True
+            _cancel(self.root, self.path, self.metadata)
 
-
-def create(root, path, id, name, parameters, time, files, depends):
-    meta = create_metadata(path, id, name, parameters, time, files, depends,
-                           hash_algorithm)
-    insert(path, meta, root)
+    def _build_metadata(self):
+        return MetadataCore(self.id, self.name, self.parameters,
+                            self.time, self.files, self.depends,
+                            self.git)
 
 
 def _insert(root, path, meta):
@@ -55,9 +49,9 @@ def _insert(root, path, meta):
     # look to see if it's unpacked but actually the issue is if it is
     # present as metadata at all.
     if root.config.core.use_file_store:
-        store = root.store
+        store = root.files
         for p in meta.files:
-            store.put(path / p.path, p.hash)
+            root.files.put(path / p.path, p.hash)
 
     if root.config.core.path_archive:
         dest = root.path / "archive" / meta.name / meta.id
