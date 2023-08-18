@@ -1,5 +1,7 @@
 import pygit2
 
+from outpack.metadata import GitInfo
+
 
 def git_info(path):
     repo = pygit2.discover_repository(path)
@@ -9,4 +11,4 @@ def git_info(path):
     sha = str(repo.head.target)
     branch = repo.head.shorthand
     url = [x.url for x in repo.remotes]
-    return {"sha": sha, "branch": branch, "url": url}
+    return GitInfo(sha, branch, url)

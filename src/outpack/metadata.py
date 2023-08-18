@@ -1,7 +1,12 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Union
+from pathlib import Path
 
 from dataclasses_json import dataclass_json
+
+from outpack.hash import hash_file
+from outpack.ids import validate_outpack_id
+from outpack.tools import git_info
 
 
 @dataclass_json()
@@ -10,6 +15,13 @@ class PacketFile:
     path: str
     size: float
     hash: str  # noqa: A003
+
+    @staticmethod
+    def from_file(directory, path, hash_algorithm):
+        f = Path(directory).joinpath(path)
+        s = f.stat().st_size
+        h = hash_file(f, hash_algorithm)
+        return PacketFile(path, s, h)
 
 
 @dataclass_json()
@@ -45,6 +57,8 @@ class MetadataCore:
     files: List[PacketFile]
     depends: List[PacketDepends]
     git: Optional[GitInfo]
+
+    @staticmethod
 
 
 @dataclass_json()
