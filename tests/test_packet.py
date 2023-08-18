@@ -24,7 +24,7 @@ def test_can_add_simple_packet(tmp_path):
     assert len(p.files) == 1
     assert p.files[0].path == "a"
     assert list(p.time.keys()) == ["begin", "end"]
-    assert p.git == None
+    assert p.git is None
 
     r = Root(root)
     assert r.index.unpacked() == [p.id]
@@ -50,7 +50,9 @@ def test_can_add_packet_to_store(tmp_path):
 
     r = Root(root)
     assert len(r.files.ls()) == 2
-    assert sorted([str(h) for h in r.files.ls()]) == sorted([f.hash for f in p.files])
+    assert sorted([str(h) for h in r.files.ls()]) == sorted(
+        [f.hash for f in p.files]
+    )
 
 
 def test_cant_end_packet_twice(tmp_path):

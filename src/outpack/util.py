@@ -29,6 +29,8 @@ def num_to_time(x):
 
 
 def all_normal_files(path):
-    return [str(p.relative_to(path))
-            for p in Path(path).rglob("*")
-            if not p.is_dir()]
+    return [
+        str(p.relative_to(path))
+        for p in Path(path).rglob("*")
+        if not p.is_dir()
+    ]

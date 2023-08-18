@@ -1,10 +1,10 @@
-from pathlib import Path
 import shutil
 import time
+from pathlib import Path
 
-from outpack.ids import outpack_id
 from outpack.hash import hash_string
-from outpack.metadata import PacketFile, MetadataCore, PacketLocation
+from outpack.ids import outpack_id
+from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import Root
 from outpack.schema import validate
 from outpack.tools import git_info
@@ -30,8 +30,10 @@ class Packet:
             raise Exception(msg)
         self.time["end"] = time.time()
         hash_algorithm = self.root.config.core.hash_algorithm
-        self.files = [PacketFile.from_file(self.path, f, hash_algorithm)
-                      for f in all_normal_files(self.path)]
+        self.files = [
+            PacketFile.from_file(self.path, f, hash_algorithm)
+            for f in all_normal_files(self.path)
+        ]
         self.metadata = self._build_metadata()
         if insert:
             _insert(self.root, self.path, self.metadata)
@@ -39,9 +41,15 @@ class Packet:
             _cancel(self.root, self.path, self.metadata)
 
     def _build_metadata(self):
-        return MetadataCore(self.id, self.name, self.parameters,
-                            self.time, self.files, self.depends,
-                            self.git)
+        return MetadataCore(
+            self.id,
+            self.name,
+            self.parameters,
+            self.time,
+            self.files,
+            self.depends,
+            self.git,
+        )
 
 
 def _insert(root, path, meta):
@@ -49,7 +57,6 @@ def _insert(root, path, meta):
     # look to see if it's unpacked but actually the issue is if it is
     # present as metadata at all.
     if root.config.core.use_file_store:
-        store = root.files
         for p in meta.files:
             root.files.put(path / p.path, p.hash)
 
@@ -70,7 +77,7 @@ def _insert(root, path, meta):
     mark_known(root, meta.id, "local", hash_meta, time.time())
 
 
-def _cancel(root, path, meta):
+def _cancel(_root, path, meta):
     with path.joinpath("outpack.json").open("w") as f:
         f.write(meta.to_json())
 

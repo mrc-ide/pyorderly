@@ -1,7 +1,7 @@
 from outpack.config import read_config
 from outpack.filestore import FileStore
-from outpack.init import outpack_init
 from outpack.index import Index
+from outpack.init import outpack_init
 from outpack.root import Root
 
 

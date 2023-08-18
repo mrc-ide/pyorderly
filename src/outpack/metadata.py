@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Union
 from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 from dataclasses_json import dataclass_json
 
 from outpack.hash import hash_file
-from outpack.ids import validate_outpack_id
-from outpack.tools import GitInfo, git_info
+from outpack.tools import GitInfo
 
 
 @dataclass_json()

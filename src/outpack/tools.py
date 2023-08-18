@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-import pygit2
 from typing import List
 
+import pygit2
 from dataclasses_json import dataclass_json
 
 
