@@ -1,6 +1,16 @@
+from dataclasses import dataclass
 import pygit2
+from typing import List
 
-from outpack.metadata import GitInfo
+from dataclasses_json import dataclass_json
+
+
+@dataclass_json
+@dataclass
+class GitInfo:
+    sha: str
+    branch: str
+    url: List[str]
 
 
 def git_info(path):

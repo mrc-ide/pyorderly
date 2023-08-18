@@ -6,7 +6,7 @@ from dataclasses_json import dataclass_json
 
 from outpack.hash import hash_file
 from outpack.ids import validate_outpack_id
-from outpack.tools import git_info
+from outpack.tools import GitInfo, git_info
 
 
 @dataclass_json()
@@ -20,7 +20,7 @@ class PacketFile:
     def from_file(directory, path, hash_algorithm):
         f = Path(directory).joinpath(path)
         s = f.stat().st_size
-        h = hash_file(f, hash_algorithm)
+        h = str(hash_file(f, hash_algorithm))
         return PacketFile(path, s, h)
 
 
@@ -39,14 +39,6 @@ class PacketDepends:
     files: List[PacketDependsPath]
 
 
-@dataclass_json
-@dataclass
-class GitInfo:
-    sha: str
-    branch: str
-    url: List[str]
-
-
 @dataclass_json()
 @dataclass
 class MetadataCore:
@@ -57,8 +49,6 @@ class MetadataCore:
     files: List[PacketFile]
     depends: List[PacketDepends]
     git: Optional[GitInfo]
-
-    @staticmethod
 
 
 @dataclass_json()

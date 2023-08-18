@@ -58,14 +58,9 @@ def test_can_read_location():
     )
 
 
-def test_can_add_metadata(tmp_path):
-    with tmp_path.joinpath("a").open("w") as f:
-        f.write("hello")
-    packet_id = "20230807-152344-ee606dce"
-    time = {"start": 1692030626.7001, "end": 1692030636}
-    files = ["a"]
-    depends = None
-    parameters = None
-    hash_algorithm = "md5"
-    meta = metadata_create(path, id, name, parameters, time, files, depends,
-                           hash_algorithm)
+def test_can_create_packet_file_metadata_from_file():
+    directory = "example/archive/data/20230807-152344-ee606dce"
+    path = "data.csv"
+    res = PacketFile.from_file(directory, path, "sha256")
+    h = "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd"
+    assert res == PacketFile(path, 21, h)

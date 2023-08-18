@@ -26,3 +26,9 @@ def time_to_num(x):
 
 def num_to_time(x):
     return datetime.datetime.fromtimestamp(x, datetime.timezone.utc)
+
+
+def all_normal_files(path):
+    return [str(p.relative_to(path))
+            for p in Path(path).rglob("*")
+            if not p.is_dir()]

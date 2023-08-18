@@ -1,6 +1,6 @@
 import pygit2
 
-from outpack.tools import git_info
+from outpack.tools import GitInfo, git_info
 
 
 def simple_git_example(path, remote=None):
@@ -31,13 +31,13 @@ def test_git_report_git_info_if_possible(tmp_path):
     res = git_info(tmp_path)
     # This default branch name won't be robust to changes in future
     # git versions
-    assert res == {"branch": "master", "sha": sha, "url": []}
+    assert res == GitInfo(branch="master", sha=sha, url=[])
 
 
 def test_git_report_single_url(tmp_path):
     simple_git_example(tmp_path, [("origin", "https://example.com/git")])
     res = git_info(tmp_path)
-    assert res["url"] == ["https://example.com/git"]
+    assert res.url == ["https://example.com/git"]
 
 
 def test_git_report_several_urls(tmp_path):
@@ -49,7 +49,7 @@ def test_git_report_several_urls(tmp_path):
         ],
     )
     res = git_info(tmp_path)
-    assert res["url"] == ["https://example.com/git", "https://example.com/git2"]
+    assert res.url == ["https://example.com/git", "https://example.com/git2"]
 
 
 def test_git_report_from_subdir(tmp_path):
