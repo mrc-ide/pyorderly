@@ -29,7 +29,7 @@ def test_can_write_json(tmp_path):
 
 def test_can_create_new_config():
     cfg = Config.new()
-    assert cfg.schema_version == "0.1.0"
+    assert cfg.schema_version == "0.1.1"
     assert cfg.core.hash_algorithm == "sha256"
     assert cfg.core.path_archive == "archive"
     assert not cfg.core.use_file_store

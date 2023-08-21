@@ -56,3 +56,11 @@ def test_can_read_location():
         d.hash
         == "sha256:94809b0a23e2e1986304f112726ff20401000d51026f8fa85c7501ecd340b323"
     )
+
+
+def test_can_create_packet_file_metadata_from_file():
+    directory = "example/archive/data/20230807-152344-ee606dce"
+    path = "data.csv"
+    res = PacketFile.from_file(directory, path, "sha256")
+    h = "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd"
+    assert res == PacketFile(path, 21, h)

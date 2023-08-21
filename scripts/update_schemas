@@ -23,6 +23,5 @@ writeLines(c("# Imported from outpack",
              "Do not make changes to files here, they will be overwritten",
              "Run ./scripts/update_schemas to update"),
            file.path(dest, "README.md"))
-file.create(file.path(dest, "__init__.py"))
 
 message(sprintf("Wrote schemas to '%s'", dest))
