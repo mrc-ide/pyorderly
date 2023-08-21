@@ -17,6 +17,10 @@ def outpack_id():
     return f"{iso_time_str(t)}-{fractional_to_bytes(t)}{rand}"
 
 
+def is_outpack_id(x: str):
+    return RE_ID.match(x)
+
+
 def validate_outpack_id(x: str):
     if not RE_ID.match(x):
         msg = f"Malformed id '{x}'"

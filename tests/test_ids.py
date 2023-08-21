@@ -1,6 +1,11 @@
 import pytest
 
-from outpack.ids import fractional_to_bytes, outpack_id, validate_outpack_id
+from outpack.ids import (
+    fractional_to_bytes,
+    is_outpack_id,
+    outpack_id,
+    validate_outpack_id,
+)
 
 
 def test_fractional_to_bytes():
@@ -14,9 +19,14 @@ def test_fractional_to_bytes():
 def test_outpack_id_creation():
     x = outpack_id()
     assert len(x) == 24
+    assert is_outpack_id(x)
 
 
 def test_outpack_id_can_be_validated():
-    validate_outpack_id("20230810-172859-6b0408e0")
+    id_ok = "20230810-172859-6b0408e0"
+    validate_outpack_id(id_ok)
+    assert is_outpack_id(id_ok)
+    id_err = "20230810-172859-6b0408e"
     with pytest.raises(Exception, match="Malformed id"):
-        validate_outpack_id("20230810-172859-6b0408e")
+        validate_outpack_id(id_err)
+    assert not is_outpack_id(id_err)
