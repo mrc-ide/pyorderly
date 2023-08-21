@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 
 from outpack.config import read_config
@@ -24,7 +25,7 @@ def test_can_open_root_with_no_store(tmp_path):
     assert isinstance(r.index, Index)
 
 
-def test_can_open_root_from_subdir():
+def test_can_open_root_from_a_subdir():
     r = root_open("example", False)
     assert root_open("example/src", True).path == r.path
     assert root_open("example/src/data", True).path == r.path
@@ -37,9 +38,23 @@ def test_can_open_root_from_wd():
         assert root_open(None, False).path == p
 
 
-def test_can_open_root_from_subdir():
+def test_can_error_if_recursion_to_find_root_fails():
     p = Path("example").resolve()
     with transient_working_directory("example/src/data"):
         assert root_open(None, True).path == p
         with pytest.raises(Exception, match="Did not find existing outpack"):
             assert root_open(None, False).path == p
+
+
+def test_roots_are_handed_back():
+    r = root_open("example", False)
+    assert root_open(r, True) == r
+    assert root_open(r, False) == r
+
+
+def test_paths_must_be_directories(tmp_path):
+    p = tmp_path / "p"
+    with p.open("w"):
+        pass
+    with pytest.raises(Exception, match="to be an existing directory"):
+        assert root_open(p, False)
