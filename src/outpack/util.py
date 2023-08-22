@@ -1,5 +1,7 @@
 import datetime
+import os
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -34,3 +36,13 @@ def all_normal_files(path):
         for p in Path(path).rglob("*")
         if not p.is_dir()
     ]
+
+
+@contextmanager
+def transient_working_directory(path):
+    origin = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(origin)

@@ -5,15 +5,15 @@ from pathlib import Path
 from outpack.hash import hash_string
 from outpack.ids import outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
-from outpack.root import Root
+from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
 from outpack.tools import git_info
 from outpack.util import all_normal_files
 
 
 class Packet:
-    def __init__(self, root, path, name, parameters=None):
-        self.root = Root(root)
+    def __init__(self, root, path, name, *, parameters=None, locate=True):
+        self.root = root_open(root, locate)
         self.path = Path(path)
         self.id = outpack_id()
         self.name = name

@@ -2,7 +2,7 @@ import pytest
 
 from outpack.init import outpack_init
 from outpack.packet import Packet
-from outpack.root import Root
+from outpack.root import root_open
 
 
 def test_can_add_simple_packet(tmp_path):
@@ -26,7 +26,7 @@ def test_can_add_simple_packet(tmp_path):
     assert list(p.time.keys()) == ["start", "end"]
     assert p.git is None
 
-    r = Root(root)
+    r = root_open(root, False)
     assert r.index.unpacked() == [p.id]
     assert r.index.metadata(p.id) == p.metadata
     assert (root / "archive" / "data" / p.id / "a").exists()
@@ -48,7 +48,7 @@ def test_can_add_packet_to_store(tmp_path):
 
     assert len(p.files) == 2
 
-    r = Root(root)
+    r = root_open(root, False)
     assert len(r.files.ls()) == 2
     assert sorted([str(h) for h in r.files.ls()]) == sorted(
         [f.hash for f in p.files]
@@ -78,7 +78,7 @@ def test_can_cancel_packet(tmp_path):
     p = Packet(root, src, "data")
     p.end(insert=False)
 
-    r = Root(root)
+    r = root_open(root, False)
     assert len(r.index.unpacked()) == 0
     assert src.joinpath("outpack.json").exists()
 
@@ -97,5 +97,5 @@ def test_can_insert_a_packet_into_existing_root(tmp_path):
     p2 = Packet(root, src, "data")
     p2.end()
 
-    r = Root(root)
+    r = root_open(root, False)
     assert r.index.unpacked() == [p1.id, p2.id]
