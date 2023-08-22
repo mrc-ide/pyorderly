@@ -46,3 +46,10 @@ def transient_working_directory(path):
         yield
     finally:
         os.chdir(origin)
+
+
+def match_value(arg, choices, name):
+    if arg not in choices:
+        choices_str = "', '".join(choices)
+        msg = f"{name} must be one of '{choices_str}'"
+        raise Exception(msg)

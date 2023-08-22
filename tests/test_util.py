@@ -1,8 +1,11 @@
 import datetime
 
+import pytest
+
 from outpack.util import (
     find_file_descend,
     iso_time_str,
+    match_value,
     num_to_time,
     time_to_num,
 )
@@ -29,3 +32,13 @@ def test_convert_num_to_time():
     )
     assert time_to_num(x) == t
     assert num_to_time(t) == x
+
+
+def test_match_value():
+    assert match_value("this", ["that", "this"], "name") is None
+    with pytest.raises(Exception) as e:
+        match_value("this", ["foo", "bar"], "name")
+    assert e.match("name must be one of 'foo', 'bar'")
+    with pytest.raises(Exception) as e:
+        match_value("this", ["foo"], "name")
+    assert e.match("name must be one of 'foo'")

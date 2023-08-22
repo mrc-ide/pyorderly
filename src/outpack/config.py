@@ -18,6 +18,10 @@ def write_config(config, root_path):
         f.write(config.to_json())
 
 
+def update_config(config, root_path):
+    write_config(config, root_path)
+
+
 def _encode_location_dict(d):
     return [x.to_dict() for x in d.values()]
 
