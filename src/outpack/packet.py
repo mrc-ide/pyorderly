@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 
 from outpack.hash import hash_string
-from outpack.ids import outpack_id
+from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
@@ -12,10 +12,15 @@ from outpack.util import all_normal_files
 
 
 class Packet:
-    def __init__(self, root, path, name, *, parameters=None, locate=True):
+    def __init__(self, root, path, name, *, parameters=None, id=None,
+                 locate=True):
         self.root = root_open(root, locate)
         self.path = Path(path)
-        self.id = outpack_id()
+        if id is None:
+            self.id = outpack_id()
+        else:
+            validate_outpack_id(id)
+            self.id = id
         self.name = name
         self.parameters = parameters or {}
         self.depends = []

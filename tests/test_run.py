@@ -3,10 +3,8 @@ import shutil
 import pytest
 
 from outpack.init import outpack_init
-from outpack.run import outpack_run
+from outpack.run import orderly_run
 
-from pathlib import Path
-tmp_path = Path("tmp")
 
 ## We're going to need a small test helper module here at some point,
 ## unfortunately pytest makes that totally unobvious how we do it, but
@@ -15,6 +13,10 @@ def test_can_run_simple_example(tmp_path):
     path = outpack_init(tmp_path)
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile("tests/examples/data/outpack.py",  path_src / "outpack.py")
-    
-    
+    shutil.copyfile("tests/examples/data/orderly.py",  path_src / "orderly.py")
+    res = orderly_run("data", root=path)
+    path_res = path / "archive" / "data" / res
+    assert path_res.exists()
+    assert not (path / "draft" / "data" / res).exists()
+    # Then read the metadata in, why did we not make this easy?
+    # meta = read_metadata(path, r.index.metadata(p.id)
