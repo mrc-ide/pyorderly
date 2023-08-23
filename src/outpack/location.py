@@ -64,6 +64,23 @@ def orderly_location_remove(name, root=None, locate=True):
     update_config(config, root.path)
 
 
+def orderly_location_rename(old, new, root=None, locate=True):
+    root = root_open(root, locate)
+
+    if old in LOCATION_RESERVED_NAME:
+        msg = f"Cannot rename default location '{old}'"
+        raise Exception(msg)
+
+    location_check_new_name(root, new)
+    location_check_exists(root, old)
+
+    config = root.config
+    new_loc = config.location.pop(old)
+    new_loc.name = new
+    config.location[new] = new_loc
+    update_config(config, root.path)
+
+
 def location_check_new_name(root, name):
     if location_exists(root, name):
         msg = f"A location with name '{name}' already exists"
