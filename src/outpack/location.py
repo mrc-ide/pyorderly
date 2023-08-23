@@ -1,10 +1,8 @@
 import os
+
 from outpack.config import (
-    Config,
     Location,
-    read_config,
     update_config,
-    write_config,
 )
 from outpack.root import root_open
 from outpack.util import match_value

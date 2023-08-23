@@ -6,7 +6,6 @@ from outpack.location import (
     orderly_location_remove,
     orderly_location_rename,
 )
-
 from outpack.test_util import create_temporary_root
 
 

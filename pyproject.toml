@@ -132,6 +132,8 @@ ignore = [
   "B027",
   # Allow boolean positional values in function calls, like `dict.get(... True)`
   "FBT003",
+  # Allow boolean positional arguments in function definitions`
+  "FBT002",
   # Ignore checks for possible passwords
   "S105", "S106", "S107",
   # Ignore complexity
