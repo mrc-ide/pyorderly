@@ -36,6 +36,8 @@ def outpack_init(
         path_outpack.joinpath("location/local").mkdir(
             parents=True, exist_ok=True
         )
+        if path_archive is not None:
+            path.joinpath(path_archive).mkdir(exist_ok=True)
         write_config(config, path)
 
     return path
