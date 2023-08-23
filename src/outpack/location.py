@@ -1,3 +1,4 @@
+import os
 from outpack.config import (
     Config,
     Location,
@@ -19,7 +20,7 @@ def orderly_location_list(root=None, locate=True):
     return list(root.config.location.keys())
 
 
-def orderly_location_add(name, type, args, root=None, locate=None):
+def orderly_location_add(name, type, args, root=None, locate=True):
     root = root_open(root, locate)
     # validate name is scalar character??
     if name in LOCATION_RESERVED_NAME:
@@ -42,9 +43,36 @@ def orderly_location_add(name, type, args, root=None, locate=None):
     update_config(config, root.path)
 
 
+def orderly_location_remove(name, root=None, locate=True):
+    root = root_open(root, locate)
+
+    if name in LOCATION_RESERVED_NAME:
+        msg = f"Cannot remove default location '{name}'"
+        raise Exception(msg)
+
+    location_check_exists(root, name)
+    config = root.config
+
+    # TODO: mark packets as orphaned
+
+    location_path = root.path / ".outpack" / "location" / name
+    if location_path.exists():
+        os.rmdir(location_path)
+
+    # TODO: Rebuild the index after index has been added
+    config.location.pop(name)
+    update_config(config, root.path)
+
+
 def location_check_new_name(root, name):
     if location_exists(root, name):
         msg = f"A location with name '{name}' already exists"
+        raise Exception(msg)
+
+
+def location_check_exists(root, name):
+    if not location_exists(root, name):
+        msg = f"No location with name '{name}' exists"
         raise Exception(msg)
 
 
