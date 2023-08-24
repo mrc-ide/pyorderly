@@ -1,4 +1,4 @@
-import os
+import shutil
 
 from outpack.config import (
     Location,
@@ -56,7 +56,7 @@ def orderly_location_remove(name, root=None, locate=True):
     location_path = root.path / ".outpack" / "location" / name
     if location_path.exists():
         ## Skipped on covr because this dir won't exist until packet pulling implemented
-        os.rmdir(location_path)  # pragma: no cover
+        shutil.rmtree(location_path)  # pragma: no cover
 
     # TODO: Rebuild the index after index has been added
     config.location.pop(name)
