@@ -34,6 +34,23 @@ def test_can_run_simple_example(tmp_path):
     assert meta.git is None
 
 
+def test_failed_reports_are_not_saved(tmp_path):
+    path = outpack_init(tmp_path)
+    path_src = path / "src" / "data"
+    path_src.mkdir(parents=True, exist_ok=True)
+    with open(path_src / "orderly.py", "w") as f:
+        f.write("raise Exception('Some error')")
+    with pytest.raises(Exception, match="Running orderly report failed!"):
+        orderly_run("data", root=path)
+    assert not (tmp_path / "archive" / "data").exists()
+    assert len(root_open(tmp_path, False).index.unpacked()) == 0
+
+    assert (tmp_path / "draft" / "data").exists()
+    contents = list((tmp_path / "draft" / "data").iterdir())
+    assert len(contents) == 1
+    assert contents[0].joinpath("outpack.json").exists()
+
+
 def test_validate_report_src_directory(tmp_path):
     path = outpack_init(tmp_path)
     root = root_open(path, False)

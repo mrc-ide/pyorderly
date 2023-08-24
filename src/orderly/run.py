@@ -6,6 +6,9 @@ from outpack.root import root_open
 from outpack.util import run_script
 
 
+
+
+
 def orderly_run(name, *, root=None, locate=True):
     root = root_open(root, locate)
 
@@ -23,9 +26,13 @@ def orderly_run(name, *, root=None, locate=True):
         # TODO: add custom orderly state into active packet
         # TODO: mark the outpack.py file as immutable
         run_script(path_dest, "orderly.py")
-    except Exception:
+    except Exception as error:
         _orderly_cleanup_failure(packet)
-        raise  # or raise something else?
+        # This is pretty barebones for now; we will need to do some
+        # work to make sure that we retain enough contextual errors
+        # for the user to see that the report failed, and that it
+        # failed *because* something else failed.
+        raise Exception("Running orderly report failed!") from error
 
     _orderly_cleanup_success(packet)
     return packet_id
