@@ -6,11 +6,6 @@ from outpack.ids import outpack_id
 from outpack.util import run_script
 
 
-# This is wildly simpler than what we need in general, and won't
-# support (for example) dependencies, queries, or anything else that
-# calls back out from the orderly report and wants to interact with
-# the packet. We'll get that all added back in later.
-
 def orderly_run(name, *, root=None, locate=True):
     root = root_open(root, locate)
 
@@ -23,15 +18,13 @@ def orderly_run(name, *, root=None, locate=True):
     inputs_info = _copy_resources_implicit(path_src, path_dest)
 
     packet = Packet(root, path_dest, name, id=packet_id, locate=False)
-    # TODO: add custom orderly state here
-    # TODO: mark the outpack.py file as immutable
-    # TODO: mark this packet as "current" within our package so we can access it later (e.g., when doing depenencies)
-
     try:
-        run_script(path_src, "orderly.py")
+        # TODO: mark the packet active while we run it
+        # TODO: add custom orderly state into active packet
+        # TODO: mark the outpack.py file as immutable
+        run_script(path_dest, "orderly.py")
     except Exception as e:
         _orderly_cleanup_failure(packet)
-        success = False
         error = e
         raise # or raise something else?
 
@@ -67,12 +60,17 @@ def _copy_resources_implicit(src, dest):
 
 def _orderly_cleanup_success(packet):
     # check artefacts -- but we don't have any artefacts yet
-    # check files (either strict or relaxed) -- but we don't do this either
-    # add custom metadata metadata -- nothing to add here yet
+    # check files (either strict or relaxed) -- but we can't do that yet
+    packet.add_custom_metadata("orderly", _custom_metadata(None))
     packet.end(insert=True)
     shutil.rmtree(packet.path)
 
 
+# Soon this needs to work with other orderly-specific bits of information
+def _custom_metadata(dat):
+    role = [{"path": "orderly.py", "role": "orderly"}]
+    return {"role": role}
+
+
 def _orderly_cleanup_failure(packet):
-    # add metadata
     packet.end(insert=False)

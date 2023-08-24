@@ -3,6 +3,7 @@ import shutil
 import pytest
 
 from outpack.init import outpack_init
+from outpack.root import root_open
 from outpack.run import orderly_run
 
 
@@ -18,5 +19,16 @@ def test_can_run_simple_example(tmp_path):
     path_res = path / "archive" / "data" / res
     assert path_res.exists()
     assert not (path / "draft" / "data" / res).exists()
-    # Then read the metadata in, why did we not make this easy?
-    # meta = read_metadata(path, r.index.metadata(p.id)
+    # TODO: need a nicer way of doing this, one that would be part of
+    # the public API.
+    meta = root_open(tmp_path, False).index.metadata(res)
+    assert meta.id == res
+    assert meta.name == "data"
+    assert meta.parameters == {}
+    assert list(meta.time.keys()) == ["start", "end"]
+    assert len(meta.files) == 2
+    assert set([el.path for el in meta.files]) == {"orderly.py", "result.txt"}
+    assert meta.depends == []
+    custom = {"orderly": {"role": [{"path": "orderly.py", "role": "orderly"}]}}
+    assert meta.custom == custom
+    assert meta.git is None
