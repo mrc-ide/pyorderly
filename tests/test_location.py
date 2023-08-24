@@ -181,3 +181,12 @@ def test_cant_remove_non_existent_location(tmp_path):
         orderly_location_remove("b", root)
 
     assert e.match("No location with name 'b' exists")
+
+
+def test_validate_arguments_to_path_locations(tmp_path):
+    root = create_temporary_root(tmp_path)
+
+    with pytest.raises(Exception) as e:
+        orderly_location_add("other", "path", {"root": "mypath"}, root=root)
+
+    assert e.match("Fields missing from args: 'path'")
