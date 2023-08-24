@@ -22,11 +22,11 @@ class Index:
         self.data = IndexData.new()
 
     def rebuild(self):
-        self.data = index_update(self._path, IndexData.new())
+        self.data = _index_update(self._path, IndexData.new())
         return self
 
     def refresh(self):
-        self.data = index_update(self._path, self.data)
+        self.data = _index_update(self._path, self.data)
         return self
 
     def metadata(self, id):
@@ -41,14 +41,14 @@ class Index:
         return self.refresh().data.unpacked
 
 
-def index_update(path_root, data):
-    data.metadata = read_metadata(path_root, data.metadata)
-    data.location = read_locations(path_root, data.location)
+def _index_update(path_root, data):
+    data.metadata = _read_metadata(path_root, data.metadata)
+    data.location = _read_locations(path_root, data.location)
     data.unpacked = sorted(data.location["local"].keys())
     return data
 
 
-def read_metadata(path_root, data):
+def _read_metadata(path_root, data):
     path = path_root / ".outpack" / "metadata"
     for p in path.iterdir():
         if p.name not in data:
@@ -56,7 +56,7 @@ def read_metadata(path_root, data):
     return data
 
 
-def read_locations(path_root, data):
+def _read_locations(path_root, data):
     path = path_root / ".outpack" / "location"
     for loc in path.iterdir():
         if loc.name not in data:

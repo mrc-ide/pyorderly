@@ -160,7 +160,7 @@ ban-relative-imports = "all"
 convention = "numpy"
 
 [tool.coverage.run]
-source_pkgs = ["outpack", "tests"]
+source_pkgs = ["outpack", "orderly", "tests"]
 branch = true
 parallel = true
 omit = [
@@ -168,7 +168,7 @@ omit = [
 ]
 
 [tool.coverage.paths]
-outpack = ["src/outpack", "*/outpack/src/outpack"]
+outpack = ["src/outpack", "src/orderly", "*/outpack/src/outpack"]
 tests = ["tests", "*/outpack/tests"]
 
 [tool.coverage.report]

@@ -1,5 +1,6 @@
 import datetime
 import os
+import runpy
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -36,6 +37,13 @@ def all_normal_files(path):
         for p in Path(path).rglob("*")
         if not p.is_dir()
     ]
+
+
+def run_script(wd, path):
+    with transient_working_directory(wd):
+        # other ways to do this include importlib, subprocess and
+        # multiprocess
+        runpy.run_path(path)
 
 
 @contextmanager
