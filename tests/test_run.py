@@ -2,7 +2,8 @@ import shutil
 
 from outpack.init import outpack_init
 from outpack.root import root_open
-from outpack.run import orderly_run
+
+from orderly.run import orderly_run
 
 
 ## We're going to need a small test helper module here at some point,
