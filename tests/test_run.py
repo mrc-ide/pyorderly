@@ -1,6 +1,4 @@
-import os
 import shutil
-import pytest
 
 from outpack.init import outpack_init
 from outpack.root import root_open
@@ -14,7 +12,7 @@ def test_can_run_simple_example(tmp_path):
     path = outpack_init(tmp_path)
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile("tests/examples/data/orderly.py",  path_src / "orderly.py")
+    shutil.copyfile("tests/examples/data/orderly.py", path_src / "orderly.py")
     res = orderly_run("data", root=path)
     path_res = path / "archive" / "data" / res
     assert path_res.exists()
@@ -27,7 +25,7 @@ def test_can_run_simple_example(tmp_path):
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
     assert len(meta.files) == 2
-    assert set([el.path for el in meta.files]) == {"orderly.py", "result.txt"}
+    assert {el.path for el in meta.files} == {"orderly.py", "result.txt"}
     assert meta.depends == []
     custom = {"orderly": {"role": [{"path": "orderly.py", "role": "orderly"}]}}
     assert meta.custom == custom

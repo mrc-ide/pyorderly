@@ -1,8 +1,8 @@
 import shutil
 
+from outpack.ids import outpack_id
 from outpack.packet import Packet
 from outpack.root import root_open
-from outpack.ids import outpack_id
 from outpack.util import run_script
 
 
@@ -15,7 +15,7 @@ def orderly_run(name, *, root=None, locate=True):
     path_dest = root.path / "draft" / name / packet_id
     path_dest.mkdir(parents=True)
 
-    inputs_info = _copy_resources_implicit(path_src, path_dest)
+    _copy_resources_implicit(path_src, path_dest)
 
     packet = Packet(root, path_dest, name, id=packet_id, locate=False)
     try:
@@ -23,10 +23,9 @@ def orderly_run(name, *, root=None, locate=True):
         # TODO: add custom orderly state into active packet
         # TODO: mark the outpack.py file as immutable
         run_script(path_dest, "orderly.py")
-    except Exception as e:
+    except Exception:
         _orderly_cleanup_failure(packet)
-        error = e
-        raise # or raise something else?
+        raise  # or raise something else?
 
     _orderly_cleanup_success(packet)
     return packet_id
@@ -61,13 +60,13 @@ def _copy_resources_implicit(src, dest):
 def _orderly_cleanup_success(packet):
     # check artefacts -- but we don't have any artefacts yet
     # check files (either strict or relaxed) -- but we can't do that yet
-    packet.add_custom_metadata("orderly", _custom_metadata(None))
+    packet.add_custom_metadata("orderly", _custom_metadata())
     packet.end(insert=True)
     shutil.rmtree(packet.path)
 
 
 # Soon this needs to work with other orderly-specific bits of information
-def _custom_metadata(dat):
+def _custom_metadata():
     role = [{"path": "orderly.py", "role": "orderly"}]
     return {"role": role}
 
