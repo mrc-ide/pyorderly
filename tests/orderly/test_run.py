@@ -1,10 +1,10 @@
 import shutil
+
 import pytest
+from orderly.run import _validate_src_directory, orderly_run
 
 from outpack.init import outpack_init
 from outpack.root import root_open
-
-from orderly.run import orderly_run, _validate_src_directory
 
 
 ## We're going to need a small test helper module here at some point,
@@ -56,17 +56,22 @@ def test_validate_report_src_directory(tmp_path):
     root = root_open(path, False)
     path_src = path / "src"
     path_src.mkdir()
-    
+
     x = path_src / "x"
     with pytest.raises(Exception, match="The path '.+/x' does not exist"):
         _validate_src_directory("x", root)
     x.mkdir()
-    with pytest.raises(Exception, match="The path '.+/x' exists but does not contain 'orderly.py'"):
+    with pytest.raises(
+        Exception,
+        match="The path '.+/x' exists but does not contain 'orderly.py'",
+    ):
         _validate_src_directory("x", root)
     y = path_src / "y"
     with open(y, "w"):
         pass
-    with pytest.raises(Exception, match="The path '.+/y' exists but is not a directory"):
+    with pytest.raises(
+        Exception, match="The path '.+/y' exists but is not a directory"
+    ):
         _validate_src_directory("y", root)
     # Finally, the happy path
     with open(x / "orderly.py", "w"):

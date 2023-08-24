@@ -6,9 +6,6 @@ from outpack.root import root_open
 from outpack.util import run_script
 
 
-
-
-
 def orderly_run(name, *, root=None, locate=True):
     root = root_open(root, locate)
 
@@ -32,7 +29,8 @@ def orderly_run(name, *, root=None, locate=True):
         # work to make sure that we retain enough contextual errors
         # for the user to see that the report failed, and that it
         # failed *because* something else failed.
-        raise Exception("Running orderly report failed!") from error
+        msg = "Running orderly report failed!"
+        raise Exception(msg) from error
 
     _orderly_cleanup_success(packet)
     return packet_id
