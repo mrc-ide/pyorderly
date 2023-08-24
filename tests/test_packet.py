@@ -99,3 +99,33 @@ def test_can_insert_a_packet_into_existing_root(tmp_path):
 
     r = root_open(root, False)
     assert r.index.unpacked() == [p1.id, p2.id]
+
+
+def test_can_add_custom_metadata(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    d = {"a": 1, "b": 2}
+    assert list(p.custom.keys()) == []
+    p.add_custom_metadata("key", d)
+    assert list(p.custom.keys()) == ["key"]
+    assert p.custom["key"] == d
+    p.end()
+    r = root_open(root, False)
+    assert p.metadata.custom == {"key": d}
+    assert r.index.metadata(p.id) == p.metadata
+
+
+def test_error_raised_if_same_custom_data_readded(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    d = {"a": 1, "b": 2}
+    p.add_custom_metadata("myapp", d)
+    s = "metadata for 'myapp' has already been added for this packet"
+    with pytest.raises(Exception, match=s):
+        p.add_custom_metadata("myapp", d)

@@ -27,8 +27,14 @@ class Packet:
         self.files = []
         self.time = {"start": time.time()}
         self.git = git_info(self.path)
-        self.custom = None
+        self.custom = {}
         self.metadata = None
+
+    def add_custom_metadata(self, key, value):
+        if key in self.custom:
+            msg = f"metadata for '{key}' has already been added for this packet"
+            raise Exception(msg)
+        self.custom[key] = value
 
     def end(self, *, insert=True):
         if self.metadata:
