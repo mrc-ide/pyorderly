@@ -163,3 +163,19 @@ def test_can_validate_immutable_files_on_end(tmp_path):
         match="Detected change to immutable file 'data.csv' in packet",
     ):
         p1.end()
+
+
+def test_readding_files_rehashes_them(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    p1.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n5,6\n")
+    with pytest.raises(Exception, match="Hash of '.+' does not match"):
+        p1.mark_file_immutable("data.csv")
