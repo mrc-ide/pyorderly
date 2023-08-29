@@ -63,7 +63,7 @@ def transient_working_directory(path):
 def assert_file_exists(path, *, workdir=None, name="File"):
     with transient_working_directory(workdir):
         if isinstance(path, list):
-            missing = [p for p in path if not os.path.exists(p)]
+            missing = [str(p) for p in path if not os.path.exists(p)]
         else:
             missing = [] if os.path.exists(path) else [path]
     if len(missing):

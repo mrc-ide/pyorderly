@@ -1,4 +1,7 @@
+from pathlib import PosixPath
+
 from orderly.current import get_active_packet
+from outpack import util
 
 
 def resource(files):
@@ -9,29 +12,27 @@ def resource(files):
 
     Parameters
     ----------
-    files : str or [str]
+    files : str|Path or [str|Path]
 
     Returns
     -------
     Nothing, this is called for its side effects within a running packet
     """
-    if isinstance(files, str):
+    if not isinstance(files, list):
         files = [files]
     p = get_active_packet()
     if p is None:
-        breakpoint()
-        # TODO: check that files exists
-        pass
+        util.assert_file_exists(files)
     else:
         src = p.src
         p.artefacts.append(Artefact(name, files))
-        # Assert exists in src
-        # Expand directories
-        # If strict mode, check that they exist
-        # If not strict mode, check that they are unmodified from wd?
-        # Mark immutable for p.packet
-        p.resources += files
-    
+        util.assert_file_exists(files, workdir=src)
+        files_expanded = util.expand_dirs(files, workdir=src)
+        # TODO: If strict mode, copy expanded files into the working dir
+        for f in files_expanded:
+            p.mark_file_immutable(f)
+        p.custom["orderly"]["resources"] += files_expanded
+
 
 def artefact(name, files):
     """Declare an artefact. By doing this you turn on a number of orderly
@@ -54,7 +55,7 @@ def artefact(name, files):
         The name of the artefact
 
     files : str or [str]
-        The file, or array of files, that make up this artefact. These 
+        The file, or array of files, that make up this artefact. These
         are relative paths.
 
     Returns
