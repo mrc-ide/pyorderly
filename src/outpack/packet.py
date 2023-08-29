@@ -2,15 +2,16 @@ import shutil
 import time
 from pathlib import Path
 
-from outpack.hash import hash_string
+from outpack.hash import hash_file, hash_string, hash_validate
 from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
 from outpack.tools import git_info
-from outpack.util import all_normal_files
+from outpack.util import all_normal_files, transient_working_directory
 
 
+# TODO: most of these fields should be private.
 class Packet:
     def __init__(
         self, root, path, name, *, parameters=None, id=None, locate=True
@@ -30,6 +31,15 @@ class Packet:
         self.git = git_info(self.path)
         self.custom = {}
         self.metadata = None
+        self.immutable = {}
+
+    def mark_file_immutable(self, path):
+        path_full = self.path / path
+        if path in self.immutable:
+            hash_validate(path_full, self.immutable[path])
+        else:
+            hash_algorithm = self.root.config.core.hash_algorithm
+            self.immutable[path] = hash_file(path_full, hash_algorithm)
 
     def add_custom_metadata(self, key, value):
         if key in self.custom:
@@ -47,6 +57,7 @@ class Packet:
             PacketFile.from_file(self.path, f, hash_algorithm)
             for f in all_normal_files(self.path)
         ]
+        _validate_immutable_files(self.path, self.immutable)
         self.metadata = self._build_metadata()
         validate(self.metadata.to_dict(), "outpack/metadata.json")
         if insert:
@@ -104,3 +115,14 @@ def mark_known(root, packet_id, location, hash, time):
     dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w") as f:
         f.write(dat.to_json(separators=(",", ":")))
+
+
+def _validate_immutable_files(path, immutable):
+    if immutable:
+        with transient_working_directory(path):
+            for f in immutable.keys():
+                try:
+                    hash_validate(f, immutable[f])
+                except Exception as e:
+                    msg = f"Detected change to immutable file '{f}' in packet"
+                    raise Exception(msg) from e

@@ -129,3 +129,37 @@ def test_error_raised_if_same_custom_data_readded(tmp_path):
     s = "metadata for 'myapp' has already been added for this packet"
     with pytest.raises(Exception, match=s):
         p.add_custom_metadata("myapp", d)
+
+
+def test_can_mark_files_immutable(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    p1.end()
+    r = root_open(root, False)
+    assert r.index.unpacked() == [p1.id]
+    assert len(p1.metadata.files) == 1
+    assert p1.metadata.files[0].path == "data.csv"
+
+
+def test_can_validate_immutable_files_on_end(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n5,6\n")
+    with pytest.raises(
+        Exception,
+        match="Detected change to immutable file 'data.csv' in packet",
+    ):
+        p1.end()
