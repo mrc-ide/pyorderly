@@ -1,6 +1,5 @@
 import orderly
 import pytest
-from orderly.current import ActivePacket
 
 from outpack.util import transient_working_directory
 

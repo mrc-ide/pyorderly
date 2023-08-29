@@ -1,1 +1,3 @@
-from orderly.metadata import artefact, resource
+from orderly.core import artefact, resource
+
+__all__ = ["artefact", "resource"]
