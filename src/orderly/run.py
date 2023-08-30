@@ -5,6 +5,8 @@ from outpack.packet import Packet
 from outpack.root import root_open
 from outpack.util import run_script
 
+from orderly.current import ActivePacket
+
 
 def orderly_run(name, *, root=None, locate=True):
     root = root_open(root, locate)
@@ -19,10 +21,10 @@ def orderly_run(name, *, root=None, locate=True):
 
     packet = Packet(root, path_dest, name, id=packet_id, locate=False)
     try:
-        # TODO: mark the packet active while we run it
-        # TODO: add custom orderly state into active packet
-        # TODO: mark the outpack.py file as immutable
-        run_script(path_dest, "orderly.py")
+        with ActivePacket(packet, path_src):
+            packet.mark_file_immutable("orderly.py")
+            run_script(path_dest, "orderly.py")
+            # TODO: add custom orderly state into active packet
     except Exception as error:
         _orderly_cleanup_failure(packet)
         # This is pretty barebones for now; we will need to do some
