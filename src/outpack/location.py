@@ -1,8 +1,6 @@
 import shutil
 
-from outpack.config import (
-    update_config, Location,
-)
+from outpack.config import Location, update_config
 from outpack.root import root_open
 from outpack.static import LOCATION_RESERVED_NAME
 
@@ -14,7 +12,7 @@ def outpack_location_list(root=None, *, locate=True):
 
 def outpack_location_add(name, type, args, root=None, *, locate=True):
     root = root_open(root, locate)
-    if type == "http" or type == "custom":
+    if type in ("http", "custom"):
         msg = f"Cannot add a location with type '{type}' yet."
         raise Exception(msg)
 

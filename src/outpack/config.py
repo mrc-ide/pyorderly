@@ -88,10 +88,10 @@ class Config:
 
     @staticmethod
     def new(
-            *,
-            path_archive="archive",
-            use_file_store=False,
-            require_complete_tree=False,
+        *,
+        path_archive="archive",
+        use_file_store=False,
+        require_complete_tree=False,
     ):
         if path_archive is None and not use_file_store:
             msg = "If 'path_archive' is None, 'use_file_store' must be True"
