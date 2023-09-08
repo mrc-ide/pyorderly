@@ -74,7 +74,7 @@ def _orderly_cleanup_success(packet, orderly):
 def _custom_metadata(orderly):
     role = [{"path": "orderly.py", "role": "orderly"}]
     for p in orderly.resources:
-        role.append[{"path": p, "role": "resource"}]
+        role.append({"path": p, "role": "resource"})
 
     return {"role": role}
 

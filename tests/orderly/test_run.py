@@ -14,7 +14,8 @@ def test_can_run_simple_example(tmp_path):
     path = outpack_init(tmp_path)
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile("tests/examples/data/orderly.py", path_src / "orderly.py")
+    shutil.copyfile("tests/orderly/examples/data/orderly.py",
+                    path_src / "orderly.py")
     res = orderly_run("data", root=path)
     path_res = path / "archive" / "data" / res
     assert path_res.exists()
@@ -77,3 +78,28 @@ def test_validate_report_src_directory(tmp_path):
     with open(x / "orderly.py", "w"):
         pass
     assert _validate_src_directory("x", root) == x
+
+
+def test_can_run_example_with_resource(tmp_path):
+    path = outpack_init(tmp_path)
+    path_src = path / "src" / "resource"
+    path_src.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree("tests/orderly/examples/resource", path_src)
+    res = orderly_run("resource", root=path)
+    
+    meta = root_open(tmp_path, False).index.metadata(res)
+    assert meta.id == res
+    assert meta.name == "resource"
+    assert meta.parameters == {}
+    assert list(meta.time.keys()) == ["start", "end"]
+    assert len(meta.files) == 3
+    assert {el.path for el in meta.files} == {"orderly.py", "result.txt", "numbers.txt"}
+    assert meta.depends == []
+    custom = {"orderly": {"role": [
+        {"path": "orderly.py", "role": "orderly"},
+        {"path": "numbers.txt", "role": "resource"}
+    ]}}
+    assert meta.custom == custom
+    assert meta.git is None
+    
+    
