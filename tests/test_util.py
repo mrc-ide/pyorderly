@@ -1,6 +1,9 @@
 import datetime
+import pytest
 
 from outpack.util import (
+    assert_file_exists,
+    expand_dirs,
     find_file_descend,
     iso_time_str,
     num_to_time,
@@ -29,3 +32,39 @@ def test_convert_num_to_time():
     )
     assert time_to_num(x) == t
     assert num_to_time(t) == x
+
+
+def test_can_test_for_files_existing(tmp_path):
+    with open(tmp_path / "a", "w"):
+        pass
+    with open(tmp_path / "b", "w"):
+        pass
+    with open(tmp_path / "c", "w"):
+        pass
+    assert_file_exists(["a", "b", "c"], workdir=tmp_path)
+    assert_file_exists(["a"], workdir=tmp_path)
+    assert_file_exists("a", workdir=tmp_path)
+
+    with pytest.raises(Exception, match="File does not exist: x"):
+        assert_file_exists(["a", "b", "x", "c"], workdir=tmp_path)
+    with pytest.raises(Exception, match="File does not exist: x"):
+        assert_file_exists(["x"], workdir=tmp_path)
+    with pytest.raises(Exception, match="File does not exist: x"):
+        assert_file_exists("x", workdir=tmp_path)
+
+
+def test_can_expand_paths(tmp_path):
+    sub_a = tmp_path / "a"
+    sub_a.mkdir()
+    sub_b = tmp_path / "b"
+    sub_b.mkdir()
+    with open(sub_a / "x", "w"):
+        pass
+    with open(sub_a / "y", "w"):
+        pass
+    assert expand_dirs([], workdir=tmp_path) == []
+    assert expand_dirs(["a"], workdir=tmp_path) == ["a/x", "a/y"]
+    assert expand_dirs(["a", "b"], workdir=tmp_path) == ["a/x", "a/y"]
+    with open(sub_b / "x", "w"):
+        pass
+    assert expand_dirs(["a", "b"], workdir=tmp_path) == ["a/x", "a/y", "b/x"]

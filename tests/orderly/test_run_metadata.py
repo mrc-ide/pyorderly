@@ -18,6 +18,16 @@ def test_resource_requires_that_files_exist_with_no_packet(tmp_path):
     assert res == ["a"]
 
 
+def test_resource_requires_relative_paths(tmp_path):
+    with transient_working_directory(tmp_path):
+        with pytest.raises(Exception, match="File does not exist:"):
+            orderly.resource("a")
+    with open(tmp_path / "a", "w"):
+        pass
+    with pytest.raises(Exception, match="to be a relative path"):
+        orderly.resource(str(tmp_path / "a"))
+
+
 def test_resource_expands_lists_with_no_packet(tmp_path):
     sub = tmp_path / "a"
     sub.mkdir()
