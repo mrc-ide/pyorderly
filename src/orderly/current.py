@@ -1,7 +1,6 @@
 class OrderlyCustomMetadata:
     def __init__(self):
         self.resources = []
-        self.artefacts = []
 
 
 class RunningOrderlyPacket:

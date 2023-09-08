@@ -76,11 +76,6 @@ def _custom_metadata(orderly):
     for p in orderly.resources:
         role.append[{"path": p, "role": "resource"}]
 
-    artefacts = []
-    for p in orderly.artefacts:
-        breapoint()
-        pass
-
     return {"role": role}
 
 
