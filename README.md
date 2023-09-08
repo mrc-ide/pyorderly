@@ -18,7 +18,7 @@ pip install outpack
 
 ## Development
 
-Useful hatch commands
+Useful hatch commands:
 
 ```
 hatch shell
