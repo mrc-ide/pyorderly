@@ -1,3 +1,5 @@
+import os
+
 from orderly.current import get_active_packet
 from outpack import util
 
@@ -20,17 +22,20 @@ def resource(files):
     """
     if not isinstance(files, list):
         files = [files]
+    for f in files:
+        if os.path.isabs(f):
+            msg = f"Expected resource path '{f}' to be a relative path"
+            raise Exception(msg)
+    util.assert_file_exists(files)
     p = get_active_packet()
-    if p is None:
-        util.assert_file_exists(files)
-    else:
-        src = p.src
-        util.assert_file_exists(files, workdir=src)
-        files_expanded = util.expand_dirs(files, workdir=src)
+    src = p.packet.path if p else None
+    files_expanded = util.expand_dirs(files, workdir=src)
+    if p:
         # TODO: If strict mode, copy expanded files into the working dir
         for f in files_expanded:
-            p.mark_file_immutable(f)
-        p.custom["orderly"]["resources"] += files_expanded
+            p.packet.mark_file_immutable(f)
+        p.orderly.resources += files_expanded
+    return files_expanded
 
 
 def artefact(name, files):
