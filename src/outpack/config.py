@@ -5,6 +5,8 @@ from typing import Dict, Optional
 from dataclasses_json import config, dataclass_json
 
 from outpack.schema import outpack_schema_version
+from outpack.static import LOCATION_TYPES
+from outpack.util import match_value
 
 
 def read_config(root_path):
@@ -19,6 +21,7 @@ def write_config(config, root_path):
 
 
 def update_config(config, root_path):
+    # TODO: Implement real update instead of overwriting see mrc-4600
     write_config(config, root_path)
 
 
@@ -55,6 +58,22 @@ class Location:
         self.type = type
         self.args = args
 
+        match_value(self.type, LOCATION_TYPES, "type")
+        required = set()
+        if type == "path":
+            required = {"path"}
+        elif type == "http":
+            required = {"url"}
+        elif type == "custom":
+            required = {"driver"}
+
+        present = set() if self.args is None else set(self.args.keys())
+        missing = required - present
+        if missing:
+            missing_text = "', '".join(missing)
+            msg = f"Fields missing from args: '{missing_text}'"
+            raise Exception(msg)
+
 
 @dataclass_json()
 @dataclass
@@ -69,10 +88,10 @@ class Config:
 
     @staticmethod
     def new(
-        *,
-        path_archive="archive",
-        use_file_store=False,
-        require_complete_tree=False,
+            *,
+            path_archive="archive",
+            use_file_store=False,
+            require_complete_tree=False,
     ):
         if path_archive is None and not use_file_store:
             msg = "If 'path_archive' is None, 'use_file_store' must be True"
