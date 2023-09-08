@@ -12,9 +12,6 @@ def outpack_location_list(root=None, *, locate=True):
 
 def outpack_location_add(name, type, args, root=None, *, locate=True):
     root = root_open(root, locate)
-    if type in ("http", "custom"):
-        msg = f"Cannot add a location with type '{type}' yet."
-        raise Exception(msg)
 
     if name in LOCATION_RESERVED_NAME:
         msg = f"Cannot add a location with reserved name '{name}'"
@@ -26,6 +23,9 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
 
     if type == "path":
         root_open(loc.args["path"], locate=False)
+    elif type in ("http", "custom"):
+        msg = f"Cannot add a location with type '{type}' yet."
+        raise Exception(msg)
 
     config = root.config
     config.location[name] = loc
