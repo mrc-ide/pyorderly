@@ -1,4 +1,5 @@
 import datetime
+
 import pytest
 
 from outpack.util import (

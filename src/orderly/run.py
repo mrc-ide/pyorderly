@@ -1,11 +1,10 @@
 import shutil
 
+from orderly.current import ActiveOrderlyPacket
 from outpack.ids import outpack_id
 from outpack.packet import Packet
 from outpack.root import root_open
 from outpack.util import run_script
-
-from orderly.current import ActiveOrderlyPacket
 
 
 def orderly_run(name, *, root=None, locate=True):
