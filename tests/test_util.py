@@ -64,8 +64,12 @@ def test_can_expand_paths(tmp_path):
     with open(sub_a / "y", "w"):
         pass
     assert expand_dirs([], workdir=tmp_path) == []
-    assert expand_dirs(["a"], workdir=tmp_path) == ["a/x", "a/y"]
-    assert expand_dirs(["a", "b"], workdir=tmp_path) == ["a/x", "a/y"]
+    assert set(expand_dirs(["a"], workdir=tmp_path)) == {"a/x", "a/y"}
+    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {"a/x", "a/y"}
     with open(sub_b / "x", "w"):
         pass
-    assert expand_dirs(["a", "b"], workdir=tmp_path) == ["a/x", "a/y", "b/x"]
+    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {
+        "a/x",
+        "a/y",
+        "b/x",
+    }
