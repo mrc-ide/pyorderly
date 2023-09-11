@@ -19,9 +19,9 @@ def orderly_run(name, *, root=None, locate=True):
 
     packet = Packet(root, path_dest, name, id=packet_id, locate=False)
     try:
+        packet.mark_file_immutable("orderly.py")
         # TODO: mark the packet active while we run it
         # TODO: add custom orderly state into active packet
-        # TODO: mark the outpack.py file as immutable
         run_script(path_dest, "orderly.py")
     except Exception as error:
         _orderly_cleanup_failure(packet)
