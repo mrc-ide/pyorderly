@@ -39,7 +39,7 @@ class Packet:
         self.custom[key] = value
 
     def mark_file_immutable(self, path):
-        if not path in self._immutable:
+        if path not in self._immutable:
             self._immutable[path] = hash_file(self.path / path)
 
     def end(self, *, insert=True):
