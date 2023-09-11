@@ -2,7 +2,7 @@ import shutil
 import time
 from pathlib import Path
 
-from outpack.hash import hash_string
+from outpack.hash import hash_file, hash_parse, hash_string
 from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
@@ -30,12 +30,17 @@ class Packet:
         self.git = git_info(self.path)
         self.custom = {}
         self.metadata = None
+        self._immutable = {}
 
     def add_custom_metadata(self, key, value):
         if key in self.custom:
             msg = f"metadata for '{key}' has already been added for this packet"
             raise Exception(msg)
         self.custom[key] = value
+
+    def mark_file_immutable(self, path):
+        if not path in self._immutable:
+            self._immutable[path] = hash_file(self.path / path)
 
     def end(self, *, insert=True):
         if self.metadata:
@@ -47,6 +52,7 @@ class Packet:
             PacketFile.from_file(self.path, f, hash_algorithm)
             for f in all_normal_files(self.path)
         ]
+        _check_immutable_files(self.files, self._immutable)
         self.metadata = self._build_metadata()
         validate(self.metadata.to_dict(), "outpack/metadata.json")
         if insert:
@@ -96,6 +102,19 @@ def _insert(root, path, meta):
 def _cancel(_root, path, meta):
     with path.joinpath("outpack.json").open("w") as f:
         f.write(meta.to_json())
+
+
+def _check_immutable_files(files, immutable):
+    if not immutable:
+        return
+    found = {x.path: x.hash for x in files}
+    for p, h in immutable.items():
+        if p not in found:
+            msg = f"File was deleted after being added: {p}"
+            raise Exception(msg)
+        if hash_parse(found[p]) != h:
+            msg = f"File was changed after being added: {p}"
+            raise Exception(msg)
 
 
 def mark_known(root, packet_id, location, hash, time):

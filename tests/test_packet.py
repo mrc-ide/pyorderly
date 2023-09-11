@@ -129,3 +129,45 @@ def test_error_raised_if_same_custom_data_readded(tmp_path):
     s = "metadata for 'myapp' has already been added for this packet"
     with pytest.raises(Exception, match=s):
         p.add_custom_metadata("myapp", d)
+
+
+def test_can_mark_files_as_immutable(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p.mark_file_immutable("data.csv")
+    p.end()
+    assert len(p.metadata.files) == 1
+
+
+def test_can_detect_deletion_of_immutable_file(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p.mark_file_immutable("data.csv")
+    src.joinpath("data.csv").unlink()
+    with pytest.raises(Exception, match="File was deleted after being added"):
+        p.end()
+
+
+def test_can_detect_modification_of_immutable_file(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "a") as f:
+        f.write("5,6\n")
+    with pytest.raises(Exception, match="File was changed after being added"):
+        p.end()
