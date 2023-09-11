@@ -5,6 +5,8 @@ from typing import Dict, Optional
 from dataclasses_json import config, dataclass_json
 
 from outpack.schema import outpack_schema_version
+from outpack.static import LOCATION_TYPES
+from outpack.util import match_value
 
 
 def read_config(root_path):
@@ -16,6 +18,11 @@ def read_config(root_path):
 def write_config(config, root_path):
     with open(_config_path(root_path), "w") as f:
         f.write(config.to_json())
+
+
+def update_config(config, root_path):
+    # TODO: Implement real update instead of overwriting see mrc-4600
+    write_config(config, root_path)
 
 
 def _encode_location_dict(d):
@@ -50,6 +57,22 @@ class Location:
         self.name = name
         self.type = type
         self.args = args
+
+        match_value(self.type, LOCATION_TYPES, "type")
+        required = set()
+        if type == "path":
+            required = {"path"}
+        elif type == "http":
+            required = {"url"}
+        elif type == "custom":
+            required = {"driver"}
+
+        present = set() if self.args is None else set(self.args.keys())
+        missing = required - present
+        if missing:
+            missing_text = "', '".join(missing)
+            msg = f"Fields missing from args: '{missing_text}'"
+            raise Exception(msg)
 
 
 @dataclass_json()
