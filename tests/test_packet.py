@@ -171,3 +171,20 @@ def test_can_detect_modification_of_immutable_file(tmp_path):
         f.write("5,6\n")
     with pytest.raises(Exception, match="File was changed after being added"):
         p.end()
+
+
+def test_can_detect_modification_of_immutable_file_if_readded(tmp_path):
+    """Test that it is the _first_ addition of the hash that matters."""
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "a") as f:
+        f.write("5,6\n")
+    p.mark_file_immutable("data.csv")
+    with pytest.raises(Exception, match="File was changed after being added"):
+        p.end()
