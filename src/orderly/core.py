@@ -8,7 +8,7 @@ def resource(files):
     """Declare that a file, or group of files, are an orderly resource.
 
     By explicitly declaring files as resources, orderly will mark the
-    files as immutable iputs and validate that your analysis does not
+    files as immutable inputs and validate that your analysis does not
     modify them with 'orderly.run'.
 
     Parameters
