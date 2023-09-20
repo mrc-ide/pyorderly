@@ -5,6 +5,7 @@ from outpack.location import (
     outpack_location_list,
     outpack_location_remove,
     outpack_location_rename,
+    location_resolve_valid
 )
 from outpack.test_util import create_temporary_root
 
@@ -208,3 +209,56 @@ def test_cant_add_wip_location_type(tmp_path):
         )
 
     assert e.match("Cannot add a location with type 'custom' yet.")
+
+
+def test_can_resolve_locations(tmp_path):
+    root = {}
+    for name in ["dst", "a", "b", "c", "d"]:
+        root[name] = create_temporary_root(tmp_path / name)
+        if not name == "dst":
+            outpack_location_add(name, "path", {"path": str(root[name].path)},
+                                 root=root["dst"])
+
+    locations = location_resolve_valid(None, root["dst"], False, False, False)
+    assert locations == ["a", "b", "c", "d"]
+    locations = location_resolve_valid(None, root["dst"], True, False, False)
+    assert locations == ["local", "a", "b", "c", "d"]
+    locations = location_resolve_valid(None, root["dst"], True, True, False)
+    assert locations == ["local", "a", "b", "c", "d"]
+    locations = location_resolve_valid(["a", "b", "local", "d"], root["dst"],
+                                      False, False, False)
+    assert locations == ["a", "b", "d"]
+    locations = location_resolve_valid(["a", "b", "local", "d"], root["dst"],
+                                       True, False, False)
+    assert locations == ["a", "b", "local", "d"]
+
+    with pytest.raises(Exception) as e:
+        location_resolve_valid(True, root["dst"],
+                               True, False, False)
+
+    assert e.match("Invalid input for 'location'; expected None or a "
+                   "list of strings")
+
+    with pytest.raises(Exception) as e:
+        location_resolve_valid("other", root["dst"],
+                               True, False, False)
+
+    assert e.match("Unknown location: 'other'")
+
+    with pytest.raises(Exception) as e:
+        location_resolve_valid(["a", "b", "f", "g"], root["dst"],
+                               True, False, False)
+
+    assert e.match("Unknown location: '[fg]', '[fg]'")
+
+
+def test_informative_error_when_no_locations_configured(tmp_path):
+    root = create_temporary_root(tmp_path)
+
+    locations = location_resolve_valid(None, root,False, False, True)
+    assert locations == []
+
+    with pytest.raises(Exception) as e:
+        location_resolve_valid(None, root,False, False, False)
+
+    assert e.match("No suitable location found")

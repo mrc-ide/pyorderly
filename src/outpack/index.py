@@ -40,6 +40,9 @@ class Index:
     def unpacked(self):
         return self.refresh().data.unpacked
 
+    def data(self):
+        self.refresh().data
+
 
 def _index_update(path_root, data):
     data.metadata = _read_metadata(path_root, data.metadata)

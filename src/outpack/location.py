@@ -1,8 +1,10 @@
+import collections
 import shutil
 
 from outpack.config import Location, update_config
 from outpack.root import root_open
-from outpack.static import LOCATION_RESERVED_NAME
+from outpack.static import (LOCATION_RESERVED_NAME, LOCATION_LOCAL,
+                            LOCATION_ORPHAN)
 
 
 def outpack_location_list(root=None, *, locate=True):
@@ -71,6 +73,47 @@ def outpack_location_rename(old, new, root=None, *, locate=True):
     update_config(config, root.path)
 
 
+def location_resolve_valid(location, root, include_local, include_orphan,
+                            allow_no_locations):
+    if location is None:
+        location = outpack_location_list(root)
+    elif (isinstance(location, str) and
+          location not in outpack_location_list(root)):
+        msg = f"Unknown location: '{location}'"
+        raise Exception(msg)
+
+    elif (isinstance(location, collections.abc.Iterable) and
+           all(isinstance(item, str) for item in location)):
+        unknown = set(location).difference(outpack_location_list(root))
+        if len(unknown) > 0:
+            unknown_text = "', '".join(unknown)
+            msg = f"Unknown location: '{unknown_text}'"
+            raise Exception(msg)
+    else:
+        msg = (f"Invalid input for 'location'; expected None or a list of "
+               f"strings")
+        raise Exception(msg)
+
+    if not include_local and LOCATION_LOCAL in location:
+        location.remove(LOCATION_LOCAL)
+    if not include_orphan and LOCATION_ORPHAN in location:
+        location.remove(LOCATION_ORPHAN)
+
+    if len(location) == 0 and not allow_no_locations:
+        raise Exception("No suitable location found")
+
+    return location
+
+
+def outpack_location_pull_metadata(location, root=None, *, locate=True):
+    root = root_open(root, locate)
+    location_name = location_resolve_valid(location, root)
+
+    for name in location_name:
+        location_pull_metadata(name, root)
+
+    # TODO: deorphan recovered packets
+
 def _location_check_new_name(root, name):
     if _location_exists(root, name):
         msg = f"A location with name '{name}' already exists"
@@ -85,3 +128,11 @@ def _location_check_exists(root, name):
 
 def _location_exists(root, name):
     return name in outpack_location_list(root)
+
+
+def _location_pull_metadata(location_name, root):
+    index = root.index.data()
+    driver = _location_driver(location_name, root)
+
+def _location_driver(location_name, root):
+    i = root.config.location.name.index(location_name)
