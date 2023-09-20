@@ -2,7 +2,7 @@ import shutil
 import time
 from pathlib import Path
 
-from outpack.hash import hash_file, hash_string, hash_validate
+from outpack.hash import hash_file, hash_parse, hash_string, hash_validate
 from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
@@ -57,7 +57,7 @@ class Packet:
             PacketFile.from_file(self.path, f, hash_algorithm)
             for f in all_normal_files(self.path)
         ]
-        _validate_immutable_files(self.path, self.immutable)
+        _check_immutable_files(self.files, self.immutable)
         self.metadata = self._build_metadata()
         validate(self.metadata.to_dict(), "outpack/metadata.json")
         if insert:
@@ -109,20 +109,22 @@ def _cancel(_root, path, meta):
         f.write(meta.to_json())
 
 
+def _check_immutable_files(files, immutable):
+    if not immutable:
+        return
+    found = {x.path: x.hash for x in files}
+    for p, h in immutable.items():
+        if p not in found:
+            msg = f"File was deleted after being added: {p}"
+            raise Exception(msg)
+        if hash_parse(found[p]) != h:
+            msg = f"File was changed after being added: {p}"
+            raise Exception(msg)
+
+
 def mark_known(root, packet_id, location, hash, time):
     dat = PacketLocation(packet_id, time, hash)
     dest = root.path / ".outpack" / "location" / location / packet_id
     dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w") as f:
         f.write(dat.to_json(separators=(",", ":")))
-
-
-def _validate_immutable_files(path, immutable):
-    if immutable:
-        with transient_working_directory(path):
-            for f in immutable.keys():
-                try:
-                    hash_validate(f, immutable[f])
-                except Exception as e:
-                    msg = f"Detected change to immutable file '{f}' in packet"
-                    raise Exception(msg) from e

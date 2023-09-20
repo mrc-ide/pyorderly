@@ -83,3 +83,10 @@ def expand_dirs(paths, *, workdir=None):
             else:
                 ret.append(str(p))
     return ret
+
+
+def match_value(arg, choices, name):
+    if arg not in choices:
+        choices_str = "', '".join(choices)
+        msg = f"{name} must be one of '{choices_str}'"
+        raise Exception(msg)

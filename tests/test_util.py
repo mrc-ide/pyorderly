@@ -7,6 +7,7 @@ from outpack.util import (
     expand_dirs,
     find_file_descend,
     iso_time_str,
+    match_value,
     num_to_time,
     time_to_num,
 )
@@ -73,3 +74,13 @@ def test_can_expand_paths(tmp_path):
         "a/y",
         "b/x",
     }
+
+
+def test_match_value():
+    assert match_value("this", ["that", "this"], "name") is None
+    with pytest.raises(Exception) as e:
+        match_value("this", ["foo", "bar"], "name")
+    assert e.match("name must be one of 'foo', 'bar'")
+    with pytest.raises(Exception) as e:
+        match_value("this", ["foo"], "name")
+    assert e.match("name must be one of 'foo'")
