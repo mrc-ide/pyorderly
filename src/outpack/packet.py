@@ -2,7 +2,7 @@ import shutil
 import time
 from pathlib import Path
 
-from outpack.hash import hash_file, hash_parse, hash_string
+from outpack.hash import hash_file, hash_parse, hash_string, hash_validate
 from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
@@ -11,6 +11,7 @@ from outpack.tools import git_info
 from outpack.util import all_normal_files
 
 
+# TODO: most of these fields should be private.
 class Packet:
     def __init__(
         self, root, path, name, *, parameters=None, id=None, locate=True
@@ -30,17 +31,21 @@ class Packet:
         self.git = git_info(self.path)
         self.custom = {}
         self.metadata = None
-        self._immutable = {}
+        self.immutable = {}
+
+    def mark_file_immutable(self, path):
+        path_full = self.path / path
+        if path in self.immutable:
+            hash_validate(path_full, self.immutable[path])
+        else:
+            hash_algorithm = self.root.config.core.hash_algorithm
+            self.immutable[path] = hash_file(path_full, hash_algorithm)
 
     def add_custom_metadata(self, key, value):
         if key in self.custom:
             msg = f"metadata for '{key}' has already been added for this packet"
             raise Exception(msg)
         self.custom[key] = value
-
-    def mark_file_immutable(self, path):
-        if path not in self._immutable:
-            self._immutable[path] = hash_file(self.path / path)
 
     def end(self, *, insert=True):
         if self.metadata:
@@ -52,7 +57,7 @@ class Packet:
             PacketFile.from_file(self.path, f, hash_algorithm)
             for f in all_normal_files(self.path)
         ]
-        _check_immutable_files(self.files, self._immutable)
+        _check_immutable_files(self.files, self.immutable)
         self.metadata = self._build_metadata()
         validate(self.metadata.to_dict(), "outpack/metadata.json")
         if insert:

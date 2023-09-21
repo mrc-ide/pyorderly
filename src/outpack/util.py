@@ -31,6 +31,8 @@ def num_to_time(x):
     return datetime.datetime.fromtimestamp(x, datetime.timezone.utc)
 
 
+# Recursively find all normal files below 'path', returning them
+# relative to that path.
 def all_normal_files(path):
     return [
         str(p.relative_to(path))
@@ -50,10 +52,37 @@ def run_script(wd, path):
 def transient_working_directory(path):
     origin = os.getcwd()
     try:
-        os.chdir(path)
+        if path is not None:
+            os.chdir(path)
         yield
     finally:
-        os.chdir(origin)
+        if path is not None:
+            os.chdir(origin)
+
+
+def assert_file_exists(path, *, workdir=None, name="File"):
+    with transient_working_directory(workdir):
+        if isinstance(path, list):
+            missing = [str(p) for p in path if not os.path.exists(p)]
+        else:
+            missing = [] if os.path.exists(path) else [path]
+    if len(missing):
+        missing_str = ", ".join(missing)
+        msg = f"{name} does not exist: {missing_str}"
+        raise Exception(msg)
+
+
+def expand_dirs(paths, *, workdir=None):
+    if len(paths) == 0:
+        return []
+    ret = []
+    with transient_working_directory(workdir):
+        for p in paths:
+            if os.path.isdir(p):
+                ret += [os.path.join(p, f) for f in all_normal_files(p)]
+            else:
+                ret.append(str(p))
+    return ret
 
 
 def match_value(arg, choices, name):
