@@ -147,3 +147,19 @@ def test_can_run_example_with_artefact(tmp_path):
     }
     assert meta.custom == custom
     assert meta.git is None
+
+
+def test_can_error_if_artefacts_not_produced(tmp_path):
+    path = outpack_init(tmp_path)
+    path_src = path / "src" / "resource"
+    path_src.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree("tests/orderly/examples/resource", path_src)
+    res = orderly_run("resource", root=path)
+    with open(path_src / "orderly.py", "a") as f:
+        f.write("orderly.artefact('something', 'a')\n")
+    with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a'"):
+        orderly_run("resource", root=path)
+    with open(path_src / "orderly.py", "a") as f:
+        f.write("orderly.artefact('something else', ['c', 'b'])\n")
+    with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a', 'b', 'c'"):
+        orderly_run("resource", root=path)

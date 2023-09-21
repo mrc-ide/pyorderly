@@ -1,4 +1,3 @@
-import os
 from dataclasses import dataclass
 from typing import List
 
@@ -31,12 +30,7 @@ def resource(files):
     Nothing, this is called for its side effects within a running packet
 
     """
-    if not isinstance(files, list):
-        files = [files]
-    for f in files:
-        if os.path.isabs(f):
-            msg = f"Expected resource path '{f}' to be a relative path"
-            raise Exception(msg)
+    files = util.relative_path_array(files, "resource")
     util.assert_file_exists(files)
     p = get_active_packet()
     src = p.packet.path if p else None
@@ -79,8 +73,8 @@ def artefact(name, files):
     Nothing, this is called for its side effects within a running packet
 
     """
-    if isinstance(files, str):
-        files = [files]
+    files = util.relative_path_array(files, "artefact")
     p = get_active_packet()
     if p:
         p.orderly.artefacts.append(Artefact(name, files))
+    return files

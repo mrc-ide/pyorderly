@@ -65,11 +65,11 @@ def _copy_resources_implicit(src, dest):
 
 
 def _orderly_cleanup_success(packet, orderly):
-    missing = {}
+    missing = set()
     for artefact in orderly.artefacts:
         for path in artefact.files:
             if not packet.path.joinpath(path).exists():
-                missing += path
+                missing.add(path)
     if missing:
         missing = ", ".join(f"'{x}'" for x in sorted(missing))
         msg = f"Script did not produce the expected artefacts: {missing}"

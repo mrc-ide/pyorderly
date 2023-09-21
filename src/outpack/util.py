@@ -90,3 +90,13 @@ def match_value(arg, choices, name):
         choices_str = "', '".join(choices)
         msg = f"{name} must be one of '{choices_str}'"
         raise Exception(msg)
+
+
+def relative_path_array(files, name):
+    if not isinstance(files, list):
+        files = [files]
+    for f in files:
+        if os.path.isabs(f):
+            msg = f"Expected {name} path '{f}' to be a relative path"
+            raise Exception(msg)
+    return files
