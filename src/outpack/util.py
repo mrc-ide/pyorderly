@@ -61,3 +61,10 @@ def match_value(arg, choices, name):
         choices_str = "', '".join(choices)
         msg = f"{name} must be one of '{choices_str}'"
         raise Exception(msg)
+
+
+def read_string(path):
+    with open(path, 'r') as f:
+        lines = f.readlines()
+    contents = "\n".join(lines).strip()
+    return contents

@@ -135,4 +135,11 @@ def _location_pull_metadata(location_name, root):
     driver = _location_driver(location_name, root)
 
 def _location_driver(location_name, root):
-    i = root.config.location.name.index(location_name)
+    location = root.config.location[location_name]
+    match location["type"]:
+        case "path":
+            orderly_location_path$new()
+        case "http":
+            raise Exception("Http remote not yet supported")
+        case "custom":
+            raise Exception("custom remote not yet supported")

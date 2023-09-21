@@ -41,7 +41,7 @@ class Index:
         return self.refresh().data.unpacked
 
     def data(self):
-        self.refresh().data
+        return self.refresh().data
 
 
 def _index_update(path_root, data):
