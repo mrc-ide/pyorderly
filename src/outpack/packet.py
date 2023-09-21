@@ -8,7 +8,7 @@ from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
 from outpack.tools import git_info
-from outpack.util import all_normal_files, transient_working_directory
+from outpack.util import all_normal_files
 
 
 # TODO: most of these fields should be private.
