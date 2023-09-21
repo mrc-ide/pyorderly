@@ -32,9 +32,11 @@ def orderly_run(name, *, root=None, locate=True):
         msg = "Running orderly report failed!"
         raise Exception(msg) from error
 
-    # TODO: This needs to be done within a try/catch block too to
-    # ensure that the failed metadata is written.
-    _orderly_cleanup_success(packet, orderly)
+    try:
+        _orderly_cleanup_success(packet, orderly)
+    except Exception:
+        _orderly_cleanup_failure(packet)
+        raise
     return packet_id
 
 

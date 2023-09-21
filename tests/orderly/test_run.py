@@ -5,6 +5,7 @@ from orderly.run import _validate_src_directory, orderly_run
 
 from outpack.init import outpack_init
 from outpack.root import root_open
+from outpack.metadata import read_metadata_core
 
 
 ## We're going to need a small test helper module here at some point,
@@ -159,6 +160,13 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
         f.write("orderly.artefact('something', 'a')\n")
     with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a'"):
         orderly_run("resource", root=path)
+    assert (tmp_path / "draft" / "resource").exists()
+    contents = list((tmp_path / "draft" / "resource").iterdir())
+    assert len(contents) == 1
+    assert contents[0].joinpath("outpack.json").exists()
+    meta = read_metadata_core(contents[0].joinpath("outpack.json"))
+    assert meta.name == "resource"
+    assert meta.custom == {}
     with open(path_src / "orderly.py", "a") as f:
         f.write("orderly.artefact('something else', ['c', 'b'])\n")
     with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a', 'b', 'c'"):
