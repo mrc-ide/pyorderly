@@ -4,8 +4,8 @@ import pytest
 from orderly.run import _validate_src_directory, orderly_run
 
 from outpack.init import outpack_init
-from outpack.root import root_open
 from outpack.metadata import read_metadata_core
+from outpack.root import root_open
 
 
 ## We're going to need a small test helper module here at some point,
@@ -155,10 +155,12 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
     path_src = path / "src" / "resource"
     path_src.parent.mkdir(parents=True, exist_ok=True)
     shutil.copytree("tests/orderly/examples/resource", path_src)
-    res = orderly_run("resource", root=path)
+    orderly_run("resource", root=path)
     with open(path_src / "orderly.py", "a") as f:
         f.write("orderly.artefact('something', 'a')\n")
-    with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a'"):
+    with pytest.raises(
+        Exception, match="Script did not produce the expected artefacts: 'a'"
+    ):
         orderly_run("resource", root=path)
     assert (tmp_path / "draft" / "resource").exists()
     contents = list((tmp_path / "draft" / "resource").iterdir())
@@ -169,5 +171,8 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
     assert meta.custom == {}
     with open(path_src / "orderly.py", "a") as f:
         f.write("orderly.artefact('something else', ['c', 'b'])\n")
-    with pytest.raises(Exception, match="Script did not produce the expected artefacts: 'a', 'b', 'c'"):
+    with pytest.raises(
+        Exception,
+        match="Script did not produce the expected artefacts: 'a', 'b', 'c'",
+    ):
         orderly_run("resource", root=path)
