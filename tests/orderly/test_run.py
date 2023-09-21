@@ -31,7 +31,12 @@ def test_can_run_simple_example(tmp_path):
     assert len(meta.files) == 2
     assert {el.path for el in meta.files} == {"orderly.py", "result.txt"}
     assert meta.depends == []
-    custom = {"orderly": {"role": [{"path": "orderly.py", "role": "orderly"}]}}
+    custom = {
+        "orderly": {
+            "role": [{"path": "orderly.py", "role": "orderly"}],
+            "artefacts": [],
+        }
+    }
     assert meta.custom == custom
     assert meta.git is None
 
@@ -105,7 +110,39 @@ def test_can_run_example_with_resource(tmp_path):
             "role": [
                 {"path": "orderly.py", "role": "orderly"},
                 {"path": "numbers.txt", "role": "resource"},
-            ]
+            ],
+            "artefacts": [],
+        }
+    }
+    assert meta.custom == custom
+    assert meta.git is None
+
+
+def test_can_run_example_with_artefact(tmp_path):
+    path = outpack_init(tmp_path)
+    path_src = path / "src" / "artefact"
+    path_src.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(
+        "tests/orderly/examples/artefact/orderly.py", path_src / "orderly.py"
+    )
+    res = orderly_run("artefact", root=path)
+    path_res = path / "archive" / "artefact" / res
+    assert path_res.exists()
+    assert not (path / "draft" / "artefact" / res).exists()
+    # TODO: need a nicer way of doing this, one that would be part of
+    # the public API.
+    meta = root_open(tmp_path, False).index.metadata(res)
+    assert meta.id == res
+    assert meta.name == "artefact"
+    assert meta.parameters == {}
+    assert list(meta.time.keys()) == ["start", "end"]
+    assert len(meta.files) == 2
+    assert {el.path for el in meta.files} == {"orderly.py", "result.txt"}
+    assert meta.depends == []
+    custom = {
+        "orderly": {
+            "role": [{"path": "orderly.py", "role": "orderly"}],
+            "artefacts": [{"name": "Random numbers", "files": ["result.txt"]}],
         }
     }
     assert meta.custom == custom
