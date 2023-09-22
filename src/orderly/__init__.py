@@ -1,3 +1,3 @@
-from orderly.core import resource
+from orderly.core import artefact, resource
 
-__all__ = ["resource"]
+__all__ = ["artefact", "resource"]

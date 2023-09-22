@@ -32,7 +32,11 @@ def orderly_run(name, *, root=None, locate=True):
         msg = "Running orderly report failed!"
         raise Exception(msg) from error
 
-    _orderly_cleanup_success(packet, orderly)
+    try:
+        _orderly_cleanup_success(packet, orderly)
+    except Exception:
+        _orderly_cleanup_failure(packet)
+        raise
     return packet_id
 
 
@@ -63,7 +67,15 @@ def _copy_resources_implicit(src, dest):
 
 
 def _orderly_cleanup_success(packet, orderly):
-    # check artefacts -- but we don't have any artefacts yet
+    missing = set()
+    for artefact in orderly.artefacts:
+        for path in artefact.files:
+            if not packet.path.joinpath(path).exists():
+                missing.add(path)
+    if missing:
+        missing = ", ".join(f"'{x}'" for x in sorted(missing))
+        msg = f"Script did not produce the expected artefacts: {missing}"
+        raise Exception(msg)
     # check files (either strict or relaxed) -- but we can't do that yet
     packet.add_custom_metadata("orderly", _custom_metadata(orderly))
     packet.end(insert=True)
@@ -75,7 +87,7 @@ def _custom_metadata(orderly):
     for p in orderly.resources:
         role.append({"path": p, "role": "resource"})
 
-    return {"role": role}
+    return {"role": role, "artefacts": orderly.artefacts}
 
 
 def _orderly_cleanup_failure(packet):

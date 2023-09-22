@@ -56,3 +56,9 @@ def test_resource_requires_file_exists_with_packet(tmp_path):
             res = orderly.resource(["a"])
 
     assert active.resources == res
+
+
+def test_artefact_is_allowed_without_packet(tmp_path):
+    with transient_working_directory(tmp_path):
+        res = orderly.artefact("a", "b")
+    assert res == ["b"]
