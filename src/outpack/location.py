@@ -134,11 +134,16 @@ def _location_pull_metadata(location_name, root):
     index = root.index.data()
     driver = _location_driver(location_name, root)
 
+
+class OrderlyLocationPath:
+    pass
+
+
 def _location_driver(location_name, root):
     location = root.config.location[location_name]
     match location["type"]:
         case "path":
-            orderly_location_path$new()
+            OrderlyLocationPath(location.args["path"])
         case "http":
             raise Exception("Http remote not yet supported")
         case "custom":

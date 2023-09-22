@@ -1,3 +1,4 @@
+import os
 import shutil
 
 from outpack.root import root_open, find_file_by_hash
@@ -6,7 +7,6 @@ from outpack.util import read_string
 
 
 class OutpackLocationPath:
-
     def __init__(self, path):
         self.__root = root_open(path, locate=False)
 
@@ -32,7 +32,8 @@ class OutpackLocationPath:
     def fetch_file(self, hash, dest):
         if self.__root.config.core.use_file_store:
             path = self.__root.files.filename(hash)
-            if not path.exists():
+            print(path)
+            if not os.path.exists(path):
                 msg = f"Hash '{hash}' not found at location"
                 raise Exception(msg)
         else:
