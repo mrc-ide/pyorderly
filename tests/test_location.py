@@ -1,4 +1,5 @@
 import pytest
+from helpers import create_temporary_root
 
 from outpack.location import (
     outpack_location_add,
@@ -6,8 +7,6 @@ from outpack.location import (
     outpack_location_remove,
     outpack_location_rename,
 )
-
-from helpers import create_temporary_root
 
 
 def test_no_locations_except_local_by_default(tmp_path):

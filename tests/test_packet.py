@@ -1,10 +1,9 @@
+import helpers
 import pytest
 
 from outpack.init import outpack_init
 from outpack.packet import Packet
 from outpack.root import root_open
-
-import helpers
 
 
 def test_can_add_simple_packet(tmp_path):
@@ -236,7 +235,7 @@ def test_can_detect_modification_of_immutable_file_if_readded(tmp_path):
 
 def test_helper(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
-    id = helpers.create_random_packet(root)
-    assert isinstance(id, str)
-    meta = root_open(tmp_path, False).index.metadata(id)
+    packet_id = helpers.create_random_packet(root)
+    assert isinstance(packet_id, str)
+    meta = root_open(tmp_path, False).index.metadata(packet_id)
     assert meta.name == "data"
