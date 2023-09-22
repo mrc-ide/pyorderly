@@ -1,3 +1,4 @@
+import helpers
 import pytest
 
 from outpack.init import outpack_init
@@ -230,3 +231,11 @@ def test_can_detect_modification_of_immutable_file_if_readded(tmp_path):
         f.write("5,6\n")
     with pytest.raises(Exception, match="Hash of .+ does not match"):
         p.mark_file_immutable("data.csv")
+
+
+def test_helper(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    packet_id = helpers.create_random_packet(root)
+    assert isinstance(packet_id, str)
+    meta = root_open(tmp_path, False).index.metadata(packet_id)
+    assert meta.name == "data"
