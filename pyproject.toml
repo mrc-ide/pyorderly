@@ -165,6 +165,7 @@ branch = true
 parallel = true
 omit = [
   "src/outpack/__about__.py",
+  "tests/helpers/*",
 ]
 
 [tool.coverage.paths]
