@@ -31,31 +31,13 @@ class OutpackRoot:
             # this hash, since we already know that it's 'id' unless
             # it's corrupt - this is what the R version does (though
             # it only does that).
-            src = self.find_file_by_hash(hash)
+            src = find_file_by_hash(self, hash)
             if not src:
                 msg = f"File not found in archive, or corrupt: {there}"
                 raise Exception(msg)
             here_full.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, here_full)
         return here
-
-    def find_file_by_hash(self, hash):
-        path_archive = self.path / self.config.core.path_archive
-        hash_parsed = hash_parse(hash)
-        for id in self.index.unpacked():
-            meta = self.index.metadata(id)
-            for f in meta.files:
-                if f.hash == hash:
-                    path = path_archive / meta.name / meta.id / f.path
-                    if hash_file(path, hash_parsed.algorithm) == hash_parsed:
-                        return path
-                    else:
-                        msg = (
-                            f"Rejecting file from archive '{f.path}'"
-                            f"in {meta.name}/{meta.id}"
-                        )
-                        print(msg)
-        return None
 
 
 def root_open(path, locate):
@@ -78,3 +60,22 @@ def root_open(path, locate):
         msg = f"Did not find existing outpack root in '{path}'"
         raise Exception(msg)
     return OutpackRoot(path_outpack)
+
+
+def find_file_by_hash(root, hash):
+    path_archive = root.path / root.config.core.path_archive
+    hash_parsed = hash_parse(hash)
+    for id in root.index.unpacked():
+        meta = root.index.metadata(id)
+        for f in meta.files:
+            if f.hash == hash:
+                path = path_archive / meta.name / meta.id / f.path
+                if hash_file(path, hash_parsed.algorithm) == hash_parsed:
+                    return path
+                else:
+                    msg = (
+                        f"Rejecting file from archive '{f.path}'"
+                        f"in {meta.name}/{meta.id}"
+                    )
+                    print(msg)
+    return None

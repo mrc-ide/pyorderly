@@ -7,7 +7,7 @@ from outpack.config import read_config
 from outpack.filestore import FileStore
 from outpack.index import Index
 from outpack.init import outpack_init
-from outpack.root import root_open
+from outpack.root import find_file_by_hash, root_open
 from outpack.util import transient_working_directory
 
 
@@ -68,10 +68,10 @@ def test_can_find_file_by_hash(tmp_path):
     meta = root.index.metadata(id[1])
     hash = meta.files[0].hash
     assert (
-        root.find_file_by_hash(hash)
+        find_file_by_hash(root, hash)
         == root.path / "archive" / "data" / id[1] / "data.txt"
     )
-    assert root.find_file_by_hash(hash[:-1]) is None
+    assert find_file_by_hash(root, hash[:-1]) is None
 
 
 def test_can_reject_corrupted_files(tmp_path, capsys):
@@ -83,12 +83,15 @@ def test_can_reject_corrupted_files(tmp_path, capsys):
     path = root.path / "archive" / "data" / id[1] / "data.txt"
     with open(path, "a") as f:
         f.write("1")
-    assert root.find_file_by_hash(hash) is None
+    assert find_file_by_hash(root, hash) is None
     captured = capsys.readouterr()
     assert (
         captured.out
         == f"Rejecting file from archive 'data.txt'in data/{id[1]}\n"
     )
+    dest = tmp_path / "dest"
+    with pytest.raises(Exception, match="File not found in archive"):
+        root.export_file(id[1], "data.txt", "result.txt", dest)
 
 
 def test_can_export_files_from_root_using_store(tmp_path):
