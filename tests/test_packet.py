@@ -1,3 +1,4 @@
+import helpers
 import pytest
 
 from outpack.init import outpack_init
@@ -136,6 +137,22 @@ def test_can_mark_files_as_immutable(tmp_path):
     src = tmp_path / "src"
     outpack_init(root)
     src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    p1.end()
+    r = root_open(root, False)
+    assert r.index.unpacked() == [p1.id]
+    assert len(p1.metadata.files) == 1
+    assert p1.metadata.files[0].path == "data.csv"
+
+
+def test_can_validate_immutable_files_on_end(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
     p = Packet(root, src, "data")
     with open(src / "data.csv", "w") as f:
         f.write("a,b\n1,2\n3,4\n")
@@ -145,6 +162,24 @@ def test_can_mark_files_as_immutable(tmp_path):
 
 
 def test_can_detect_deletion_of_immutable_file(tmp_path):
+    root = tmp_path / "root"
+    src = tmp_path / "src"
+    outpack_init(root)
+    src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n5,6\n")
+    with pytest.raises(
+        Exception,
+        match="File was changed after being added: data.csv",
+    ):
+        p1.end()
+
+
+def test_readding_files_rehashes_them(tmp_path):
     root = tmp_path / "root"
     src = tmp_path / "src"
     outpack_init(root)
@@ -163,6 +198,15 @@ def test_can_detect_modification_of_immutable_file(tmp_path):
     src = tmp_path / "src"
     outpack_init(root)
     src.mkdir(parents=True, exist_ok=True)
+    p1 = Packet(root, src, "data")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n")
+    p1.mark_file_immutable("data.csv")
+    p1.mark_file_immutable("data.csv")
+    with open(src / "data.csv", "w") as f:
+        f.write("a,b\n1,2\n3,4\n5,6\n")
+    with pytest.raises(Exception, match="Hash of '.+' does not match"):
+        p1.mark_file_immutable("data.csv")
     p = Packet(root, src, "data")
     with open(src / "data.csv", "w") as f:
         f.write("a,b\n1,2\n3,4\n")
@@ -185,6 +229,13 @@ def test_can_detect_modification_of_immutable_file_if_readded(tmp_path):
     p.mark_file_immutable("data.csv")
     with open(src / "data.csv", "a") as f:
         f.write("5,6\n")
-    p.mark_file_immutable("data.csv")
-    with pytest.raises(Exception, match="File was changed after being added"):
-        p.end()
+    with pytest.raises(Exception, match="Hash of .+ does not match"):
+        p.mark_file_immutable("data.csv")
+
+
+def test_helper(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    packet_id = helpers.create_random_packet(root)
+    assert isinstance(packet_id, str)
+    meta = root_open(tmp_path, False).index.metadata(packet_id)
+    assert meta.name == "data"
