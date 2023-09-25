@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import helpers
 import pytest
 
 from outpack.config import read_config
@@ -58,3 +59,53 @@ def test_paths_must_be_directories(tmp_path):
         pass
     with pytest.raises(Exception, match="to be an existing directory"):
         assert root_open(p, False)
+
+
+def test_can_find_file_by_hash(tmp_path):
+    outpack_init(tmp_path, use_file_store=False, path_archive="archive")
+    id = [helpers.create_random_packet(tmp_path) for _ in range(3)]
+    root = root_open(tmp_path, False)
+    meta = root.index.metadata(id[1])
+    hash = meta.files[0].hash
+    assert (
+        root.find_file_by_hash(hash)
+        == root.path / "archive" / "data" / id[1] / "data.txt"
+    )
+    assert root.find_file_by_hash(hash[:-1]) is None
+
+
+def test_can_reject_corrupted_files(tmp_path, capsys):
+    outpack_init(tmp_path, use_file_store=False, path_archive="archive")
+    id = [helpers.create_random_packet(tmp_path) for _ in range(3)]
+    root = root_open(tmp_path, False)
+    meta = root.index.metadata(id[1])
+    hash = meta.files[0].hash
+    path = root.path / "archive" / "data" / id[1] / "data.txt"
+    with open(path, "a") as f:
+        f.write("1")
+    assert root.find_file_by_hash(hash) is None
+    captured = capsys.readouterr()
+    assert (
+        captured.out
+        == f"Rejecting file from archive 'data.txt'in data/{id[1]}\n"
+    )
+
+
+def test_can_export_files_from_root_using_store(tmp_path):
+    outpack_init(tmp_path, use_file_store=True, path_archive=None)
+    id = helpers.create_random_packet(tmp_path)
+    r = root_open(tmp_path, False)
+    dest = tmp_path / "dest"
+    res = r.export_file(id, "data.txt", "result.txt", dest)
+    assert res == "result.txt"
+    assert (dest / "result.txt").exists()
+
+
+def test_can_export_files_from_root_using_archive(tmp_path):
+    outpack_init(tmp_path, use_file_store=False, path_archive="archive")
+    id = helpers.create_random_packet(tmp_path)
+    r = root_open(tmp_path, False)
+    dest = tmp_path / "dest"
+    res = r.export_file(id, "data.txt", "result.txt", dest)
+    assert res == "result.txt"
+    assert (dest / "result.txt").exists()
