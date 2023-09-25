@@ -98,12 +98,33 @@ def test_requesting_nonexistent_metadata_errors(tmp_path):
 def test_can_locate_files_from_store(tmp_path):
     root = create_temporary_root(tmp_path, use_file_store=True)
     path = root.path
-    # TODO: Support file store in testing
+
+    loc = OutpackLocationPath(path)
+    ids = [create_random_packet(root) for _ in range(3)]
+    idx = root.index.data()
+
+    files = next(iter(idx.metadata.values())).files
+    h = list(filter(lambda file: file.path == "data.txt", files))[0].hash
+    dest = tmp_path / "dest"
+
+    res = loc.fetch_file(h, dest)
+    assert res == dest
+    assert str(hash_file(dest)) == h
 
 
 def test_sensible_error_if_file_not_found_in_store(tmp_path):
     root = create_temporary_root(tmp_path, use_file_store=True)
-    # TODO: Support file store in testing
+    path = root.path
+
+    loc = OutpackLocationPath(path)
+    h = "md5:c7be9a2c3cd8f71210d9097e128da316"
+    dest = tmp_path / "dest"
+
+    with pytest.raises(Exception) as e:
+        loc.fetch_file(h, dest)
+    assert e.match("Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at "
+                   "location")
+    assert not os.path.isfile(dest)
 
 
 def test_can_find_file_from_archive(tmp_path):
@@ -115,10 +136,24 @@ def test_can_find_file_from_archive(tmp_path):
     idx = root.index.data()
 
     files = next(iter(idx.metadata.values())).files
-    print(files)
     h = list(filter(lambda file: file.path == "data.txt", files))[0].hash
     dest = tmp_path / "dest"
 
     res = loc.fetch_file(h, dest)
     assert res == dest
     assert str(hash_file(dest)) == h
+
+
+def test_sensible_error_if_file_not_found_in_archive(tmp_path):
+    root = create_temporary_root(tmp_path)
+    path = root.path
+
+    loc = OutpackLocationPath(path)
+    h = "md5:c7be9a2c3cd8f71210d9097e128da316"
+    dest = tmp_path / "dest"
+
+    with pytest.raises(Exception) as e:
+        loc.fetch_file(h, dest)
+    assert e.match("Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at "
+                   "location")
+    assert not os.path.isfile(dest)
