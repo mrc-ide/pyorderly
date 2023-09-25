@@ -1,7 +1,10 @@
 import hashlib
 from dataclasses import dataclass
 
+from dataclasses_json import dataclass_json
 
+
+@dataclass_json
 @dataclass
 class Hash:
     algorithm: str
