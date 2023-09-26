@@ -51,6 +51,13 @@ class MetadataCore:
     git: Optional[GitInfo]
     custom: Optional[dict]
 
+    def file_hash(self, name):
+        for x in self.files:
+            if x.path == name:
+                return x.hash
+        msg = f"Packet {self.id} does not contain file '{name}'"
+        raise Exception(msg)
+
 
 @dataclass_json()
 @dataclass
