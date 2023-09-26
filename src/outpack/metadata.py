@@ -78,5 +78,5 @@ def read_packet_location(path):
 
 
 def write_packet_location(path, location):
-    with open(path) as f:
+    with open(path, "w") as f:
         f.write(location.to_json())

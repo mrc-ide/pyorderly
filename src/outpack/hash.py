@@ -51,5 +51,9 @@ def hash_validate_file(path, expected):
     h = hash_parse(expected)
     found = hash_file(path, h.algorithm)
     hash_validate(found, h, path)
-def hash_validate_data(data, expected, name):
+
+
+def hash_validate_string(data, expected, name):
     h = hash_parse(expected)
+    found = hash_string(data, h.algorithm)
+    hash_validate(found, h, name)

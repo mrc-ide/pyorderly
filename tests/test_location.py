@@ -230,12 +230,12 @@ def test_can_pull_metadata_from_a_file_base_location(tmp_path):
 
     index = root_downstream.index.data()
     assert len(index.metadata) == 3
-    assert index.metadata.keys() == ids
+    assert set(index.metadata.keys()) == set(ids)
     assert index.metadata == root_upstream.index.data().metadata
 
-    packet_ids, locations = [(location.packet, location.location) for location in index.location]
-    assert packet_ids == ids
-    assert locations == ["upstream", "upstream", "upstream"]
+    packets = index.location["upstream"]
+    assert len(packets) == 3
+    assert set(packets.keys()) == set(ids)
 
 
 

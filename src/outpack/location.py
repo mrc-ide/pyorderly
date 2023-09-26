@@ -3,7 +3,7 @@ import os
 import shutil
 
 from outpack.config import Location, update_config
-from outpack.hash import Hash
+from outpack.hash import Hash, hash_validate_string
 from outpack.insert import mark_packet_known
 from outpack.location_path import OutpackLocationPath
 from outpack.metadata import PacketLocation
@@ -140,7 +140,8 @@ def _location_exists(root, name):
 
 
 def _location_pull_metadata(location_name, root):
-    index = root.index.data()
+    index = root.index
+    index_data = index.data()
     driver = _location_driver(location_name, root)
 
     hint_remove = (f'Probably all you can do at this point is remove this '
@@ -165,7 +166,7 @@ def _location_pull_metadata(location_name, root):
                f"This is a bug in your location server, please report it\n"
                f"{hint_remove}")
 
-    known_here = index.metadata.keys()
+    known_here = index_data.metadata.keys()
     new_packets = []
     for packet in known_there:
         if packet not in known_here:
@@ -178,11 +179,12 @@ def _location_pull_metadata(location_name, root):
         os.makedirs(path_metadata, exist_ok=True)
         filename = path_metadata / packet_id
 
-        #hash_validate_data(metadata, expected_hash)
-        with open(filename) as f:
+        hash_validate_string(metadata, expected_hash, "metadata")
+        with open(filename, "w") as f:
             f.writelines(metadata)
 
-    seen_packets = [location.packet for _, location in index.location.values()]
+    seen_packets = [location.get("packet") for location in
+                    index_data.location.values()]
     seen_before = set(known_there.keys()).intersection(seen_packets)
     for packet_id in seen_before:
         hash_there = known_there[packet_id].hash
@@ -199,12 +201,15 @@ def _location_pull_metadata(location_name, root):
                    f"We would be interested in this case, please let us know\n"
                    f"{hint_remove}")
 
-    known_here = dict(filter(lambda value: (value[1].location == location_name), index.location.values()))
+    try:
+        known_here = index.location(location_name)
+    except KeyError as e:
+        known_here = {}
 
-    for packet in known_there:
-        if known_there.packet not in known_here:
-            packet_location = PacketLocation.from_dict(packet)
-            mark_packet_known(packet.packet, location_name,
+    for packet_id in known_there:
+        if packet_id not in known_here.keys():
+            packet_location = PacketLocation.from_dict(known_there[packet_id])
+            mark_packet_known(packet_id, location_name,
                               packet_location, root)
 
 
