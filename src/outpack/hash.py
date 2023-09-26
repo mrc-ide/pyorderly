@@ -36,15 +36,21 @@ def hash_parse(string):
     return Hash(*string.split(":"))
 
 
-def hash_validate(path, expected):
-    h = hash_parse(expected)
-    found = hash_file(path, h.algorithm)
-    if found != h:
+def hash_validate(found, expected, name):
+    if found != expected:
         msg = "\n".join(
             [
-                f"Hash of '{path}' does not match:",
+                f"Hash of '{name}' does not match:",
                 f" - expected: {expected}",
                 f" - found: {found}",
             ]
         )
         raise Exception(msg)
+
+def hash_validate_file(path, expected):
+    h = hash_parse(expected)
+    found = hash_file(path, h.algorithm)
+    hash_validate(found, h, path)
+def hash_validate_data(data, expected, name):
+    h = hash_parse(expected)
+    data =
