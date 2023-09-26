@@ -68,3 +68,8 @@ def read_metadata_core(path):
 def read_packet_location(path):
     with open(path) as f:
         return PacketLocation.from_json(f.read().strip())
+
+
+def write_packet_location(path, location):
+    with open(path) as f:
+        f.write(location.to_json())

@@ -1,12 +1,12 @@
 import pytest
-from helpers import create_temporary_root
 
+from helpers import create_temporary_root, create_random_packet
 from outpack.location import (
     outpack_location_add,
     outpack_location_list,
     outpack_location_remove,
     outpack_location_rename,
-    location_resolve_valid
+    location_resolve_valid, outpack_location_pull_metadata
 )
 
 
@@ -209,6 +209,35 @@ def test_cant_add_wip_location_type(tmp_path):
         )
 
     assert e.match("Cannot add a location with type 'custom' yet.")
+
+
+
+def test_can_pull_metadata_from_a_file_base_location(tmp_path):
+    root_upstream = create_temporary_root(tmp_path / "upstream",
+                                          use_file_store=True)
+
+    ids = [create_random_packet(root_upstream) for _ in range(3)]
+    root_downstream = create_temporary_root(tmp_path / "downstream",
+                                            use_file_store=True)
+
+    outpack_location_add(
+        "upstream", "path", {"path": str(root_upstream.path)},
+        root=root_downstream
+    )
+    assert outpack_location_list(root_downstream) == ["local", "upstream"]
+
+    outpack_location_pull_metadata("upstream", root=root_downstream)
+
+    index = root_downstream.index.data()
+    assert len(index.metadata) == 3
+    assert index.metadata.keys() == ids
+    assert index.metadata == root_upstream.index.data().metadata
+
+    packet_ids, locations = [(location.packet, location.location) for location in index.location]
+    assert packet_ids == ids
+    assert locations == ["upstream", "upstream", "upstream"]
+
+
 
 
 def test_can_resolve_locations(tmp_path):
