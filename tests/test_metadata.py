@@ -1,3 +1,5 @@
+import pytest
+
 from outpack.metadata import (
     PacketDependsPath,
     PacketFile,
@@ -64,3 +66,15 @@ def test_can_create_packet_file_metadata_from_file():
     res = PacketFile.from_file(directory, path, "sha256")
     h = "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd"
     assert res == PacketFile(path, 21, h)
+
+
+def test_can_get_file_hash_from_metadata():
+    d = read_metadata_core("example/.outpack/metadata/20230807-152344-ee606dce")
+    expected = "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd"
+    assert d.file_hash("data.csv") == expected
+
+
+def test_can_error_if_file_not_found_in_metadata():
+    d = read_metadata_core("example/.outpack/metadata/20230807-152344-ee606dce")
+    with pytest.raises(Exception, match="Packet .+ does not contain file 'f'"):
+        d.file_hash("f")

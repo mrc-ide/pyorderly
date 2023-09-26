@@ -23,6 +23,7 @@ class FileStore:
             msg = f"Hash '{hash}' not found in store"
             raise Exception(msg)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
+        # todo - control over overwrite args needed.
         shutil.copyfile(src, dst)
 
     def exists(self, hash):

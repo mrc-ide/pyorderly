@@ -1,10 +1,10 @@
 import os
-import warnings
+import shutil
 from pathlib import Path
 
 from outpack.config import read_config
 from outpack.filestore import FileStore
-from outpack.hash import hash_parse, hash_file
+from outpack.hash import hash_file, hash_parse
 from outpack.index import Index
 from outpack.util import find_file_descend
 
@@ -18,6 +18,26 @@ class OutpackRoot:
         if self.config.core.use_file_store:
             self.files = FileStore(self.path / "files")
         self.index = Index(path)
+
+    def export_file(self, id, there, here, dest):
+        meta = self.index.metadata(id)
+        hash = meta.file_hash(there)
+        dest = Path(dest)
+        here_full = dest / here
+        if self.config.core.use_file_store:
+            self.files.get(hash, here_full)
+        else:
+            # consider starting from the case most likely to contain
+            # this hash, since we already know that it's 'id' unless
+            # it's corrupt - this is what the R version does (though
+            # it only does that).
+            src = find_file_by_hash(self, hash)
+            if not src:
+                msg = f"File not found in archive, or corrupt: {there}"
+                raise Exception(msg)
+            here_full.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, here_full)
+        return here
 
 
 def root_open(path, locate):
@@ -43,21 +63,19 @@ def root_open(path, locate):
 
 
 def find_file_by_hash(root, hash):
-    index = root.index.data()
-
     path_archive = root.path / root.config.core.path_archive
-    hash_obj = hash_parse(hash)
-
-    for packet_id in index.unpacked:
-        meta = index.metadata[packet_id]
-        files = list(filter(lambda file: file.hash == hash, meta.files))
-        for file in files:
-            path = path_archive / meta.name / packet_id / file.path
-            if path.exists() and hash_file(path, hash_obj.algorithm) == hash_obj:
-                return path
-            rejected = [file.path for file in files]
-
-            rejected_msg = "', '".join(rejected)
-            msg = (f"Rejecting file from archive '{rejected_msg}' in "
-                   f"'{meta.name} /{packet_id}'")
-            warnings.warn(msg)
+    hash_parsed = hash_parse(hash)
+    for id in root.index.unpacked():
+        meta = root.index.metadata(id)
+        for f in meta.files:
+            if f.hash == hash:
+                path = path_archive / meta.name / meta.id / f.path
+                if hash_file(path, hash_parsed.algorithm) == hash_parsed:
+                    return path
+                else:
+                    msg = (
+                        f"Rejecting file from archive '{f.path}'"
+                        f"in {meta.name}/{meta.id}"
+                    )
+                    print(msg)
+    return None

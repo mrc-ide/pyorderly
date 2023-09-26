@@ -139,7 +139,9 @@ ignore = [
   # Don't require docstrings everywhere for now
   "D100", "D101", "D102", "D103", "D104", "D105",
   # Ignore shadowing
-  "A002"
+  "A001", "A002",
+  # Allow print until we find the alternative to R's cli
+  "T201"
 ]
 unfixable = [
   # Don't touch unused imports
