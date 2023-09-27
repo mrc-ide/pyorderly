@@ -211,7 +211,6 @@ def test_cant_add_wip_location_type(tmp_path):
     assert e.match("Cannot add a location with type 'custom' yet.")
 
 
-
 def test_can_pull_metadata_from_a_file_base_location(tmp_path):
     root_upstream = create_temporary_root(tmp_path / "upstream",
                                           use_file_store=True)
@@ -238,6 +237,83 @@ def test_can_pull_metadata_from_a_file_base_location(tmp_path):
     assert set(packets.keys()) == set(ids)
 
 
+def test_can_pull_empty_metadata(tmp_path):
+    root_upstream = create_temporary_root(tmp_path / "upstream",
+                                          use_file_store=True)
+    root_downstream = create_temporary_root(tmp_path / "downstream",
+                                            use_file_store=True)
+
+    outpack_location_add("upstream", "path",
+                         {"path": str(root_upstream.path)}, root=root_downstream)
+    outpack_location_pull_metadata("upstream", root=root_downstream)
+
+    index = root_downstream.index.data()
+    assert len(index.metadata) == 0
+
+
+def test_can_pull_metadata_from_subset_of_locations(tmp_path):
+    root = {"a": create_temporary_root(tmp_path / "a", use_file_store=True)}
+
+    location_names = ["x", "y", "z"]
+    for name in location_names:
+        root[name] = create_temporary_root(tmp_path / name, use_file_store=True)
+        outpack_location_add(name, "path",
+                             {"path": str(root[name].path)}, root=root["a"])
+
+    assert outpack_location_list(root["a"]) == ["local", "x", "y", "z"]
+
+    ids = {}
+    for name in location_names:
+        ids[name] = [create_random_packet(root[name]) for _ in range(3)]
+
+    outpack_location_pull_metadata(["x", "y"], root=root["a"])
+    index = root["a"].index.data()
+
+    assert set(index.metadata) == set(ids["x"] + ids["y"])
+    assert set(index.location.keys()) == {"local", "x", "y"}
+    assert len(index.location["local"]) == 0
+    assert len(index.location["x"]) == 3
+    assert len(index.location["y"]) == 3
+
+    x_metadata = root["x"].index.data().metadata.keys()
+    y_metadata = root["y"].index.data().metadata.keys()
+    for id in index.metadata.keys():
+        if id in ids["x"]:
+            assert id in x_metadata
+        else:
+            assert id in y_metadata
+
+    outpack_location_pull_metadata(root=root["a"])
+    index = root["a"].index.data()
+
+    assert set(index.metadata) == set(ids["x"] + ids["y"] + ids["z"])
+    assert set(index.location.keys()) == {"local", "x", "y", "z"}
+    assert len(index.location["local"]) == 0
+    assert len(index.location["x"]) == 3
+    assert len(index.location["y"]) == 3
+    assert len(index.location["z"]) == 3
+    z_metadata = root["z"].index.data().metadata.keys()
+    for id in index.metadata.keys():
+        if id in ids["x"]:
+            assert id in x_metadata
+        elif id in ids["y"]:
+            assert id in y_metadata
+        else:
+            assert id in z_metadata
+
+
+def test_cant_pull_metadata_from_an_unknown_location(tmp_path):
+    root = create_temporary_root(tmp_path)
+    with pytest.raises(Exception) as e:
+        outpack_location_pull_metadata("upstream", root=root)
+
+    assert e.match("Unknown location: 'upstream'")
+
+
+def test_noop_to_pull_metadata_from_no_locations(tmp_path):
+    root = create_temporary_root(tmp_path)
+    outpack_location_pull_metadata("local", root=root)
+    outpack_location_pull_metadata(root=root)
 
 
 def test_can_resolve_locations(tmp_path):

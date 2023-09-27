@@ -111,7 +111,7 @@ def location_resolve_valid(location, root, include_local, include_orphan,
     return location
 
 
-def outpack_location_pull_metadata(location, root=None, *, locate=True):
+def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
     root = root_open(root, locate)
     location_name = location_resolve_valid(location, root,
                                            include_local=False,
@@ -122,6 +122,7 @@ def outpack_location_pull_metadata(location, root=None, *, locate=True):
         _location_pull_metadata(name, root)
 
     # TODO: deorphan recovered packets
+
 
 def _location_check_new_name(root, name):
     if _location_exists(root, name):
