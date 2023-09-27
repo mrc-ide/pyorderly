@@ -2,6 +2,7 @@ import collections
 import os
 import shutil
 
+from typing import List
 from outpack.config import Location, update_config
 from outpack.hash import Hash, hash_validate_string
 from outpack.location_path import OutpackLocationPath
@@ -117,11 +118,89 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
                                            include_local=False,
                                            include_orphan=False,
                                            allow_no_locations=True)
-
     for name in location_name:
-        _location_pull_metadata(name, root)
+        location = OutpackLocation(name, root)
+        location.pull_all_metadata()
+        known_packets = []
+        for packet_location in root.index.data().location.values():
+            known_packets.extend(list(packet_location.values()))
+        location.validate_hashes(known_packets)
+        location.mark_known()
 
     # TODO: deorphan recovered packets
+
+
+class OutpackLocation:
+    def __init__(self, location_name, root):
+        self.__root = root
+        self.location_name = location_name
+        self.__driver = _location_driver(location_name, root)
+        self._hint_remove = (f'Probably all you can do at this point is '
+                             f'remove this location from your configuration '
+                             f'by running '
+                             f'orderly_location_remove("{self.location_name}")')
+
+    def pull_all_metadata(self):
+        known_there = self.__driver.list()
+        known_here = self.__root.index.data().metadata.keys()
+        for packet_id in known_there:
+            if packet_id not in known_here:
+                self.pull_packet_metadata(packet_id)
+
+    def pull_packet_metadata(self, packet_id):
+        metadata = self.__driver.metadata(packet_id)[packet_id]
+        expected_hash = self.__driver.list()[packet_id].hash
+
+        hash_validate_string(
+            metadata, expected_hash,
+            f"metadata for '{packet_id}' from '{self.location_name}'",
+            [f"This is bad news, I'm afraid. Your location is sending data "
+             f"that does not match the hash it says it does. Please let us "
+             f"know how this might have happened.",
+             self._hint_remove]
+        )
+
+        path_metadata = self.__root.path / ".outpack" / "metadata"
+        os.makedirs(path_metadata, exist_ok=True)
+        filename = path_metadata / packet_id
+        with open(filename, "w") as f:
+            f.writelines(metadata)
+
+    def validate_hashes(self, packets: List[PacketLocation]):
+        mismatched_hashes = set()
+        known_there = self.__driver.list()
+        for packet in packets:
+            if known_there.get(packet.packet) is not None:
+                hash_there = known_there[packet.packet].hash
+                hash_here = packet.hash
+                if hash_there != hash_here:
+                    mismatched_hashes.add(packet.packet)
+
+        if len(mismatched_hashes) > 0:
+            id_text = "', '".join(mismatched_hashes)
+            msg = (f"Location '{self.location_name}' has conflicting metadata\n"
+                   f"This is really bad news. We have been offered metadata "
+                   f"from '{self.location_name}' that has a different hash to "
+                   f"metadata that we have already imported from other "
+                   f"locations. I'm not going to import this new metadata, "
+                   f"but there's no guarantee that the older metadata is "
+                   f"actually what you want!\nConflicts for: '{id_text}'\n"
+                   f"We would be interested in this case, please let us know\n"
+                   f"{self._hint_remove}")
+            raise Exception(msg)
+
+    def mark_known(self):
+        try:
+            known_here = self.__root.index.location(self.location_name)
+        except KeyError:
+            known_here = {}
+
+        known_there = self.__driver.list()
+        for packet_id in known_there:
+            if packet_id not in known_here.keys():
+                mark_known(self.__root, packet_id, self.location_name,
+                           known_there[packet_id].hash,
+                           known_there[packet_id].time)
 
 
 def _location_check_new_name(root, name):
@@ -138,82 +217,6 @@ def _location_check_exists(root, name):
 
 def _location_exists(root, name):
     return name in outpack_location_list(root)
-
-
-def _location_pull_metadata(location_name, root):
-    index = root.index
-    index_data = index.data()
-    driver = _location_driver(location_name, root)
-
-    hint_remove = (f'Probably all you can do at this point is remove this '
-                   f'location from your configuration by running '
-                   f'orderly_location_remove("{location_name}")')
-
-    known_there = driver.list()
-    known_here = index_data.metadata.keys()
-    new_packets = []
-    for packet in known_there:
-        if packet not in known_here:
-            new_packets.append(packet)
-
-    for packet_id in new_packets:
-        metadata = driver.metadata(packet_id)[packet_id]
-        expected_hash = known_there[packet_id].hash
-        path_metadata = root.path / ".outpack" / "metadata"
-        os.makedirs(path_metadata, exist_ok=True)
-        filename = path_metadata / packet_id
-
-        hash_validate_string(
-            metadata, expected_hash,
-            f"metadata for '{packet_id}' from '{location_name}'",
-            [f"This is bad news, I'm afraid. Your location is sending data "
-            f"that does not match the hash it says it does. Please let us "
-            f"know how this might have happened.",
-             hint_remove]
-        )
-        with open(filename, "w") as f:
-            f.writelines(metadata)
-
-    seen_packets = {}
-    for location in index_data.location.values():
-        for packet_id, packet in location.items():
-            if seen_packets.get(packet_id) is None:
-                seen_packets[packet_id] = [packet.hash]
-            else:
-                seen_packets[packet_id] = seen_packets[packet_id].append(packet.hash)
-    seen_before = set(known_there.keys()).intersection(seen_packets.keys())
-
-    mismatch_hashes = set()
-    for packet_id in seen_before:
-        hash_there = known_there[packet_id].hash
-        hash_here = seen_packets[packet_id]
-        for hash in hash_here:
-            if hash != hash_there:
-                mismatch_hashes.add(packet_id)
-
-    if len(mismatch_hashes) > 0:
-        id_text = "', '".join(mismatch_hashes)
-        msg = (f"Location '{location_name}' has conflicting metadata\n"
-               f"This is really bad news. We have been offered metadata "
-               f"from '{location_name}' that has a different hash to "
-               f"metadata that we have already imported from other "
-               f"locations. I'm not going to import this new metadata, "
-               f"but there's no guarantee that the older metadata is "
-               f"actually what you want!\nConflicts for: '{id_text}'\n"
-               f"We would be interested in this case, please let us know\n"
-               f"{hint_remove}")
-        raise Exception(msg)
-
-    try:
-        known_here = index.location(location_name)
-    except KeyError:
-        known_here = {}
-
-    for packet_id in known_there:
-        if packet_id not in known_here.keys():
-            mark_known(root, packet_id, location_name,
-                       known_there[packet_id].hash, known_there[packet_id].time)
-
 
 
 def _location_driver(location_name, root):

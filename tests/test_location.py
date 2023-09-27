@@ -9,7 +9,8 @@ from outpack.location import (
     outpack_location_list,
     outpack_location_remove,
     outpack_location_rename,
-    location_resolve_valid, outpack_location_pull_metadata, _location_driver
+    location_resolve_valid,
+    outpack_location_pull_metadata
 )
 from outpack.location_path import OutpackLocationPath
 from outpack.util import read_string
