@@ -1,10 +1,7 @@
 import hashlib
 from dataclasses import dataclass
 
-from dataclasses_json import dataclass_json
 
-
-@dataclass_json
 @dataclass
 class Hash:
     algorithm: str
@@ -51,7 +48,7 @@ def hash_validate(found, expected, name, body=[]):
 def hash_validate_file(path, expected, body=[]):
     h = hash_parse(expected)
     found = hash_file(path, h.algorithm)
-    hash_validate(found, h, path, body)
+    hash_validate(found, h, f"'{path}'", body)
 
 
 def hash_validate_string(data, expected, name, body=[]):

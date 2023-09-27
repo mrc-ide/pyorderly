@@ -35,7 +35,7 @@ def test_hash_validate_file_is_silent_on_success(tmp_path):
     h.algorithm = "sha1"
     with pytest.raises(Exception) as e:
         hash_validate_file(p, h)
-    assert e.match("Hash of .+ does not match:")
+    assert e.match("Hash of '.+' does not match:")
 
 
 def test_hash_validate_string_is_silent_on_success(tmp_path):
