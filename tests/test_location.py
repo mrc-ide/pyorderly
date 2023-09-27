@@ -1,7 +1,6 @@
 import json
 
 import pytest
-import pytest_mock
 
 from helpers import create_temporary_root, create_random_packet
 from outpack.ids import outpack_id

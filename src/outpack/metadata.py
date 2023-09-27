@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Union
 
 from dataclasses_json import dataclass_json
 
-from outpack.hash import hash_file, Hash
+from outpack.hash import hash_file
 from outpack.tools import GitInfo
 
 

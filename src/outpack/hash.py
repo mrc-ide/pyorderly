@@ -45,6 +45,7 @@ def hash_validate(found, expected, name, body=[]):
         )
         raise Exception(msg)
 
+
 def hash_validate_file(path, expected, body=[]):
     h = hash_parse(expected)
     found = hash_file(path, h.algorithm)

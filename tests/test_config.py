@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from outpack.config import Config, Location, read_config, write_config
