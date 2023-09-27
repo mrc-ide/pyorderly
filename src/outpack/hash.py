@@ -49,16 +49,12 @@ def hash_validate(found, expected, name, body=None):
 
 
 def hash_validate_file(path, expected, body=None):
-    if body is None:
-        body = []
     h = hash_parse(expected)
     found = hash_file(path, h.algorithm)
     hash_validate(found, h, f"'{path}'", body)
 
 
 def hash_validate_string(data, expected, name, body=None):
-    if body is None:
-        body = []
     h = hash_parse(expected)
     found = hash_string(data, h.algorithm)
     hash_validate(found, h, name, body)

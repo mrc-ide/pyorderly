@@ -34,7 +34,7 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
 
     if type == "path":
         root_open(loc.args["path"], locate=False)
-    elif type in ("http", "custom"):
+    elif type in ("http", "custom"):  # pragma: no cover
         msg = f"Cannot add a location with type '{type}' yet."
         raise Exception(msg)
 
@@ -110,7 +110,7 @@ def location_resolve_valid(
 
     if not include_local and LOCATION_LOCAL in location:
         location.remove(LOCATION_LOCAL)
-    if not include_orphan and LOCATION_ORPHAN in location:
+    if not include_orphan and LOCATION_ORPHAN in location:  # pragma: no cover
         location.remove(LOCATION_ORPHAN)
 
     if len(location) == 0 and not allow_no_locations:
@@ -245,9 +245,9 @@ def _location_driver(location_name, root):
     location = root.config.location[location_name]
     if location.type == "path":
         return OutpackLocationPath(location.args["path"])
-    elif location.type == "http":
+    elif location.type == "http":  # pragma: no cover
         msg = "Http remote not yet supported"
         raise Exception(msg)
-    elif location.type == "custom":
+    elif location.type == "custom":  # pragma: no cover
         msg = "custom remote not yet supported"
         raise Exception(msg)

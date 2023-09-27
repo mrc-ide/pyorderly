@@ -43,19 +43,3 @@ class OutpackLocationPath:
                 raise Exception(msg)
         shutil.copyfile(path, dest)
         return dest
-
-    def list_unknown_packets(self, ids):  # noqa: ARG002
-        msg = "impl TODO"
-        raise Exception(msg)
-
-    def list_unknown_files(self, hashes):  # noqa: ARG002
-        msg = "impl TODO"
-        raise Exception(msg)
-
-    def push_file(self, hash):  # noqa: ARG002
-        msg = "impl TODO"
-        raise Exception(msg)
-
-    def push_metadata(self, packet_id, hash, path):  # noqa: ARG002
-        msg = "impl TODO"
-        raise Exception(msg)
