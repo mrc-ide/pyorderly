@@ -1,13 +1,19 @@
+import json
+
 import pytest
+import pytest_mock
 
 from helpers import create_temporary_root, create_random_packet
+from outpack.ids import outpack_id
 from outpack.location import (
     outpack_location_add,
     outpack_location_list,
     outpack_location_remove,
     outpack_location_rename,
-    location_resolve_valid, outpack_location_pull_metadata
+    location_resolve_valid, outpack_location_pull_metadata, _location_driver
 )
+from outpack.location_path import OutpackLocationPath
+from outpack.util import read_string
 
 
 def test_no_locations_except_local_by_default(tmp_path):
@@ -277,11 +283,11 @@ def test_can_pull_metadata_from_subset_of_locations(tmp_path):
 
     x_metadata = root["x"].index.data().metadata.keys()
     y_metadata = root["y"].index.data().metadata.keys()
-    for id in index.metadata.keys():
-        if id in ids["x"]:
-            assert id in x_metadata
+    for packet_id in index.metadata.keys():
+        if packet_id in ids["x"]:
+            assert packet_id in x_metadata
         else:
-            assert id in y_metadata
+            assert packet_id in y_metadata
 
     outpack_location_pull_metadata(root=root["a"])
     index = root["a"].index.data()
@@ -293,13 +299,13 @@ def test_can_pull_metadata_from_subset_of_locations(tmp_path):
     assert len(index.location["y"]) == 3
     assert len(index.location["z"]) == 3
     z_metadata = root["z"].index.data().metadata.keys()
-    for id in index.metadata.keys():
-        if id in ids["x"]:
-            assert id in x_metadata
-        elif id in ids["y"]:
-            assert id in y_metadata
+    for packet_id in index.metadata.keys():
+        if packet_id in ids["x"]:
+            assert packet_id in x_metadata
+        elif packet_id in ids["y"]:
+            assert packet_id in y_metadata
         else:
-            assert id in z_metadata
+            assert packet_id in z_metadata
 
 
 def test_cant_pull_metadata_from_an_unknown_location(tmp_path):
@@ -314,6 +320,80 @@ def test_noop_to_pull_metadata_from_no_locations(tmp_path):
     root = create_temporary_root(tmp_path)
     outpack_location_pull_metadata("local", root=root)
     outpack_location_pull_metadata(root=root)
+
+
+def test_handle_metadata_where_hash_does_not_match_reported(tmp_path):
+    here = create_temporary_root(tmp_path / "here")
+    there = create_temporary_root(tmp_path / "there")
+    outpack_location_add("server", "path", {"path": str(there.path)}, root=here)
+    packet_id = create_random_packet(there)
+
+    path_metadata = there.path / ".outpack" / "metadata" / packet_id
+    parsed = json.loads(read_string(path_metadata))
+    with open(path_metadata, "w") as f:
+        f.write(json.dumps(parsed, indent=4))
+
+    with pytest.raises(Exception) as e:
+        outpack_location_pull_metadata(root=here)
+
+    assert e.match(f"Hash of metadata for '{packet_id}' from 'server' does "
+                   f"not match:")
+    assert e.match("This is bad news")
+    assert e.match("remove this location")
+
+
+def test_handle_metadata_where_two_locations_differ_in_hash_for_same_id(
+        tmp_path):
+    root = {}
+
+    for name in ["a", "b", "us"]:
+        root[name] = create_temporary_root(tmp_path / name)
+
+    packet_id = outpack_id()
+    create_random_packet(root["a"], packet_id=packet_id)
+    create_random_packet(root["b"], packet_id=packet_id)
+
+    outpack_location_add("a", "path", {"path": str(root["a"].path)},
+                         root=root["us"])
+    outpack_location_add("b", "path", {"path": str(root["b"].path)},
+                         root=root["us"])
+
+    outpack_location_pull_metadata(location="a", root=root["us"])
+
+    with pytest.raises(Exception) as e:
+        outpack_location_pull_metadata(location="b", root=root["us"])
+
+    assert e.match("We have been offered metadata from 'b' that has a "
+                   "different")
+    assert e.match(f"Conflicts for: '{packet_id}'")
+    assert e.match("please let us know")
+    assert e.match("remove this location")
+
+
+def test_can_pull_metadata_through_chain_of_locations(tmp_path):
+    root = {}
+    for name in ["a", "b", "c", "d"]:
+        root[name] = create_temporary_root(tmp_path / name)
+
+    # More interesting topology, with a chain of locations, but d also
+    # knowing directly about an earlier location
+    # > a -> b -> c -> d
+    # >       `-------/
+    outpack_location_add("a", "path",
+                         {"path": str(root["a"].path)}, root=root["b"])
+    outpack_location_add("b", "path",
+                         {"path": str(root["b"].path)}, root=root["c"])
+    outpack_location_add("b", "path",
+                         {"path": str(root["b"].path)}, root=root["d"])
+    outpack_location_add("c", "path",
+                         {"path": str(root["c"].path)}, root=root["d"])
+
+    # Create a packet and make sure it's in both b and c
+    id1 = create_random_packet(root["a"])
+    outpack_location_pull_metadata(root=root["b"])
+    #TODO: complete test once orderly_location_pull_packet
+
+
 
 
 def test_can_resolve_locations(tmp_path):

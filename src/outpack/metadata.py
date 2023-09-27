@@ -64,7 +64,7 @@ class MetadataCore:
 class PacketLocation:
     packet: str
     time: float
-    hash: Hash  # noqa: A003
+    hash: str  # noqa: A003
 
 
 def read_metadata_core(path):

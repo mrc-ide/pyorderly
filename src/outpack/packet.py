@@ -123,7 +123,8 @@ def _check_immutable_files(files, immutable):
 
 
 def mark_known(root, packet_id, location, hash, time):
-    dat = PacketLocation(packet_id, time, hash)
+    dat = PacketLocation(packet_id, time, str(hash))
+    validate(dat.to_dict(), "outpack/location.json")
     dest = root.path / ".outpack" / "location" / location / packet_id
     dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w") as f:

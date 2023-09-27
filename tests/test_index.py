@@ -16,12 +16,13 @@ def test_can_create_index():
     assert idx.metadata(packet) == expected
     # Second from cache:
     assert idx.metadata(packet) == expected
-    assert len(idx.data.metadata) == 5
-    assert "local" in idx.data.location
-    assert len(idx.data.location) == 1
-    assert idx.data.metadata.keys() == idx.data.location["local"].keys()
-    assert idx.data.unpacked == ids
-    assert idx.location("local") == idx.data.location["local"]
+    data = idx.data()
+    assert len(data.metadata) == 5
+    assert "local" in data.location
+    assert len(data.location) == 1
+    assert data.metadata.keys() == data.location["local"].keys()
+    assert data.unpacked == ids
+    assert idx.location("local") == data.location["local"]
     assert idx.unpacked() == ids
 
 

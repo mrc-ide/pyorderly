@@ -1,6 +1,7 @@
 import os
 
 import pytest
+import json
 
 from helpers import create_temporary_root, create_random_packet
 from outpack.hash import hash_string, hash_file, Hash
@@ -12,7 +13,7 @@ def test_can_construct_location_path_object(tmp_path):
     root = create_temporary_root(tmp_path)
     loc = OutpackLocationPath(root.path)
     dat = loc.list()
-    assert dat is None
+    assert dat == {}
 
 
 def test_location_path_requires_existing_directory(tmp_path):
@@ -41,13 +42,13 @@ def test_location_path_returns_list_of_packet_ids(tmp_path):
     dat = loc.list()
     assert all(packet_id in dat.keys() for packet_id in ids)
 
-    expected_hashes = [Hash.from_dict(packet.hash) for _, packet in dat.items()]
+    expected_hashes = [packet.hash for packet in dat.values()]
 
     hashes = []
     for packet_id in ids:
         file_hash = hash_file(path / ".outpack" / "metadata" / packet_id, "sha256")
         hashes.append(file_hash)
-        assert file_hash in expected_hashes
+        assert str(file_hash) in expected_hashes
 
     assert len(hashes) == len(expected_hashes)
 
@@ -85,10 +86,9 @@ def test_requesting_nonexistent_metadata_errors(tmp_path):
 
     with pytest.raises(Exception) as e:
         loc.metadata(errs)
-    assert e.match(
-        "Some packet ids not found: '20220317-125935-ee5fd50e', "
-        "'20220317-130038-48ffb8ba'"
-    )
+    assert e.match("Some packet ids not found: '.+', '.+'")
+    assert e.match("20220317-130038-48ffb8ba")
+    assert e.match("20220317-125935-ee5fd50e")
 
     with pytest.raises(Exception) as e:
         loc.metadata([ids[0], errs[0], ids[1]])

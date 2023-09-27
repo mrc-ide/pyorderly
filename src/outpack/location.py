@@ -4,9 +4,9 @@ import shutil
 
 from outpack.config import Location, update_config
 from outpack.hash import Hash, hash_validate_string
-from outpack.insert import mark_packet_known
 from outpack.location_path import OutpackLocationPath
 from outpack.metadata import PacketLocation
+from outpack.packet import mark_known
 from outpack.root import root_open
 from outpack.static import (LOCATION_RESERVED_NAME, LOCATION_LOCAL,
                             LOCATION_ORPHAN)
@@ -150,23 +150,6 @@ def _location_pull_metadata(location_name, root):
                    f'orderly_location_remove("{location_name}")')
 
     known_there = driver.list()
-
-    seen = set()
-    dupes = []
-
-    for packet in known_there.keys():
-        if packet in seen:
-            dupes.append(packet)
-        else:
-            seen.add(packet)
-
-    if len(dupes) > 0:
-        dupes_msg = "', '".join(dupes)
-        msg = (f"Duplicate metadata reported from location '{location_name}'\n"
-               f"Dupicate data returned for packets '{dupes_msg}'\n"
-               f"This is a bug in your location server, please report it\n"
-               f"{hint_remove}")
-
     known_here = index_data.metadata.keys()
     new_packets = []
     for packet in known_there:
@@ -180,38 +163,56 @@ def _location_pull_metadata(location_name, root):
         os.makedirs(path_metadata, exist_ok=True)
         filename = path_metadata / packet_id
 
-        hash_validate_string(metadata, expected_hash, "metadata")
+        hash_validate_string(
+            metadata, expected_hash,
+            f"metadata for '{packet_id}' from '{location_name}'",
+            [f"This is bad news, I'm afraid. Your location is sending data "
+            f"that does not match the hash it says it does. Please let us "
+            f"know how this might have happened.",
+             hint_remove]
+        )
         with open(filename, "w") as f:
             f.writelines(metadata)
 
-    seen_packets = [location.get("packet") for location in
-                    index_data.location.values()]
-    seen_before = set(known_there.keys()).intersection(seen_packets)
+    seen_packets = {}
+    for location in index_data.location.values():
+        for packet_id, packet in location.items():
+            if seen_packets.get(packet_id) is None:
+                seen_packets[packet_id] = [packet.hash]
+            else:
+                seen_packets[packet_id] = seen_packets[packet_id].append(packet.hash)
+    seen_before = set(known_there.keys()).intersection(seen_packets.keys())
+
+    mismatch_hashes = set()
     for packet_id in seen_before:
         hash_there = known_there[packet_id].hash
-        hash_here = Hash.from_dict(seen_packets[packet_id].hash)
-        hash_there = known_there[packet_id].hash
-        if hash_there != hash_here:
-            msg = (f"Location '{location_name}' has conflicting metadata\n"
-                   f"This is really bad news. We have offered metadata from"
-                   f"'{location_name}' that has a different hash to metadata"
-                   f"that we have already imported from other locations. I'm"
-                   f"not going to import this new metadata, but there's no"
-                   f"guarantee that the older metadata is actually what you "
-                   f"want!\nConflicts for {packet_id}\n"
-                   f"We would be interested in this case, please let us know\n"
-                   f"{hint_remove}")
+        hash_here = seen_packets[packet_id]
+        for hash in hash_here:
+            if hash != hash_there:
+                mismatch_hashes.add(packet_id)
+
+    if len(mismatch_hashes) > 0:
+        id_text = "', '".join(mismatch_hashes)
+        msg = (f"Location '{location_name}' has conflicting metadata\n"
+               f"This is really bad news. We have been offered metadata "
+               f"from '{location_name}' that has a different hash to "
+               f"metadata that we have already imported from other "
+               f"locations. I'm not going to import this new metadata, "
+               f"but there's no guarantee that the older metadata is "
+               f"actually what you want!\nConflicts for: '{id_text}'\n"
+               f"We would be interested in this case, please let us know\n"
+               f"{hint_remove}")
+        raise Exception(msg)
 
     try:
         known_here = index.location(location_name)
-    except KeyError as e:
+    except KeyError:
         known_here = {}
 
     for packet_id in known_there:
         if packet_id not in known_here.keys():
-            packet_location = PacketLocation.from_dict(known_there[packet_id])
-            mark_packet_known(packet_id, location_name,
-                              packet_location, root)
+            mark_known(root, packet_id, location_name,
+                       known_there[packet_id].hash, known_there[packet_id].time)
 
 
 

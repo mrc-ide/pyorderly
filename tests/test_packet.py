@@ -205,7 +205,7 @@ def test_can_detect_modification_of_immutable_file(tmp_path):
     p1.mark_file_immutable("data.csv")
     with open(src / "data.csv", "w") as f:
         f.write("a,b\n1,2\n3,4\n5,6\n")
-    with pytest.raises(Exception, match="Hash of '.+' does not match"):
+    with pytest.raises(Exception, match="Hash of .+ does not match"):
         p1.mark_file_immutable("data.csv")
     p = Packet(root, src, "data")
     with open(src / "data.csv", "w") as f:
