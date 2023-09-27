@@ -103,7 +103,7 @@ def relative_path_array(files, name):
 
 
 def read_string(path):
-    with open(path, 'r') as f:
+    with open(path) as f:
         lines = f.readlines()
     contents = "\n".join(lines).strip()
     return contents

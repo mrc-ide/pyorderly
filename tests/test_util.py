@@ -9,8 +9,8 @@ from outpack.util import (
     iso_time_str,
     match_value,
     num_to_time,
+    read_string,
     time_to_num,
-    read_string
 )
 
 

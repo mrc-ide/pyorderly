@@ -1,18 +1,17 @@
 import json
 
 import pytest
+from helpers import create_random_packet, create_temporary_root
 
-from helpers import create_temporary_root, create_random_packet
 from outpack.ids import outpack_id
 from outpack.location import (
+    location_resolve_valid,
     outpack_location_add,
     outpack_location_list,
+    outpack_location_pull_metadata,
     outpack_location_remove,
     outpack_location_rename,
-    location_resolve_valid,
-    outpack_location_pull_metadata
 )
-from outpack.location_path import OutpackLocationPath
 from outpack.util import read_string
 
 
@@ -218,16 +217,20 @@ def test_cant_add_wip_location_type(tmp_path):
 
 
 def test_can_pull_metadata_from_a_file_base_location(tmp_path):
-    root_upstream = create_temporary_root(tmp_path / "upstream",
-                                          use_file_store=True)
+    root_upstream = create_temporary_root(
+        tmp_path / "upstream", use_file_store=True
+    )
 
     ids = [create_random_packet(root_upstream) for _ in range(3)]
-    root_downstream = create_temporary_root(tmp_path / "downstream",
-                                            use_file_store=True)
+    root_downstream = create_temporary_root(
+        tmp_path / "downstream", use_file_store=True
+    )
 
     outpack_location_add(
-        "upstream", "path", {"path": str(root_upstream.path)},
-        root=root_downstream
+        "upstream",
+        "path",
+        {"path": str(root_upstream.path)},
+        root=root_downstream,
     )
     assert outpack_location_list(root_downstream) == ["local", "upstream"]
 
@@ -244,13 +247,19 @@ def test_can_pull_metadata_from_a_file_base_location(tmp_path):
 
 
 def test_can_pull_empty_metadata(tmp_path):
-    root_upstream = create_temporary_root(tmp_path / "upstream",
-                                          use_file_store=True)
-    root_downstream = create_temporary_root(tmp_path / "downstream",
-                                            use_file_store=True)
+    root_upstream = create_temporary_root(
+        tmp_path / "upstream", use_file_store=True
+    )
+    root_downstream = create_temporary_root(
+        tmp_path / "downstream", use_file_store=True
+    )
 
-    outpack_location_add("upstream", "path",
-                         {"path": str(root_upstream.path)}, root=root_downstream)
+    outpack_location_add(
+        "upstream",
+        "path",
+        {"path": str(root_upstream.path)},
+        root=root_downstream,
+    )
     outpack_location_pull_metadata("upstream", root=root_downstream)
 
     index = root_downstream.index.data()
@@ -263,8 +272,9 @@ def test_can_pull_metadata_from_subset_of_locations(tmp_path):
     location_names = ["x", "y", "z"]
     for name in location_names:
         root[name] = create_temporary_root(tmp_path / name, use_file_store=True)
-        outpack_location_add(name, "path",
-                             {"path": str(root[name].path)}, root=root["a"])
+        outpack_location_add(
+            name, "path", {"path": str(root[name].path)}, root=root["a"]
+        )
 
     assert outpack_location_list(root["a"]) == ["local", "x", "y", "z"]
 
@@ -336,14 +346,16 @@ def test_handle_metadata_where_hash_does_not_match_reported(tmp_path):
     with pytest.raises(Exception) as e:
         outpack_location_pull_metadata(root=here)
 
-    assert e.match(f"Hash of metadata for '{packet_id}' from 'server' does "
-                   f"not match:")
+    assert e.match(
+        f"Hash of metadata for '{packet_id}' from 'server' does not match:"
+    )
     assert e.match("This is bad news")
     assert e.match("remove this location")
 
 
 def test_handle_metadata_where_two_locations_differ_in_hash_for_same_id(
-        tmp_path):
+    tmp_path,
+):
     root = {}
 
     for name in ["a", "b", "us"]:
@@ -353,18 +365,21 @@ def test_handle_metadata_where_two_locations_differ_in_hash_for_same_id(
     create_random_packet(root["a"], packet_id=packet_id)
     create_random_packet(root["b"], packet_id=packet_id)
 
-    outpack_location_add("a", "path", {"path": str(root["a"].path)},
-                         root=root["us"])
-    outpack_location_add("b", "path", {"path": str(root["b"].path)},
-                         root=root["us"])
+    outpack_location_add(
+        "a", "path", {"path": str(root["a"].path)}, root=root["us"]
+    )
+    outpack_location_add(
+        "b", "path", {"path": str(root["b"].path)}, root=root["us"]
+    )
 
     outpack_location_pull_metadata(location="a", root=root["us"])
 
     with pytest.raises(Exception) as e:
         outpack_location_pull_metadata(location="b", root=root["us"])
 
-    assert e.match("We have been offered metadata from 'b' that has a "
-                   "different")
+    assert e.match(
+        "We have been offered metadata from 'b' that has a different"
+    )
     assert e.match(f"Conflicts for: '{packet_id}'")
     assert e.match("please let us know")
     assert e.match("remove this location")
@@ -379,21 +394,23 @@ def test_can_pull_metadata_through_chain_of_locations(tmp_path):
     # knowing directly about an earlier location
     # > a -> b -> c -> d
     # >       `-------/
-    outpack_location_add("a", "path",
-                         {"path": str(root["a"].path)}, root=root["b"])
-    outpack_location_add("b", "path",
-                         {"path": str(root["b"].path)}, root=root["c"])
-    outpack_location_add("b", "path",
-                         {"path": str(root["b"].path)}, root=root["d"])
-    outpack_location_add("c", "path",
-                         {"path": str(root["c"].path)}, root=root["d"])
+    outpack_location_add(
+        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
+    )
+    outpack_location_add(
+        "b", "path", {"path": str(root["b"].path)}, root=root["c"]
+    )
+    outpack_location_add(
+        "b", "path", {"path": str(root["b"].path)}, root=root["d"]
+    )
+    outpack_location_add(
+        "c", "path", {"path": str(root["c"].path)}, root=root["d"]
+    )
 
     # Create a packet and make sure it's in both b and c
-    id1 = create_random_packet(root["a"])
+    create_random_packet(root["a"])
     outpack_location_pull_metadata(root=root["b"])
-    #TODO: complete test once orderly_location_pull_packet
-
-
+    # TODO: complete test once orderly_location_pull_packet
 
 
 def test_can_resolve_locations(tmp_path):
@@ -401,8 +418,9 @@ def test_can_resolve_locations(tmp_path):
     for name in ["dst", "a", "b", "c", "d"]:
         root[name] = create_temporary_root(tmp_path / name)
         if not name == "dst":
-            outpack_location_add(name, "path", {"path": str(root[name].path)},
-                                 root=root["dst"])
+            outpack_location_add(
+                name, "path", {"path": str(root[name].path)}, root=root["dst"]
+            )
 
     locations = location_resolve_valid(None, root["dst"], False, False, False)
     assert locations == ["a", "b", "c", "d"]
@@ -410,29 +428,31 @@ def test_can_resolve_locations(tmp_path):
     assert locations == ["local", "a", "b", "c", "d"]
     locations = location_resolve_valid(None, root["dst"], True, True, False)
     assert locations == ["local", "a", "b", "c", "d"]
-    locations = location_resolve_valid(["a", "b", "local", "d"], root["dst"],
-                                      False, False, False)
+    locations = location_resolve_valid(
+        ["a", "b", "local", "d"], root["dst"], False, False, False
+    )
     assert locations == ["a", "b", "d"]
-    locations = location_resolve_valid(["a", "b", "local", "d"], root["dst"],
-                                       True, False, False)
+    locations = location_resolve_valid(
+        ["a", "b", "local", "d"], root["dst"], True, False, False
+    )
     assert locations == ["a", "b", "local", "d"]
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid(True, root["dst"],
-                               True, False, False)
+        location_resolve_valid(True, root["dst"], True, False, False)
 
-    assert e.match("Invalid input for 'location'; expected None or a "
-                   "list of strings")
+    assert e.match(
+        "Invalid input for 'location'; expected None or a list of strings"
+    )
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid("other", root["dst"],
-                               True, False, False)
+        location_resolve_valid("other", root["dst"], True, False, False)
 
     assert e.match("Unknown location: 'other'")
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid(["a", "b", "f", "g"], root["dst"],
-                               True, False, False)
+        location_resolve_valid(
+            ["a", "b", "f", "g"], root["dst"], True, False, False
+        )
 
     assert e.match("Unknown location: '[fg]', '[fg]'")
 
@@ -440,10 +460,10 @@ def test_can_resolve_locations(tmp_path):
 def test_informative_error_when_no_locations_configured(tmp_path):
     root = create_temporary_root(tmp_path)
 
-    locations = location_resolve_valid(None, root,False, False, True)
+    locations = location_resolve_valid(None, root, False, False, True)
     assert locations == []
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid(None, root,False, False, False)
+        location_resolve_valid(None, root, False, False, False)
 
     assert e.match("No suitable location found")

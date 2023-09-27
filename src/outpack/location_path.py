@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from outpack.root import root_open, find_file_by_hash
+from outpack.root import find_file_by_hash, root_open
 from outpack.static import LOCATION_LOCAL
 from outpack.util import read_string
 
@@ -10,7 +10,7 @@ class OutpackLocationPath:
     def __init__(self, path):
         self.__root = root_open(path, locate=False)
 
-    def list(self):
+    def list(self):  # noqa: A003
         return self.__root.index.location(LOCATION_LOCAL)
 
     def metadata(self, packet_ids):
@@ -44,14 +44,18 @@ class OutpackLocationPath:
         shutil.copyfile(path, dest)
         return dest
 
-    def list_unknown_packets(self, ids):
-        raise Exception("impl TODO")
+    def list_unknown_packets(self, ids):  # noqa: ARG002
+        msg = "impl TODO"
+        raise Exception(msg)
 
-    def list_unknown_files(self, hashes):
-        raise Exception("impl TODO")
+    def list_unknown_files(self, hashes):  # noqa: ARG002
+        msg = "impl TODO"
+        raise Exception(msg)
 
-    def push_file(self, hash):
-        raise Exception("impl TODO")
+    def push_file(self, hash):  # noqa: ARG002
+        msg = "impl TODO"
+        raise Exception(msg)
 
-    def push_metadata(self, packet_id, hash, path):
-        raise Exception("impl TODO")
+    def push_metadata(self, packet_id, hash, path):  # noqa: ARG002
+        msg = "impl TODO"
+        raise Exception(msg)

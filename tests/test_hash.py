@@ -1,7 +1,13 @@
 import pytest
 
-from outpack.hash import Hash, hash_file, hash_parse, hash_string, hash_validate_file, \
-    hash_validate_string
+from outpack.hash import (
+    Hash,
+    hash_file,
+    hash_parse,
+    hash_string,
+    hash_validate_file,
+    hash_validate_string,
+)
 
 
 def test_hash_string():
@@ -38,15 +44,16 @@ def test_hash_validate_file_is_silent_on_success(tmp_path):
     assert e.match("Hash of '.+' does not match:")
 
 
-def test_hash_validate_string_is_silent_on_success(tmp_path):
+def test_hash_validate_string_is_silent_on_success():
     data = "my text"
     h = Hash(algorithm="md5", value="d3b96ce8c9fb4e9bd0198d03ba6852c7")
     hash_validate_string(data, h, "data")
 
     h.algorithm = "sha1"
     with pytest.raises(Exception) as e:
-        hash_validate_string(data, h, "my data",
-                             ["my additional", "lines of text"])
+        hash_validate_string(
+            data, h, "my data", ["my additional", "lines of text"]
+        )
     assert e.match("Hash of my data does not match:")
     assert e.match("my additional\n")
     assert e.match("lines of text")

@@ -1,10 +1,9 @@
 import os
 
 import pytest
-import json
+from helpers import create_random_packet, create_temporary_root
 
-from helpers import create_temporary_root, create_random_packet
-from outpack.hash import hash_string, hash_file, Hash
+from outpack.hash import hash_file
 from outpack.location_path import OutpackLocationPath
 from outpack.util import read_string
 
@@ -46,7 +45,9 @@ def test_location_path_returns_list_of_packet_ids(tmp_path):
 
     hashes = []
     for packet_id in ids:
-        file_hash = hash_file(path / ".outpack" / "metadata" / packet_id, "sha256")
+        file_hash = hash_file(
+            path / ".outpack" / "metadata" / packet_id, "sha256"
+        )
         hashes.append(file_hash)
         assert str(file_hash) in expected_hashes
 
@@ -60,9 +61,7 @@ def test_location_path_can_return_metadata(tmp_path):
     loc = OutpackLocationPath(path)
 
     metadata_path = tmp_path / ".outpack" / "metadata"
-    str = [
-        read_string(metadata_path / packet_id) for packet_id in ids
-    ]
+    str = [read_string(metadata_path / packet_id) for packet_id in ids]
 
     assert loc.metadata(ids[1])[ids[1]] == str[1]
     for idx, i in enumerate(loc.metadata(ids).values()):
@@ -100,11 +99,11 @@ def test_can_locate_files_from_store(tmp_path):
     path = root.path
 
     loc = OutpackLocationPath(path)
-    ids = [create_random_packet(root) for _ in range(3)]
+    [create_random_packet(root) for _ in range(3)]
     idx = root.index.data()
 
     files = next(iter(idx.metadata.values())).files
-    h = list(filter(lambda file: file.path == "data.txt", files))[0].hash
+    h = next(iter(filter(lambda file: file.path == "data.txt", files))).hash
     dest = tmp_path / "dest"
 
     res = loc.fetch_file(h, dest)
@@ -122,8 +121,9 @@ def test_sensible_error_if_file_not_found_in_store(tmp_path):
 
     with pytest.raises(Exception) as e:
         loc.fetch_file(h, dest)
-    assert e.match("Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at "
-                   "location")
+    assert e.match(
+        "Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at location"
+    )
     assert not os.path.isfile(dest)
 
 
@@ -132,11 +132,11 @@ def test_can_find_file_from_archive(tmp_path):
     path = root.path
 
     loc = OutpackLocationPath(path)
-    ids = [create_random_packet(root) for _ in range(3)]
+    [create_random_packet(root) for _ in range(3)]
     idx = root.index.data()
 
     files = next(iter(idx.metadata.values())).files
-    h = list(filter(lambda file: file.path == "data.txt", files))[0].hash
+    h = next(iter(filter(lambda file: file.path == "data.txt", files))).hash
     dest = tmp_path / "dest"
 
     res = loc.fetch_file(h, dest)
@@ -154,6 +154,7 @@ def test_sensible_error_if_file_not_found_in_archive(tmp_path):
 
     with pytest.raises(Exception) as e:
         loc.fetch_file(h, dest)
-    assert e.match("Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at "
-                   "location")
+    assert e.match(
+        "Hash 'md5:c7be9a2c3cd8f71210d9097e128da316' not found at location"
+    )
     assert not os.path.isfile(dest)
