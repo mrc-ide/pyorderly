@@ -33,6 +33,21 @@ class Packet:
         self.metadata = None
         self.immutable = {}
 
+    def use_dependency(self, query, files, search_options):
+        query = as_query(query)
+        assert query.is_single
+        id = search(query, options=search_options, root=self.root)
+        if not id:
+            msg = f"Failed to find packet for query {query}"
+            raise Exception(msg)
+        result = copy_files(id, files, self.path,
+                            options=search_options, root=self.root)
+        for f, r in zip(files, result):
+            f.here = r
+            self.mark_file_immutable(f.here)
+        self.depends.append(PacketDepends(id, repr(query), files))
+        return result
+
     def mark_file_immutable(self, path):
         path_full = self.path / path
         if path in self.immutable:

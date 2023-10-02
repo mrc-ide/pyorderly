@@ -10,6 +10,9 @@ class Query:
         self.is_single = True
         self.parameters = []
 
+    def __str__(self):
+        return self.expr
+
 
 @dataclass
 class QueryComponent:
@@ -36,6 +39,12 @@ def query_parse(expr):
         expr = "latest()"
     expr = query_parse_expr(expr)
     return Query(expr)
+
+
+def as_query(expr):
+    if isinstance(expr, Query):
+        return expr
+    return query_parse(expr)
 
 
 def query_parse_expr(expr):
