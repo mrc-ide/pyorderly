@@ -137,7 +137,7 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
         location.validate_hashes(known_packets)
         location.mark_known()
 
-    # TODO: deorphan recovered packets
+    # TODO: mrc-4601 deorphan recovered packets
 
 
 class OutpackLocation:
