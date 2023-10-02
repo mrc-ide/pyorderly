@@ -91,8 +91,7 @@ def location_resolve_valid(
         if location not in outpack_location_list(root):
             msg = f"Unknown location: '{location}'"
             raise Exception(msg)
-        else:
-            location = [location]
+        location = [location]
     elif isinstance(location, collections.abc.Iterable) and all(
         isinstance(item, str) for item in location
     ):
