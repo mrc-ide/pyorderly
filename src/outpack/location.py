@@ -142,9 +142,9 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
 
 class OutpackLocation:
     def __init__(self, location_name, root):
-        self.__root = root
+        self._root = root
         self.location_name = location_name
-        self.__driver = _location_driver(location_name, root)
+        self._driver = _location_driver(location_name, root)
         self._hint_remove = (
             f'Probably all you can do at this point is '
             f'remove this location from your configuration '
@@ -153,15 +153,15 @@ class OutpackLocation:
         )
 
     def pull_all_metadata(self):
-        known_there = self.__driver.list()
-        known_here = self.__root.index.data().metadata.keys()
+        known_there = self._driver.list()
+        known_here = self._root.index.data().metadata.keys()
         for packet_id in known_there:
             if packet_id not in known_here:
                 self.pull_packet_metadata(packet_id)
 
     def pull_packet_metadata(self, packet_id):
-        metadata = self.__driver.metadata(packet_id)[packet_id]
-        expected_hash = self.__driver.list()[packet_id].hash
+        metadata = self._driver.metadata(packet_id)[packet_id]
+        expected_hash = self._driver.list()[packet_id].hash
 
         hash_validate_string(
             metadata,
@@ -175,7 +175,7 @@ class OutpackLocation:
             ],
         )
 
-        path_metadata = self.__root.path / ".outpack" / "metadata"
+        path_metadata = self._root.path / ".outpack" / "metadata"
         os.makedirs(path_metadata, exist_ok=True)
         filename = path_metadata / packet_id
         with open(filename, "w") as f:
@@ -183,7 +183,7 @@ class OutpackLocation:
 
     def validate_hashes(self, packets: List[PacketLocation]):
         mismatched_hashes = set()
-        known_there = self.__driver.list()
+        known_there = self._driver.list()
         for packet in packets:
             if known_there.get(packet.packet) is not None:
                 hash_there = known_there[packet.packet].hash
@@ -208,15 +208,15 @@ class OutpackLocation:
 
     def mark_known(self):
         try:
-            known_here = self.__root.index.location(self.location_name)
+            known_here = self._root.index.location(self.location_name)
         except KeyError:
             known_here = {}
 
-        known_there = self.__driver.list()
+        known_there = self._driver.list()
         for packet_id in known_there:
             if packet_id not in known_here.keys():
                 mark_known(
-                    self.__root,
+                    self._root,
                     packet_id,
                     self.location_name,
                     known_there[packet_id].hash,
