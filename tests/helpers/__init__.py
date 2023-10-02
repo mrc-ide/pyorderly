@@ -18,6 +18,6 @@ def create_random_packet(root, name="data", parameters=None, packet_id=None):
         return p.id
 
 
-def create_temporary_root(path, *, use_file_store=False):
-    outpack_init(path, use_file_store=use_file_store)
+def create_temporary_root(path, **kwargs):
+    outpack_init(path, **kwargs)
     return root_open(path, False)
