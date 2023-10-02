@@ -88,9 +88,9 @@ def test_match_value():
 
 
 def test_read_string(tmp_path):
-    lines = ["   this is my first   line\t ", " this is the second  "]
+    lines = ["  this is my first  line\t ", " this is the second  "]
     path = tmp_path / "file"
     with open(path, "w") as f:
         f.writelines(lines)
 
-    assert read_string(path) == "this is my first   line\t  this is the second"
+    assert read_string(path) == "  this is my first  line\t  this is the second"
