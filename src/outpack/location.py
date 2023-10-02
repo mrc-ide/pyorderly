@@ -107,9 +107,9 @@ def location_resolve_valid(
         )
         raise Exception(msg)
 
-    if not include_local and LOCATION_LOCAL in location:
+    if not include_local:
         location.remove(LOCATION_LOCAL)
-    if not include_orphan and LOCATION_ORPHAN in location:  # pragma: no cover
+    if not include_orphan:  # pragma: no cover
         location.remove(LOCATION_ORPHAN)
 
     if len(location) == 0 and not allow_no_locations:
