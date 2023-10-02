@@ -1,8 +1,8 @@
 import json
 
 import pytest
-from helpers import create_random_packet, create_temporary_root
 
+from helpers import create_random_packet, create_temporary_root
 from outpack.ids import outpack_id
 from outpack.location import (
     location_resolve_valid,
@@ -422,36 +422,52 @@ def test_can_resolve_locations(tmp_path):
                 name, "path", {"path": str(root[name].path)}, root=root["dst"]
             )
 
-    locations = location_resolve_valid(None, root["dst"], False, False, False)
+    locations = location_resolve_valid(None, root["dst"],
+                                       include_local=False,
+                                       include_orphan=False,
+                                       allow_no_locations=False)
     assert locations == ["a", "b", "c", "d"]
-    locations = location_resolve_valid(None, root["dst"], True, False, False)
+    locations = location_resolve_valid(None, root["dst"],
+                                       include_local=True,
+                                       include_orphan=False,
+                                       allow_no_locations=False)
     assert locations == ["local", "a", "b", "c", "d"]
-    locations = location_resolve_valid(None, root["dst"], True, True, False)
+    locations = location_resolve_valid(None, root["dst"],
+                                       include_local=True,
+                                       include_orphan=True,
+                                       allow_no_locations=False)
     assert locations == ["local", "a", "b", "c", "d"]
     locations = location_resolve_valid(
-        ["a", "b", "local", "d"], root["dst"], False, False, False
+        ["a", "b", "local", "d"], root["dst"],
+        include_local=False, include_orphan=False, allow_no_locations=False
     )
     assert locations == ["a", "b", "d"]
     locations = location_resolve_valid(
-        ["a", "b", "local", "d"], root["dst"], True, False, False
+        ["a", "b", "local", "d"], root["dst"],
+        include_local=True, include_orphan=False, allow_no_locations=False
     )
     assert locations == ["a", "b", "local", "d"]
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid(True, root["dst"], True, False, False)
+        location_resolve_valid(True, root["dst"],
+                               include_local=True, include_orphan=False,
+                               allow_no_locations=False)
 
     assert e.match(
         "Invalid input for 'location'; expected None or a list of strings"
     )
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid("other", root["dst"], True, False, False)
+        location_resolve_valid("other", root["dst"],
+                               include_local=True, include_orphan=False,
+                               allow_no_locations=False)
 
     assert e.match("Unknown location: 'other'")
 
     with pytest.raises(Exception) as e:
         location_resolve_valid(
-            ["a", "b", "f", "g"], root["dst"], True, False, False
+            ["a", "b", "f", "g"], root["dst"],
+            include_local=True, include_orphan=False, allow_no_locations=False
         )
 
     assert e.match("Unknown location: '[fg]', '[fg]'")
@@ -460,10 +476,14 @@ def test_can_resolve_locations(tmp_path):
 def test_informative_error_when_no_locations_configured(tmp_path):
     root = create_temporary_root(tmp_path)
 
-    locations = location_resolve_valid(None, root, False, False, True)
+    locations = location_resolve_valid(None, root,
+                                       include_local=False,
+                                       include_orphan=False,
+                                       allow_no_locations=True)
     assert locations == []
 
     with pytest.raises(Exception) as e:
-        location_resolve_valid(None, root, False, False, False)
+        location_resolve_valid(None, root, include_local=False,
+                               include_orphan=False, allow_no_locations=False)
 
     assert e.match("No suitable location found")
