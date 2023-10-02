@@ -83,7 +83,7 @@ def outpack_location_rename(old, new, root=None, *, locate=True):
 
 
 def location_resolve_valid(
-    location, root, include_local, include_orphan, allow_no_locations
+    location, root, *, include_local, include_orphan, allow_no_locations
 ):
     if location is None:
         location = outpack_location_list(root)
