@@ -149,10 +149,13 @@ def _pull_all_metadata(driver, root, location_name):
 
 
 def _get_remove_location_hint(location_name):
-    return(f'Probably all you can do at this point is '
-           f'remove this location from your configuration '
-           f'by running '
-           f'orderly_location_remove("{location_name}")')
+    return (
+        f'Probably all you can do at this point is '
+        f'remove this location from your configuration '
+        f'by running '
+        f'orderly_location_remove("{location_name}")'
+    )
+
 
 def _pull_packet_metadata(driver, root, location_name, packet_id):
     metadata = driver.metadata(packet_id)[packet_id]
