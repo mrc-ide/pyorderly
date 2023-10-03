@@ -47,7 +47,6 @@ class Index:
         return self.refresh().data.unpacked
 
 
-
 def _index_update(path_root, data):
     data.metadata = _read_metadata(path_root, data.metadata)
     data.location = _read_locations(path_root, data.location)
