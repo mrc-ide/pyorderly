@@ -3,3 +3,4 @@ __pycache__
 .coverage*
 example/.outpack/index/outpack.rds
 example/draft/
+.idea

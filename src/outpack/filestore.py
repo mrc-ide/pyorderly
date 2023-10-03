@@ -3,7 +3,7 @@ import os.path
 import shutil
 import stat
 
-from outpack.hash import Hash, hash_parse, hash_validate
+from outpack.hash import Hash, hash_parse, hash_validate_file
 
 
 class FileStore:
@@ -30,7 +30,7 @@ class FileStore:
         return os.path.exists(self.filename(hash))
 
     def put(self, src, hash):
-        hash_validate(src, hash)
+        hash_validate_file(src, hash)
         dst = self.filename(hash)
         if not os.path.exists(dst):
             os.makedirs(os.path.dirname(dst), exist_ok=True)

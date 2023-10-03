@@ -29,10 +29,16 @@ class Index:
         self.data = _index_update(self._path, self.data)
         return self
 
+    def all_metadata(self):
+        return self.refresh().data.metadata
+
     def metadata(self, id):
         if id in self.data.metadata:
             return self.data.metadata[id]
         return self.refresh().data.metadata[id]
+
+    def all_locations(self):
+        return self.refresh().data.location
 
     def location(self, name):
         return self.refresh().data.location[name]

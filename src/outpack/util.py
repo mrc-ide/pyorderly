@@ -100,3 +100,9 @@ def relative_path_array(files, name):
             msg = f"Expected {name} path '{f}' to be a relative path"
             raise Exception(msg)
     return files
+
+
+def read_string(path):
+    with open(path) as f:
+        lines = f.read().rstrip()
+    return lines

@@ -2,7 +2,7 @@ import shutil
 import time
 from pathlib import Path
 
-from outpack.hash import hash_file, hash_parse, hash_string, hash_validate
+from outpack.hash import hash_file, hash_parse, hash_string, hash_validate_file
 from outpack.ids import outpack_id, validate_outpack_id
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import root_open
@@ -36,7 +36,7 @@ class Packet:
     def mark_file_immutable(self, path):
         path_full = self.path / path
         if path in self.immutable:
-            hash_validate(path_full, self.immutable[path])
+            hash_validate_file(path_full, self.immutable[path])
         else:
             hash_algorithm = self.root.config.core.hash_algorithm
             self.immutable[path] = hash_file(path_full, hash_algorithm)
@@ -123,7 +123,8 @@ def _check_immutable_files(files, immutable):
 
 
 def mark_known(root, packet_id, location, hash, time):
-    dat = PacketLocation(packet_id, time, hash)
+    dat = PacketLocation(packet_id, time, str(hash))
+    validate(dat.to_dict(), "outpack/location.json")
     dest = root.path / ".outpack" / "location" / location / packet_id
     dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w") as f:

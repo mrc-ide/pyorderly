@@ -7,17 +7,17 @@ from outpack.packet import Packet
 from outpack.root import root_open
 
 
-def create_random_packet(root, name="data", parameters=None):
+def create_random_packet(root, name="data", parameters=None, packet_id=None):
     d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
     with TemporaryDirectory() as src:
         path_data = os.path.join(src, "data.txt")
         with open(path_data, "w") as f:
             f.writelines(d)
-        p = Packet(root, src, name, parameters=parameters)
+        p = Packet(root, src, name, id=packet_id, parameters=parameters)
         p.end()
         return p.id
 
 
-def create_temporary_root(path):
-    outpack_init(path)
+def create_temporary_root(path, **kwargs):
+    outpack_init(path, **kwargs)
     return root_open(path, False)

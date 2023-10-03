@@ -9,6 +9,7 @@ from outpack.util import (
     iso_time_str,
     match_value,
     num_to_time,
+    read_string,
     time_to_num,
 )
 
@@ -84,3 +85,12 @@ def test_match_value():
     with pytest.raises(Exception) as e:
         match_value("this", ["foo"], "name")
     assert e.match("name must be one of 'foo'")
+
+
+def test_read_string(tmp_path):
+    lines = ["  this is my first  line\t ", " this is the second  "]
+    path = tmp_path / "file"
+    with open(path, "w") as f:
+        f.writelines(lines)
+
+    assert read_string(path) == "  this is my first  line\t  this is the second"

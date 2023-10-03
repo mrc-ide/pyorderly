@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Black">
-    <option name="enabledOnReformat" value="true" />
-    <option name="enabledOnSave" value="true" />
-    <option name="sdkUUID" value="7637b8eb-3308-43f5-8be5-ab68537bfdd8" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 virtualenv at ~/projects/outpack-py/.virtualenvs/outpack" project-jdk-type="Python SDK" />
-</project>
