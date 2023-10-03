@@ -132,7 +132,7 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
         driver = _location_driver(name, root)
         _pull_all_metadata(driver, root, name)
         known_packets = []
-        for packet_location in root.index.data().location.values():
+        for packet_location in root.index.all_locations().values():
             known_packets.extend(list(packet_location.values()))
         _validate_hashes(driver, name, known_packets)
         _mark_all_known(driver, root, name)
@@ -142,7 +142,7 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
 
 def _pull_all_metadata(driver, root, location_name):
     known_there = driver.list()
-    known_here = root.index.data().metadata.keys()
+    known_here = root.index.all_metadata().keys()
     for packet_id in known_there:
         if packet_id not in known_here:
             _pull_packet_metadata(driver, root, location_name, packet_id)

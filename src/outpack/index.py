@@ -19,29 +19,33 @@ class IndexData:
 class Index:
     def __init__(self, path):
         self._path = pathlib.Path(path)
-        self._data = IndexData.new()
+        self.data = IndexData.new()
 
     def rebuild(self):
-        self._data = _index_update(self._path, IndexData.new())
+        self.data = _index_update(self._path, IndexData.new())
         return self
 
     def refresh(self):
-        self._data = _index_update(self._path, self._data)
+        self.data = _index_update(self._path, self.data)
         return self
 
+    def all_metadata(self):
+        return self.refresh().data.metadata
+
     def metadata(self, id):
-        if id in self._data.metadata:
-            return self._data.metadata[id]
-        return self.refresh()._data.metadata[id]
+        if id in self.data.metadata:
+            return self.data.metadata[id]
+        return self.refresh().data.metadata[id]
+
+    def all_locations(self):
+        return self.refresh().data.location
 
     def location(self, name):
-        return self.refresh()._data.location[name]
+        return self.refresh().data.location[name]
 
     def unpacked(self):
-        return self.refresh()._data.unpacked
+        return self.refresh().data.unpacked
 
-    def data(self):
-        return self.refresh()._data
 
 
 def _index_update(path_root, data):

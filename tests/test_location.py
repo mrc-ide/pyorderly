@@ -236,12 +236,12 @@ def test_can_pull_metadata_from_a_file_base_location(tmp_path):
 
     outpack_location_pull_metadata("upstream", root=root_downstream)
 
-    index = root_downstream.index.data()
-    assert len(index.metadata) == 3
-    assert set(index.metadata.keys()) == set(ids)
-    assert index.metadata == root_upstream.index.data().metadata
+    metadata = root_downstream.index.all_metadata()
+    assert len(metadata) == 3
+    assert set(metadata.keys()) == set(ids)
+    assert metadata == root_upstream.index.all_metadata()
 
-    packets = index.location["upstream"]
+    packets = root_downstream.index.location("upstream")
     assert len(packets) == 3
     assert set(packets.keys()) == set(ids)
 
@@ -262,7 +262,7 @@ def test_can_pull_empty_metadata(tmp_path):
     )
     outpack_location_pull_metadata("upstream", root=root_downstream)
 
-    index = root_downstream.index.data()
+    index = root_downstream.index.data
     assert len(index.metadata) == 0
 
 
@@ -283,33 +283,35 @@ def test_can_pull_metadata_from_subset_of_locations(tmp_path):
         ids[name] = [create_random_packet(root[name]) for _ in range(3)]
 
     outpack_location_pull_metadata(["x", "y"], root=root["a"])
-    index = root["a"].index.data()
+    index = root["a"].index
 
-    assert set(index.metadata) == set(ids["x"] + ids["y"])
-    assert set(index.location.keys()) == {"local", "x", "y"}
-    assert len(index.location["local"]) == 0
-    assert len(index.location["x"]) == 3
-    assert len(index.location["y"]) == 3
+    assert set(index.all_metadata()) == set(ids["x"] + ids["y"])
+    locations = index.all_locations()
+    assert set(locations.keys()) == {"local", "x", "y"}
+    assert len(locations["local"]) == 0
+    assert len(locations["x"]) == 3
+    assert len(locations["y"]) == 3
 
-    x_metadata = root["x"].index.data().metadata.keys()
-    y_metadata = root["y"].index.data().metadata.keys()
-    for packet_id in index.metadata.keys():
+    x_metadata = root["x"].index.all_metadata().keys()
+    y_metadata = root["y"].index.all_metadata().keys()
+    for packet_id in index.all_metadata().keys():
         if packet_id in ids["x"]:
             assert packet_id in x_metadata
         else:
             assert packet_id in y_metadata
 
     outpack_location_pull_metadata(root=root["a"])
-    index = root["a"].index.data()
+    index = root["a"].index
 
-    assert set(index.metadata) == set(ids["x"] + ids["y"] + ids["z"])
-    assert set(index.location.keys()) == {"local", "x", "y", "z"}
-    assert len(index.location["local"]) == 0
-    assert len(index.location["x"]) == 3
-    assert len(index.location["y"]) == 3
-    assert len(index.location["z"]) == 3
-    z_metadata = root["z"].index.data().metadata.keys()
-    for packet_id in index.metadata.keys():
+    assert set(index.all_metadata()) == set(ids["x"] + ids["y"] + ids["z"])
+    locations = index.all_locations()
+    assert set(locations.keys()) == {"local", "x", "y", "z"}
+    assert len(locations["local"]) == 0
+    assert len(locations["x"]) == 3
+    assert len(locations["y"]) == 3
+    assert len(locations["z"]) == 3
+    z_metadata = root["z"].index.all_metadata().keys()
+    for packet_id in index.all_metadata().keys():
         if packet_id in ids["x"]:
             assert packet_id in x_metadata
         elif packet_id in ids["y"]:

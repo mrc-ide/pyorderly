@@ -100,9 +100,8 @@ def test_can_locate_files_from_store(tmp_path):
 
     loc = OutpackLocationPath(path)
     [create_random_packet(root) for _ in range(3)]
-    idx = root.index.data()
 
-    files = next(iter(idx.metadata.values())).files
+    files = next(iter(root.index.all_metadata().values())).files
     h = next(iter(filter(lambda file: file.path == "data.txt", files))).hash
     dest = tmp_path / "dest"
 
@@ -133,9 +132,8 @@ def test_can_find_file_from_archive(tmp_path):
 
     loc = OutpackLocationPath(path)
     [create_random_packet(root) for _ in range(3)]
-    idx = root.index.data()
 
-    files = next(iter(idx.metadata.values())).files
+    files = next(iter(root.index.all_metadata().values())).files
     h = next(iter(filter(lambda file: file.path == "data.txt", files))).hash
     dest = tmp_path / "dest"
 
