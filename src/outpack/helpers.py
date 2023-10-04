@@ -20,7 +20,6 @@ def _validate_files(files):
     return files
 
 
-
 def _plan_copy_files(root, id, files):
     meta = root.index.metadata(id)
     files = _validate_files(files)

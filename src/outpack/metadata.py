@@ -13,7 +13,7 @@ from outpack.tools import GitInfo
 class PacketFile:
     path: str
     size: float
-    hash: str  # noqa: A003
+    hash: str
 
     @staticmethod
     def from_file(directory, path, hash_algorithm):
@@ -36,6 +36,7 @@ class PacketDepends:
     packet: str
     query: str
     files: List[PacketDependsPath]
+
     @staticmethod
     def files_from_dict(files):
         return [{"here": h, "there": t} for h, t, in files.items()]
@@ -45,7 +46,7 @@ class PacketDepends:
 @dataclass
 class MetadataCore:
     schema_version: str
-    id: str  # noqa: A003
+    id: str
     name: str
     parameters: Dict[str, Union[bool, int, float, str]]
     time: Dict[str, float]
@@ -67,7 +68,7 @@ class MetadataCore:
 class PacketLocation:
     packet: str
     time: float
-    hash: str  # noqa: A003
+    hash: str
 
 
 def read_metadata_core(path):

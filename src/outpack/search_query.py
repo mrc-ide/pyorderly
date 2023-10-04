@@ -59,5 +59,5 @@ def query_parse_expr(expr):
 
 # This is not quite right, as id should map to single(<id>)
 def query_format(expr):
-    inner = expr.expr # from Query to QueryComponent
+    inner = expr.expr  # from Query to QueryComponent
     return inner.expr

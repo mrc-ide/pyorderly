@@ -139,7 +139,7 @@ ignore = [
   # Don't require docstrings everywhere for now
   "D100", "D101", "D102", "D103", "D104", "D105",
   # Ignore shadowing
-  "A001", "A002",
+  "A001", "A002", "A003",
   # Allow print until we find the alternative to R's cli
   "T201"
 ]
