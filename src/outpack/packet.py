@@ -4,11 +4,14 @@ from pathlib import Path
 
 from outpack.hash import hash_file, hash_parse, hash_string, hash_validate_file
 from outpack.ids import outpack_id, validate_outpack_id
-from outpack.metadata import MetadataCore, PacketFile, PacketLocation
+from outpack.metadata import MetadataCore, PacketDepends, PacketFile, PacketLocation
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
+from outpack.search import search
+from outpack.search_query import as_query
 from outpack.tools import git_info
 from outpack.util import all_normal_files
+from outpack.helpers import copy_files
 
 
 # TODO: most of these fields should be private.
@@ -33,19 +36,19 @@ class Packet:
         self.metadata = None
         self.immutable = {}
 
-    def use_dependency(self, query, files, search_options):
+    def use_dependency(self, query, files, search_options=None):
         query = as_query(query)
         assert query.is_single
         id = search(query, options=search_options, root=self.root)
         if not id:
             msg = f"Failed to find packet for query {query}"
             raise Exception(msg)
-        result = copy_files(id, files, self.path,
-                            options=search_options, root=self.root)
-        for f, r in zip(files, result):
-            f.here = r
-            self.mark_file_immutable(f.here)
-        self.depends.append(PacketDepends(id, repr(query), files))
+
+        result = copy_files(id, files, self.path, root=self.root)
+        for f in result.files.keys():
+            self.mark_file_immutable(f)
+        d = PacketDepends(id, str(query), PacketDepends.files_from_dict(files))
+        self.depends.append(d)
         return result
 
     def mark_file_immutable(self, path):

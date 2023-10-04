@@ -11,7 +11,7 @@ class Query:
         self.parameters = []
 
     def __str__(self):
-        return self.expr
+        return query_format(self)
 
 
 @dataclass
@@ -55,3 +55,9 @@ def query_parse_expr(expr):
     else:
         msg = f"Unhandled query expression '{expr}'"
         raise Exception(msg)
+
+
+# This is not quite right, as id should map to single(<id>)
+def query_format(expr):
+    inner = expr.expr # from Query to QueryComponent
+    return inner.expr

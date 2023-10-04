@@ -36,6 +36,9 @@ class PacketDepends:
     packet: str
     query: str
     files: List[PacketDependsPath]
+    @staticmethod
+    def files_from_dict(files):
+        return [{"here": h, "there": t} for h, t, in files.items()]
 
 
 @dataclass_json()

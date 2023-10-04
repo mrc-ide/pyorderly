@@ -1,4 +1,4 @@
-from outpack.root import OutpackRoot
+from outpack.root import as_root
 from outpack.search_options import SearchOptions
 from outpack.search_query import as_query
 
@@ -28,7 +28,7 @@ class QueryIndex:
 def search(expr, *, options=None, root=None):
     if options is None:
         options = SearchOptions()
-    root = OutpackRoot(root)
+    root = as_root(root)
     query = as_query(expr)
     env = QueryEnv(root, options)
     return query_eval(query.expr, env)

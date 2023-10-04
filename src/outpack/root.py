@@ -9,6 +9,13 @@ from outpack.index import Index
 from outpack.util import find_file_descend
 
 
+def as_root(root):
+    if isinstance(root, OutpackRoot):
+        return root
+    else:
+        return OutpackRoot(root)
+
+
 class OutpackRoot:
     files = None
 
