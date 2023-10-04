@@ -260,3 +260,13 @@ def test_can_depend_on_a_packet(tmp_path):
     assert meta.depends[0].files == [
         PacketDependsPath("here.txt", "data.txt")
     ]
+
+
+def test_can_throw_if_dependency_not_satisfiable(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    src = tmp_path / "src"
+    src.mkdir()
+    p = Packet(root, src, "downstream")
+    id = "20230810-172859-6b0408e0"
+    with pytest.raises(Exception, match="Failed to find packet for query"):
+        p.use_dependency(id, {"here.txt": "data.txt"}, None)
