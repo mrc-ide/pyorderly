@@ -4,6 +4,7 @@ from typing import Dict, List
 from dataclasses_json import dataclass_json
 
 from orderly.current import get_active_context
+from outpack.helpers import copy_files
 from outpack import util
 
 
@@ -115,6 +116,37 @@ def description(*, display=None, long=None, custom=None):
     if ctx.is_active:
         _prevent_multiple_calls(ctx.orderly.description, "description")
         ctx.orderly.description = Description(display, long, custom)
+
+
+def dependency(name, query, files):
+    """Declare a dependency on another packet.
+
+    Parameters
+    ----------
+    name: str | None
+      The name of the packet to depend on, or None
+
+    query: str
+      A search query for packets
+
+    files: str | [str] | dict[str, str]
+      Files to use from the dependent packet
+    """
+
+    # ctx <- orderly_context(rlang::caller_env())
+    # subquery <- NULL
+    # query <- orderly_query(query, name = name, subquery = subquery)
+    # search_options <- as_orderly_search_options(ctx$search_options)
+    p = get_active_packet()
+    if p:
+        # TODO: search options here from need to come through from
+        # orderly_run via the context.
+        result = p.packet.use_dependency(query, files)
+    else:
+        id = search(query, options=search_options, root=root)
+        result = copy_files(id, files, self.path, root=root)
+    # TODO: print about this
+    return result
 
 
 def _prevent_multiple_calls(obj, what):
