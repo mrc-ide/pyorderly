@@ -3,7 +3,7 @@ from typing import List
 
 from dataclasses_json import dataclass_json
 
-from orderly.current import get_active_packet
+from orderly.current import get_active_context
 from outpack import util
 
 
@@ -32,14 +32,14 @@ def resource(files):
     """
     files = util.relative_path_array(files, "resource")
     util.assert_file_exists(files)
-    p = get_active_packet()
-    src = p.packet.path if p else None
+    ctx = get_active_context()
+    src = ctx.path if ctx.is_active else None
     files_expanded = util.expand_dirs(files, workdir=src)
-    if p:
+    if ctx.is_active:
         # TODO: If strict mode, copy expanded files into the working dir
         for f in files_expanded:
-            p.packet.mark_file_immutable(f)
-        p.orderly.resources += files_expanded
+            ctx.packet.mark_file_immutable(f)
+        ctx.orderly.resources += files_expanded
     return files_expanded
 
 
@@ -74,7 +74,7 @@ def artefact(name, files):
 
     """
     files = util.relative_path_array(files, "artefact")
-    p = get_active_packet()
-    if p:
-        p.orderly.artefacts.append(Artefact(name, files))
+    ctx = get_active_context()
+    if ctx.is_active:
+        ctx.orderly.artefacts.append(Artefact(name, files))
     return files

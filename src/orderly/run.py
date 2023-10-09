@@ -1,6 +1,6 @@
 import shutil
 
-from orderly.current import ActiveOrderlyPacket
+from orderly.current import ActiveOrderlyContext
 from outpack.ids import outpack_id
 from outpack.packet import Packet
 from outpack.root import root_open
@@ -20,7 +20,7 @@ def orderly_run(name, *, root=None, locate=True):
 
     packet = Packet(root, path_dest, name, id=packet_id, locate=False)
     try:
-        with ActiveOrderlyPacket(packet, path_src) as orderly:
+        with ActiveOrderlyContext(packet, path_src) as orderly:
             packet.mark_file_immutable("orderly.py")
             run_script(path_dest, "orderly.py")
     except Exception as error:
