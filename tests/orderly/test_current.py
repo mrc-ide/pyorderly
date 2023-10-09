@@ -1,10 +1,6 @@
-import pytest
-
-from outpack.util import transient_working_directory
-from outpack.root import OutpackRoot, root_open
-from orderly.current import detect_orderly_interactive_root
-
 import helpers
+import pytest
+from orderly.current import detect_orderly_interactive_root
 
 
 def test_can_open_root_interactively(tmp_path):
@@ -18,7 +14,7 @@ def test_can_open_root_interactively(tmp_path):
 
 
 def test_can_error_if_interactive_directory_incorrect(tmp_path):
-    root = helpers.create_temporary_root(tmp_path)
+    helpers.create_temporary_root(tmp_path)
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     child = src / "a"

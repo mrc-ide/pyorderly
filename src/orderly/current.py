@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 
 from outpack.packet import Packet
 from outpack.root import OutpackRoot, root_open
@@ -44,7 +44,8 @@ class OrderlyContext:
             parameters=packet.parameters,
             name=packet.name,
             id=packet.id,
-            orderly=OrderlyCustomMetadata())
+            orderly=OrderlyCustomMetadata(),
+        )
 
     @staticmethod
     def interactive():
@@ -58,7 +59,8 @@ class OrderlyContext:
             parameters={},
             name=path.name,
             id=None,
-            orderly=OrderlyCustomMetadata())
+            orderly=OrderlyCustomMetadata(),
+        )
 
 
 class ActiveOrderlyContext:
