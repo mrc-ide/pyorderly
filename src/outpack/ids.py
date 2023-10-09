@@ -15,10 +15,7 @@ def fractional_to_bytes(x):
 def outpack_id():
     t = time.time()
     rand = secrets.token_hex(2)
-    id = f"{iso_time_str(t)}-{fractional_to_bytes(t)}{rand}"
-    if len(id) != 24:
-        breakpoint()
-    return id
+    return f"{iso_time_str(t)}-{fractional_to_bytes(t)}{rand}"
 
 
 def is_outpack_id(x: str):
