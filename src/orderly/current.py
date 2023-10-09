@@ -54,7 +54,7 @@ class OrderlyContext:
             packet=None,
             path=path,
             path_src=path,
-            root=root_open(detect_orderly_interactive_path(path), False),
+            root=detect_orderly_interactive_root(path),
             parameters={},
             name=path.name,
             id=None,
@@ -83,11 +83,11 @@ def get_active_context():
     return ActiveOrderlyContext.current() or OrderlyContext.interactive()
 
 
-def detect_orderly_interactive_path(path):
+def detect_orderly_interactive_root(path):
     path = Path(path)
     root = path.parent.parent
     ok = root.joinpath("src").is_dir() and root.joinpath(".outpack").exists()
     if not ok:
         msg = f"Failed to detect orderly path at {path}"
         raise Exception(msg)
-    return root
+    return root_open(root, False)
