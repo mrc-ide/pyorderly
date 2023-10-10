@@ -99,7 +99,7 @@ def test_cant_add_description_twice(tmp_path):
 
 
 def test_can_run_description_without_packet_with_no_effect(tmp_path):
-    root = helpers.create_temporary_root(tmp_path)
+    helpers.create_temporary_root(tmp_path)
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
