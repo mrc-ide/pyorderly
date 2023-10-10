@@ -1,5 +1,6 @@
 import shutil
 
+from orderly.core import Description
 from orderly.current import ActiveOrderlyContext
 from outpack.ids import outpack_id
 from outpack.packet import Packet
@@ -87,7 +88,11 @@ def _custom_metadata(orderly):
     for p in orderly.resources:
         role.append({"path": p, "role": "resource"})
 
-    return {"role": role, "artefacts": orderly.artefacts}
+    return {
+        "role": role,
+        "artefacts": orderly.artefacts,
+        "description": orderly.description or Description.empty(),
+    }
 
 
 def _orderly_cleanup_failure(packet):

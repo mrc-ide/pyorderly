@@ -1,5 +1,6 @@
 import os
 import random
+import shutil
 from tempfile import TemporaryDirectory
 
 from outpack.init import outpack_init
@@ -21,3 +22,13 @@ def create_random_packet(root, name="data", parameters=None, packet_id=None):
 def create_temporary_root(path, **kwargs):
     outpack_init(path, **kwargs)
     return root_open(path, False)
+
+
+def create_orderly_root(path, examples):
+    outpack_init(path)
+    if isinstance(examples, str):
+        examples = [examples]
+    for ex in examples:
+        path_src = path / "src" / ex
+        path_src.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(f"tests/orderly/examples/{ex}", path_src)

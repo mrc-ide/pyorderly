@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Dict, List
 
 from dataclasses_json import dataclass_json
 
@@ -12,6 +12,18 @@ from outpack import util
 class Artefact:
     name: str = None
     files: List[str] = None
+
+
+@dataclass_json()
+@dataclass
+class Description:
+    display: str
+    long: str
+    custom: Dict[str, str or int or bool]
+
+    @staticmethod
+    def empty():
+        return Description(None, None, None)
 
 
 def resource(files):
@@ -71,10 +83,41 @@ def artefact(name, files):
     Returns
     -------
     Nothing, this is called for its side effects within a running packet
-
     """
     files = util.relative_path_array(files, "artefact")
     ctx = get_active_context()
     if ctx.is_active:
         ctx.orderly.artefacts.append(Artefact(name, files))
     return files
+
+
+def description(*, display=None, long=None, custom=None):
+    """Describe the current report.
+
+    Parameters
+    ----------
+    display : str
+      A friendly name for the report; this will be displayed in some
+      locations of the web interfaces, packit.
+
+    long : str
+      A longer description, perhaps a sentence or two.
+
+    custom : dict
+      Any additional metadata. Must be a dictionary with string keys
+      and string, number or boolean values.
+
+    Returns
+    -------
+    Nothing, this is called for its side effects within a running packet
+    """
+    ctx = get_active_context()
+    if ctx.is_active:
+        _prevent_multiple_calls(ctx.orderly.description, "description")
+        ctx.orderly.description = Description(display, long, custom)
+
+
+def _prevent_multiple_calls(obj, what):
+    if obj:
+        msg = f"Only one call to '{what}' is allowed"
+        raise Exception(msg)

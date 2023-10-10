@@ -10,6 +10,7 @@ class OrderlyCustomMetadata:
     def __init__(self):
         self.resources = []
         self.artefacts = []
+        self.description = None
 
 
 @dataclass
