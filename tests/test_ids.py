@@ -9,11 +9,12 @@ from outpack.ids import (
 
 
 def test_fractional_to_bytes():
-    assert fractional_to_bytes(1691686967.895351) == "e536"
+    assert fractional_to_bytes(1691686967.895351) == "e535"
     assert fractional_to_bytes(100) == "0000"
-    assert fractional_to_bytes(100.0001) == "0007"
-    assert fractional_to_bytes(100.001) == "0042"
-    assert fractional_to_bytes(100.05) == "0ccd"
+    assert fractional_to_bytes(100.0001) == "0006"
+    assert fractional_to_bytes(100.001) == "0041"
+    assert fractional_to_bytes(100.05) == "0ccc"
+    assert fractional_to_bytes(1696872486.999993) == "ffff"
 
 
 def test_outpack_id_creation():
