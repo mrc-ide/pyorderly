@@ -8,6 +8,8 @@ from outpack.init import outpack_init
 from outpack.metadata import read_metadata_core
 from outpack.root import root_open
 
+import helpers
+
 
 ## We're going to need a small test helper module here at some point,
 ## unfortunately pytest makes that totally unobvious how we do it, but
@@ -191,3 +193,17 @@ def test_can_run_with_description(tmp_path):
         "long": None,
         "custom": None,
     }
+
+
+def test_can_run_simple_dependency(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["data", "depends"], root)
+    id1 = orderly_run("data", root=tmp_path)
+    id2 = orderly_run("depends", root=tmp_path)
+    meta = root.index.metadata(id2)
+    assert len(meta.depends) == 1
+    assert meta.depends[0].packet == id1
+    assert meta.depends[0].query == "latest()"
+    assert len(meta.depends[0].files)
+    assert meta.depends[0].files[0].here == "input.txt"
+    assert meta.depends[0].files[0].there == "result.txt"
