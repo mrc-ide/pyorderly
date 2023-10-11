@@ -50,7 +50,7 @@ class ConfigCore:
 @dataclass
 class Location:
     name: str
-    type: str  # noqa: A003
+    type: str
     args: Optional[dict] = None
 
     def __init__(self, name, type, args=None):

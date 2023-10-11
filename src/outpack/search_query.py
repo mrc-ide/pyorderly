@@ -10,6 +10,9 @@ class Query:
         self.is_single = True
         self.parameters = []
 
+    def __str__(self):
+        return query_format(self)
+
 
 @dataclass
 class QueryComponent:
@@ -38,6 +41,12 @@ def query_parse(expr):
     return Query(expr)
 
 
+def as_query(expr):
+    if isinstance(expr, Query):
+        return expr
+    return query_parse(expr)
+
+
 def query_parse_expr(expr):
     if expr == "latest()":
         return query_parse_latest(expr)
@@ -46,3 +55,9 @@ def query_parse_expr(expr):
     else:
         msg = f"Unhandled query expression '{expr}'"
         raise Exception(msg)
+
+
+# This is not quite right, as id should map to single(<id>)
+def query_format(expr):
+    inner = expr.expr  # from Query to QueryComponent
+    return inner.expr

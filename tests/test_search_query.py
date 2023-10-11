@@ -23,3 +23,10 @@ def test_can_parse_simple_id_query():
 def test_can_not_parse_interesting_query():
     with pytest.raises(Exception, match="Unhandled query expression"):
         query_parse("latest(parameter:x == this:y)")
+
+
+def test_can_convert_query_to_string():
+    x = "20230810-172859-6b0408e0"
+    assert str(query_parse(x)) == x
+    assert str(query_parse("latest()")) == "latest()"
+    assert str(query_parse("latest")) == "latest()"

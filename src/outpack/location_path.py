@@ -10,7 +10,7 @@ class OutpackLocationPath:
     def __init__(self, path):
         self.__root = root_open(path, locate=False)
 
-    def list(self):  # noqa: A003
+    def list(self):
         return self.__root.index.location(LOCATION_LOCAL)
 
     def metadata(self, packet_ids):
