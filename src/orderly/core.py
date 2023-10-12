@@ -4,10 +4,10 @@ from typing import Dict, List
 from dataclasses_json import dataclass_json
 
 from orderly.current import get_active_context
-from outpack.helpers import copy_files
-from outpack.search_query import as_query
-from outpack.search import search
 from outpack import util
+from outpack.helpers import copy_files
+from outpack.search import search
+from outpack.search_query import as_query
 
 
 @dataclass_json()

@@ -3,7 +3,6 @@ import sys
 import helpers
 import orderly
 import pytest
-
 from orderly.current import ActiveOrderlyContext
 from orderly.run import orderly_run
 
@@ -124,7 +123,7 @@ def test_can_use_dependency(tmp_path):
     src = tmp_path / "draft" / "depends" / "some-id"
     src.mkdir(parents=True)
     p = Packet(root, src, "tmp")
-    with ActiveOrderlyContext(p, src) as active:
+    with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             files = {"input.txt": "result.txt"}
             res = orderly.dependency(None, "latest", files)
@@ -137,13 +136,13 @@ def test_can_use_dependency(tmp_path):
 def test_dependency_must_have_empty_name(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
     helpers.copy_examples(["data", "depends"], root)
-    id1 = orderly_run("data", root=tmp_path)
+    orderly_run("data", root=tmp_path)
     src = tmp_path / "src" / "depends"
     p = Packet(root, src, "tmp")
-    with ActiveOrderlyContext(p, src) as active:
+    with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             with pytest.raises(Exception, match="'name' must be None"):
-                res = orderly.dependency("data", "latest", {})
+                orderly.dependency("data", "latest", {})
 
 
 def test_can_use_dependency_without_packet(tmp_path):
