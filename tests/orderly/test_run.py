@@ -1,5 +1,6 @@
 import shutil
 
+import helpers
 import pytest
 from orderly.run import _validate_src_directory, orderly_run
 
@@ -36,6 +37,7 @@ def test_can_run_simple_example(tmp_path):
         "orderly": {
             "role": [{"path": "orderly.py", "role": "orderly"}],
             "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
         }
     }
     assert meta.custom == custom
@@ -113,6 +115,7 @@ def test_can_run_example_with_resource(tmp_path):
                 {"path": "numbers.txt", "role": "resource"},
             ],
             "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
         }
     }
     assert meta.custom == custom
@@ -144,6 +147,7 @@ def test_can_run_example_with_artefact(tmp_path):
         "orderly": {
             "role": [{"path": "orderly.py", "role": "orderly"}],
             "artefacts": [{"name": "Random numbers", "files": ["result.txt"]}],
+            "description": {"display": None, "long": None, "custom": None},
         }
     }
     assert meta.custom == custom
@@ -176,3 +180,14 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
         match="Script did not produce the expected artefacts: 'a', 'b', 'c'",
     ):
         orderly_run("resource", root=path)
+
+
+def test_can_run_with_description(tmp_path):
+    helpers.create_orderly_root(tmp_path, ["description"])
+    id = orderly_run("description", root=tmp_path)
+    meta = root_open(tmp_path, False).index.metadata(id)
+    assert meta.custom["orderly"]["description"] == {
+        "display": "Some report",
+        "long": None,
+        "custom": None,
+    }
