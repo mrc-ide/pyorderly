@@ -207,3 +207,4 @@ def test_can_run_simple_dependency(tmp_path):
     assert len(meta.depends[0].files)
     assert meta.depends[0].files[0].here == "input.txt"
     assert meta.depends[0].files[0].there == "result.txt"
+    

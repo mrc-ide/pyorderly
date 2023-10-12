@@ -3,7 +3,9 @@ import sys
 import helpers
 import orderly
 import pytest
+
 from orderly.current import ActiveOrderlyContext
+from orderly.run import orderly_run
 
 from outpack.packet import Packet
 from outpack.util import transient_working_directory
@@ -113,3 +115,46 @@ def test_can_run_description_without_packet_with_no_effect(tmp_path):
             custom={"a": 1, "b": "foo"},
         )
     assert res is None
+
+
+def test_can_use_dependency(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["data", "depends"], root)
+    id1 = orderly_run("data", root=tmp_path)
+    src = tmp_path / "draft" / "depends" / "some-id"
+    src.mkdir(parents=True)
+    p = Packet(root, src, "tmp")
+    with ActiveOrderlyContext(p, src) as active:
+        with transient_working_directory(src):
+            files = {"input.txt": "result.txt"}
+            res = orderly.dependency(None, "latest", files)
+    assert res.id == id1
+    assert res.name == "data"
+    assert res.files == files
+    assert src.joinpath("input.txt").exists()
+
+
+def test_dependency_must_have_empty_name(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["data", "depends"], root)
+    id1 = orderly_run("data", root=tmp_path)
+    src = tmp_path / "src" / "depends"
+    p = Packet(root, src, "tmp")
+    with ActiveOrderlyContext(p, src) as active:
+        with transient_working_directory(src):
+            with pytest.raises(Exception, match="'name' must be None"):
+                res = orderly.dependency("data", "latest", {})
+
+
+def test_can_use_dependency_without_packet(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["data", "depends"], root)
+    id1 = orderly_run("data", root=tmp_path)
+    src = tmp_path / "src" / "depends"
+    with transient_working_directory(src):
+        files = {"input.txt": "result.txt"}
+        res = orderly.dependency(None, "latest", files)
+    assert res.id == id1
+    assert res.name == "data"
+    assert res.files == files
+    assert src.joinpath("input.txt").exists()

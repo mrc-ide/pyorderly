@@ -157,8 +157,8 @@ def dependency(name, query, files):
     else:
         # TODO: get options from the interactive search options, once
         # it does anything.
-        id = search(query, root=root)
-        result = copy_files(id, files, self.path, root=root)
+        id = search(query, root=ctx.root)
+        result = copy_files(id, files, ctx.path, root=ctx.root)
     # TODO: print about this, once we decide what that looks like generally
     return result
 
