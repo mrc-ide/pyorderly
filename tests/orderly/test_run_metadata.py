@@ -1,3 +1,5 @@
+import sys
+
 import helpers
 import orderly
 import pytest
@@ -44,7 +46,10 @@ def test_resource_expands_lists_with_no_packet(tmp_path):
 
     with transient_working_directory(src):
         res = orderly.resource("a")
-    assert sorted(res) == ["a/x", "a/y"]
+    which_os = sys.platform.startswith("win")
+    ax = ["a/x", "a\\x"][which_os]
+    ay = ["a/y", "a\\y"][which_os]
+    assert sorted(res) == [ax, ay]
 
 
 def test_resource_requires_file_exists_with_packet(tmp_path):

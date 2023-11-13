@@ -8,7 +8,10 @@ from pathlib import Path
 
 def find_file_descend(filename, path):
     path = Path(path)
-    root = Path(path.root)
+
+    root = path.parent
+    while root != root.parent:
+        root = root.parent
 
     while path != root:
         attempt = path / filename

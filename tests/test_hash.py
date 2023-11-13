@@ -37,7 +37,6 @@ def test_hash_validate_file_is_silent_on_success(tmp_path):
     h = Hash(algorithm="md5", value="e2c865db4162bed963bfaa9ef6ac18f0")
     # Just a test that there is no error:
     hash_validate_file(p, h)
-
     h.algorithm = "sha1"
     with pytest.raises(Exception) as e:
         hash_validate_file(p, h)

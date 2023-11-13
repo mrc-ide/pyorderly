@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from outpack.metadata import (
@@ -64,8 +66,14 @@ def test_can_create_packet_file_metadata_from_file():
     directory = "example/archive/data/20230807-152344-ee606dce"
     path = "data.csv"
     res = PacketFile.from_file(directory, path, "sha256")
-    h = "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd"
-    assert res == PacketFile(path, 21, h)
+    # Due to file endings, windows file is 2 bytes longer on git clone
+    hashes = [
+        "sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd",
+        "sha256:d8a04fe36644edecc2581a43b6eb4d9fd7adb6702d80dde83129b43433cd93c4",
+    ]
+    sizes = [21, 23]
+    which_os = sys.platform.startswith("win")
+    assert res == PacketFile(path, sizes[which_os], hashes[which_os])
 
 
 def test_can_get_file_hash_from_metadata():

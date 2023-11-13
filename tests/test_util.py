@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 import pytest
 
@@ -65,15 +66,19 @@ def test_can_expand_paths(tmp_path):
         pass
     with open(sub_a / "y", "w"):
         pass
+    which_os = sys.platform.startswith("win")
+    ax = ["a/x", "a\\x"][which_os]
+    ay = ["a/y", "a\\y"][which_os]
+    bx = ["b/x", "b\\x"][which_os]
     assert expand_dirs([], workdir=tmp_path) == []
-    assert set(expand_dirs(["a"], workdir=tmp_path)) == {"a/x", "a/y"}
-    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {"a/x", "a/y"}
+    assert set(expand_dirs(["a"], workdir=tmp_path)) == {ax, ay}
+    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {ax, ay}
     with open(sub_b / "x", "w"):
         pass
     assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {
-        "a/x",
-        "a/y",
-        "b/x",
+        ax,
+        ay,
+        bx,
     }
 
 
