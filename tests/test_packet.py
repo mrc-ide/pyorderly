@@ -1,3 +1,5 @@
+import time
+
 import helpers
 import pytest
 
@@ -96,6 +98,7 @@ def test_can_insert_a_packet_into_existing_root(tmp_path):
 
     p1 = Packet(root, src, "data")
     p1.end()
+    time.sleep(0.01)  # windows time resolution not good enough
     p2 = Packet(root, src, "data")
     p2.end()
 

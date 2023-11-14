@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 import pytest
 
@@ -65,16 +66,24 @@ def test_can_expand_paths(tmp_path):
         pass
     with open(sub_a / "y", "w"):
         pass
+    expected_ax_ay = {"windows": {"a\\x", "a\\y"}, "unix": {"a/x", "a/y"}}
+    platform = "windows" if sys.platform.startswith("win") else "unix"
     assert expand_dirs([], workdir=tmp_path) == []
-    assert set(expand_dirs(["a"], workdir=tmp_path)) == {"a/x", "a/y"}
-    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {"a/x", "a/y"}
+    assert set(expand_dirs(["a"], workdir=tmp_path)) == expected_ax_ay[platform]
+    assert (
+        set(expand_dirs(["a", "b"], workdir=tmp_path))
+        == expected_ax_ay[platform]
+    )
     with open(sub_b / "x", "w"):
         pass
-    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == {
-        "a/x",
-        "a/y",
-        "b/x",
+    expected_ax_ay_bx = {
+        "windows": {"a\\x", "a\\y", "b\\x"},
+        "unix": {"a/x", "a/y", "b/x"},
     }
+    assert (
+        set(expand_dirs(["a", "b"], workdir=tmp_path))
+        == expected_ax_ay_bx[platform]
+    )
 
 
 def test_match_value():
