@@ -41,11 +41,11 @@ def all_normal_files(path):
     ]
 
 
-def run_script(wd, path):
+def run_script(wd, path, init_globals):
     with transient_working_directory(wd):
         # other ways to do this include importlib, subprocess and
         # multiprocess
-        runpy.run_path(path)
+        runpy.run_path(path, init_globals=init_globals)
 
 
 @contextmanager
