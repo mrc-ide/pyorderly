@@ -13,6 +13,10 @@ def test_read_simple_trivial_parameters():
     assert ab == {"parameters": {"a": None, "b": 1}}
 
 
+def test_skip_over_uninteresting_calls():
+    assert _read_py(ast.parse("1")) == {"parameters": {}}
+
+
 def test_prevent_complex_types_in_parameters():
     msg = "Invalid value for argument 'a' to 'parameters()': len"
     with pytest.raises(Exception, match=re.escape(msg)):

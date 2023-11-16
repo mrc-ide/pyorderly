@@ -34,9 +34,6 @@ class OrderlyContext:
     id: Optional[str]
     # Special orderly custom metadata
     orderly: OrderlyCustomMetadata
-    # Execution environment; currently this is globals() but we'll
-    # tidy this up later
-    envir: dict
 
     @staticmethod
     def from_packet(packet, path_src):
@@ -50,7 +47,6 @@ class OrderlyContext:
             name=packet.name,
             id=packet.id,
             orderly=OrderlyCustomMetadata(),
-            envir=globals(),
         )
 
     @staticmethod
@@ -66,7 +62,6 @@ class OrderlyContext:
             name=path.name,
             id=None,
             orderly=OrderlyCustomMetadata(),
-            envir=globals(),
         )
 
 
