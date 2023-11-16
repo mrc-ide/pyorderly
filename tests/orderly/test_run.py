@@ -1,7 +1,11 @@
 import shutil
 
 import pytest
-from orderly.run import _validate_src_directory, orderly_run
+from orderly.run import (
+    _validate_parameters,
+    _validate_src_directory,
+    orderly_run,
+)
 
 from outpack.init import outpack_init
 from outpack.metadata import read_metadata_core
@@ -218,4 +222,27 @@ def test_can_run_with_parameters(tmp_path):
     assert result == "a: 1\nb: 2\n"
     meta = root_open(tmp_path, False).index.metadata(id)
     assert meta.parameters == {"a": 1, "b": 2}
+
+
+def test_can_validate_parameters():
+    assert _validate_parameters({}, {}) == {}
+    assert _validate_parameters(None, {}) == {}
+    assert _validate_parameters({"a": 10}, {"a": 1}) == {"a": 10}
+    assert _validate_parameters({"a": 10}, {"a": None}) == {"a": 10}
+    assert _validate_parameters({}, {"a": 1}) == {"a": 1}
+    assert _validate_parameters(None, {"a": 1}) == {"a": 1}
+    with pytest.raises(Exception, match="Parameters given, but none declared"):
+        _validate_parameters({"a": 1}, {})
+    with pytest.raises(Exception, match="Missing parameters: a"):
+        _validate_parameters({}, {"a": None})
+    with pytest.raises(Exception, match="Missing parameters: ., .$"):
+        _validate_parameters({}, {"a": None, "b": None})
+    with pytest.raises(Exception, match="Missing parameters: b$"):
+        _validate_parameters({}, {"a": 1, "b": None})
+    with pytest.raises(Exception, match="Unknown parameters: b$"):
+        _validate_parameters({"b": 1}, {"a": 1})
+    with pytest.raises(
+        Exception, match="Expected parameter a to be a simple value"
+    ):
+        _validate_parameters({"a": str}, {"a": 1})
 

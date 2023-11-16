@@ -78,7 +78,7 @@ def _validate_parameters(given, defaults):
 
     extra = set(given.keys()).difference(defaults.keys())
     if extra:
-        msg = f"Unknown parameters: {', '.join(missing)}"
+        msg = f"Unknown parameters: {', '.join(extra)}"
         raise Exception(msg)
 
     ret = defaults.copy()
