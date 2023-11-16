@@ -107,7 +107,7 @@ def test_read_string(tmp_path):
 
 
 def test_can_inject_data_into_run(tmp_path):
-    lines = ["with open('result.txt', 'w') as f:\n" "  f.write(str(a))\n"]
+    lines = ["with open('result.txt', 'w') as f:\n  f.write(str(a))\n"]
     path = tmp_path / "script.py"
     with open(path, "w") as f:
         f.writelines(lines)

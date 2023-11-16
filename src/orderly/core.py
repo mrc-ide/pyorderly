@@ -28,6 +28,14 @@ class Description:
         return Description(None, None, None)
 
 
+def parameters(**kwargs):
+    ctx = get_active_context()
+    if ctx.is_active:
+        pass
+    else:
+        _check_parameters_interactive(ctx.envir, kwargs)
+
+
 def resource(files):
     """Declare that a file, or group of files, are an orderly resource.
 
@@ -165,3 +173,7 @@ def _prevent_multiple_calls(obj, what):
     if obj:
         msg = f"Only one call to '{what}' is allowed"
         raise Exception(msg)
+
+
+def _check_parameters_interactive(envir, defaults):
+    pass

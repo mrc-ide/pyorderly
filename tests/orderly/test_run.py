@@ -208,3 +208,14 @@ def test_can_run_simple_dependency(tmp_path):
     assert len(meta.depends[0].files)
     assert meta.depends[0].files[0].here == "input.txt"
     assert meta.depends[0].files[0].there == "result.txt"
+
+
+def test_can_run_with_parameters(tmp_path):
+    helpers.create_orderly_root(tmp_path, ["parameters"])
+    id = orderly_run("parameters", parameters={"b": 2}, root=tmp_path)
+    with open(tmp_path / "archive" / "parameters" / id / "result.txt") as f:
+        result = f.read()
+    assert result == "a: 1\nb: 2\n"
+    meta = root_open(tmp_path, False).index.metadata(id)
+    assert meta.parameters == {"a": 1, "b": 2}
+
