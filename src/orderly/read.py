@@ -59,7 +59,7 @@ def _read_parameters(call):
             msg = f"Duplicate argument '{nm}' to 'parameters()'"
             raise Exception(msg)
         if not isinstance(value, ast.Constant):
-            msg = f"Invalid value for argument '{nm}' to 'parameters()': {ast.unparse(value)}"
+            msg = f"Invalid value for argument '{nm}' to 'parameters()'"
             raise Exception(msg)
         data[nm] = kw.value.value
     return {"name": "parameters", "data": data}

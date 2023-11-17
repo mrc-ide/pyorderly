@@ -1,5 +1,6 @@
 import ast
 import re
+import sys
 
 import pytest
 from orderly.read import _read_py, orderly_read
@@ -18,11 +19,12 @@ def test_skip_over_uninteresting_calls():
 
 
 def test_prevent_complex_types_in_parameters():
-    msg = "Invalid value for argument 'a' to 'parameters()': len"
+    msg = "Invalid value for argument 'a' to 'parameters()'"
     with pytest.raises(Exception, match=re.escape(msg)):
         _read_py(ast.parse("orderly.parameters(a=len)"))
 
 
+@pytest.mark.skipif(sys.version_info < (3, 9), reason="requires 3.9 or later")
 def test_prevent_duplicate_arguments():
     msg = "Duplicate argument 'a' to 'parameters()'"
     with pytest.raises(Exception, match=re.escape(msg)):
