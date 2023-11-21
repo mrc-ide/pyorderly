@@ -39,7 +39,7 @@ def parameters(**kwargs):  # noqa: ARG001
 
     Returns
     -------
-    Nothing, this function hs no effect at all!
+    Nothing, this function has no effect at all!
     """
     pass
 
