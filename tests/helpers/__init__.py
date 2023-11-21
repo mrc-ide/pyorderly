@@ -1,6 +1,7 @@
 import os
 import random
 import shutil
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from outpack.init import outpack_init
@@ -32,3 +33,12 @@ def create_orderly_root(path, examples):
         path_src = path / "src" / ex
         path_src.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(f"tests/orderly/examples/{ex}", path_src)
+
+
+def copy_examples(names, root):
+    if isinstance(names, str):
+        names = [names]
+    for nm in names:
+        path_src = root.path / "src" / nm
+        path_src.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(Path("tests/orderly/examples") / nm, path_src)
