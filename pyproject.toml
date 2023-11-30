@@ -181,7 +181,6 @@ exclude_lines = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["tests"]
 testpaths = ["tests"]
 
 # https://github.com/libgit2/pygit2/issues/709
