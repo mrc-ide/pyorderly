@@ -184,7 +184,9 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
 
 
 def test_can_run_with_description(tmp_path):
-    helpers.create_orderly_root(tmp_path, ["description"])
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("description", root)
+
     id = orderly_run("description", root=tmp_path)
     meta = root_open(tmp_path, False).index.metadata(id)
     assert meta.custom["orderly"]["description"] == {
@@ -202,7 +204,7 @@ def test_can_run_simple_dependency(tmp_path):
     meta = root.index.metadata(id2)
     assert len(meta.depends) == 1
     assert meta.depends[0].packet == id1
-    assert meta.depends[0].query == "latest()"
+    assert meta.depends[0].query == "latest"
     assert len(meta.depends[0].files)
     assert meta.depends[0].files[0].here == "input.txt"
     assert meta.depends[0].files[0].there == "result.txt"

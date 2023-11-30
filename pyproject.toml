@@ -28,8 +28,11 @@ dependencies = [
   "dataclasses-json",
   "importlib_resources",
   "jsonschema",
-  "pygit2"
+  "pygit2",
+  "outpack_query_parser @ git+https://github.com/mrc-ide/outpack_server@python-bindings"
 ]
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [project.urls]
 Documentation = "https://github.com/mrc-ide/outpack#readme"
@@ -186,4 +189,8 @@ testpaths = ["tests"]
 # https://github.com/libgit2/pygit2/issues/709
 [[tool.mypy.overrides]]
 module = "pygit2"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "outpack_query_parser"
 ignore_missing_imports = true

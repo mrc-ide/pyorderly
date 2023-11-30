@@ -13,8 +13,7 @@ from outpack.metadata import (
 )
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version, validate
-from outpack.search import search
-from outpack.search_query import as_query
+from outpack.search import as_query, search_unique
 from outpack.tools import git_info
 from outpack.util import all_normal_files
 
@@ -41,17 +40,19 @@ class Packet:
         self.metadata = None
         self.immutable = {}
 
-    def use_dependency(self, query, files, search_options=None):
-        query = as_query(query)
-        # check query.is_single - can't be done until query expanded...
-        id = search(query, options=search_options, root=self.root)
-        if not id:
-            msg = f"Failed to find packet for query {query}"
-            raise Exception(msg)
+    def use_dependency(self, query, files=None, search_options=None):
+        if files is None:
+            files = {}
 
+        query = as_query(query)
+
+        id = search_unique(
+            query, options=search_options, root=self.root, this=self.parameters
+        )
         result = copy_files(id, files, self.path, root=self.root)
         for f in result.files.keys():
             self.mark_file_immutable(f)
+
         d = PacketDepends(id, str(query), PacketDepends.files_from_dict(files))
         self.depends.append(d)
         return result
