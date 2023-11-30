@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import helpers
 import pytest
 
 from outpack.config import read_config
@@ -9,6 +8,8 @@ from outpack.index import Index
 from outpack.init import outpack_init
 from outpack.root import find_file_by_hash, root_open
 from outpack.util import transient_working_directory
+
+from . import helpers
 
 
 def test_can_open_existing_root():

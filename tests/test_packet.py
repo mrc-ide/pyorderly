@@ -1,12 +1,13 @@
 import time
 
-import helpers
 import pytest
 
 from outpack.init import outpack_init
 from outpack.metadata import PacketDependsPath
 from outpack.packet import Packet
 from outpack.root import root_open
+
+from . import helpers
 
 
 def test_can_add_simple_packet(tmp_path):

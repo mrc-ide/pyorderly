@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from outpack.packet import Packet
 from outpack.root import OutpackRoot, root_open
@@ -18,7 +19,7 @@ class OrderlyContext:
     # Indicates if a packet is currently running
     is_active: bool
     # The active packet, if one is running
-    packet: Packet or None
+    packet: Optional[Packet]
     # the path to the packet running directory. This is a pathlib Path object
     path: Path
     # the path to the packet source
@@ -30,7 +31,7 @@ class OrderlyContext:
     # The name of the packet
     name: str
     # The id of the packet, only non-None if active
-    id: str or None
+    id: Optional[str]
     # Special orderly custom metadata
     orderly: OrderlyCustomMetadata
 
@@ -78,6 +79,7 @@ class ActiveOrderlyContext:
     def __exit__(self, exc_type, exc_value, exc_tb):
         ActiveOrderlyContext._context = None
 
+    @staticmethod
     def current():
         return ActiveOrderlyContext._context
 

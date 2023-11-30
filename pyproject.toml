@@ -69,14 +69,13 @@ cov-ci = [
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
 [tool.hatch.envs.lint]
-detached = true
-dependencies = [
+extra-dependencies = [
   "black>=23.1.0",
   "mypy>=1.0.0",
   "ruff>=0.0.243",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/outpack tests}"
+typing = "mypy --install-types --non-interactive {args:src tests}"
 style = [
   "ruff {args:.}",
   "black --check --diff {args:.}",
@@ -184,3 +183,8 @@ exclude_lines = [
 [tool.pytest.ini_options]
 pythonpath = ["tests"]
 testpaths = ["tests"]
+
+# https://github.com/libgit2/pygit2/issues/709
+[[tool.mypy.overrides]]
+module = "pygit2"
+ignore_missing_imports = true
