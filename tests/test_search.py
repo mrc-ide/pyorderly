@@ -68,6 +68,9 @@ def test_single_valued():
     assert not Query.parse(
         "id != '20230807-152345-1ad02157'"
     ).is_single_valued()
+    assert not Query.parse(
+        "(id == '20230807-152345-1ad02157') || (id == '20230814-163026-ac5900c0')"
+    ).is_single_valued()
 
 
 def test_search_unique_succeeds(tmp_path):
@@ -105,6 +108,100 @@ def test_search_unique_fails_on_non_single_values(tmp_path):
         Exception, match="Query is not guaranteed to return a single packet."
     ):
         search_unique(f"id != '{id}'", root=root)
+
+
+def test_search_with_this_parameter(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id1 = create_random_packet(root, name="foo")
+    id2 = create_random_packet(root, name="bar")
+
+    assert search("name == this:x", root=root, this={"x": "foo"}) == {id1}
+    assert search("name == this:x", root=root, this={"x": "bar"}) == {id2}
+    assert search("name == this:x", root=root, this={"x": "baz"}) == set()
+
+
+def test_search_with_missing_this_parameter(tmp_path):
+    root = create_temporary_root(tmp_path)
+    create_random_packet(root)
+
+    with pytest.raises(
+        Exception, match="this parameters are not supported in this context"
+    ):
+        search("name == this:x", root=root)
+
+    with pytest.raises(Exception, match="Parameter `x` was not found"):
+        search("name == this:x", root=root, this={"y": 1})
+
+
+def test_search_with_missing_parameter(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id1 = create_random_packet(root, parameters={"x": 1})
+    id2 = create_random_packet(root, parameters={"y": 1})
+
+    # Missing parameters are just silently ignored
+    assert search("parameter:x == 1", root=root) == {id1}
+    assert search("parameter:y == 1", root=root) == {id2}
+
+
+def test_search_with_negation(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id1 = create_random_packet(root, name="data", parameters={"x": 1})
+    id2 = create_random_packet(root, name="data", parameters={"x": 2})
+    id3 = create_random_packet(root, name="other")
+
+    assert search("!(name == 'other')", root=root) == {id1, id2}
+    assert search("!(name == 'data')", root=root) == {id3}
+
+    # These two have slightly semantics when the x parameter is undefined.
+    # Former matches even when x is missing, latter does not.
+    assert search("!(parameter:x == 1)", root=root) == {id2, id3}
+    assert search("parameter:x != 1", root=root) == {id2}
+
+
+def test_search_boolean(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id1 = create_random_packet(root, name="data", parameters={"x": 1})
+    id2 = create_random_packet(root, name="data", parameters={"x": 2})
+    id3 = create_random_packet(root, name="other", parameters={"x": 1})
+    id4 = create_random_packet(root, name="other", parameters={"x": 2})
+
+    assert search("name == 'data' && parameter:x == 1", root=root) == {id1}
+    assert search("name == 'data' || parameter:x == 1", root=root) == {
+        id1,
+        id2,
+        id3,
+    }
+    assert search("parameter:x == 1 || parameter:x == 2", root=root) == {
+        id1,
+        id2,
+        id3,
+        id4,
+    }
+
+
+def test_search_comparison(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id1 = create_random_packet(root, parameters={"number": 1})
+    id2 = create_random_packet(root, parameters={"number": 2})
+    id3 = create_random_packet(root, parameters={"number": 3})
+    id4 = create_random_packet(root, parameters={"number": 4})
+
+    assert search("parameter:number == 1", root=root) == {id1}
+    assert search("parameter:number != 1", root=root) == {id2, id3, id4}
+    assert search("parameter:number > 2", root=root) == {id3, id4}
+    assert search("parameter:number >= 2", root=root) == {id2, id3, id4}
+    assert search("parameter:number < 3", root=root) == {id1, id2}
+    assert search("parameter:number <= 3", root=root) == {id1, id2, id3}
+
+
+def test_search_environment_not_supported(tmp_path):
+    root = create_temporary_root(tmp_path)
+    create_random_packet(root)
+
+    with pytest.raises(
+        NotImplementedError, match="environment lookup is not supported"
+    ):
+        search("name == environment:x", root=root)
 
 
 def test_can_not_pass_remote_options(tmp_path):

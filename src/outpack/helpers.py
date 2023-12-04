@@ -1,11 +1,8 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from outpack.root import as_root
 
-
-def copy_files(id, files, dest, *, root=None):
-    root = as_root(root)
+def copy_files(id, files, dest, root):
     plan = _plan_copy_files(root, id, files)
     for here, there in plan.files.items():
         root.export_file(id, there, here, dest)

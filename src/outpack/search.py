@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Set, Union
 import outpack_query_parser as parser
 
 from outpack.metadata import MetadataCore, Parameters
-from outpack.root import OutpackRoot, as_root
+from outpack.root import OutpackRoot
 from outpack.search_options import SearchOptions
 
 
@@ -70,8 +70,8 @@ def as_query(query: Union[Query, str]) -> Query:
 def search(
     query: Union[Query, str],
     *,
-    options=None,
-    root=None,
+    root: OutpackRoot,
+    options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
 ) -> Set[str]:
     """
@@ -81,7 +81,6 @@ def search(
     """
     if options is None:
         options = SearchOptions()
-    root = as_root(root)
     query = as_query(query)
     env = QueryEnv(root, options, this)
 
@@ -91,8 +90,8 @@ def search(
 def search_unique(
     query: Union[Query, str],
     *,
-    options=None,
-    root=None,
+    root: OutpackRoot,
+    options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
 ):
     """
@@ -108,7 +107,7 @@ def search_unique(
         raise Exception(msg)
 
     results = search(query, options=options, root=root, this=this)
-    if len(results) > 1:
+    if len(results) > 1:  # pragma: no cover
         msg = "Query unexpectedly returned more than one result"
         raise AssertionError(msg)
 
@@ -141,11 +140,10 @@ def eval_test_value(
                 raise Exception(msg)
 
             return value
-
     elif isinstance(node, parser.LookupEnvironment):
         msg = "environment lookup is not supported yet"
         raise NotImplementedError(msg)
-    else:
+    else:  # pragma: no cover
         msg = f"Unhandled test value: {node}"
         raise NotImplementedError(msg)
 
@@ -197,7 +195,7 @@ def eval_test_one(
         return is_numerical and (lhs > rhs)
     elif node.operator == parser.TestOperator.GreaterThanOrEqual:
         return is_numerical and (lhs >= rhs)
-    else:
+    else:  # pragma: no cover
         msg = f"Unhandled test operator: {node.operator}"
         raise NotImplementedError(msg)
 
@@ -218,7 +216,7 @@ def eval_boolean(node: parser.BooleanExpr, env: QueryEnv) -> Set[str]:
         return lhs & rhs
     elif node.operator == parser.BooleanOperator.Or:
         return lhs | rhs
-    else:
+    else:  # pragma: no cover
         msg = f"Unhandled boolean operator: {node.operator}"
         raise NotImplementedError(msg)
 
@@ -238,9 +236,9 @@ def eval_query(node, env: QueryEnv) -> Set[str]:
     elif isinstance(node, parser.BooleanExpr):
         return eval_boolean(node, env)
     elif isinstance(node, parser.Negation):
-        return eval_query(node.inner, env)
+        return eval_negation(node, env)
     elif isinstance(node, parser.Brackets):
         return eval_query(node.inner, env)
-    else:
+    else:  # pragma: no cover
         msg = f"Unhandled query expression: {node}"
         raise NotImplementedError(msg)
