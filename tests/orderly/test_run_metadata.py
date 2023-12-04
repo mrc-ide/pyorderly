@@ -1,6 +1,5 @@
 import sys
 
-import helpers
 import orderly
 import pytest
 from orderly.current import ActiveOrderlyContext
@@ -8,6 +7,8 @@ from orderly.run import orderly_run
 
 from outpack.packet import Packet
 from outpack.util import transient_working_directory
+
+from .. import helpers
 
 
 def test_resource_requires_that_files_exist_with_no_packet(tmp_path):

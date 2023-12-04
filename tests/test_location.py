@@ -1,7 +1,6 @@
 import json
 
 import pytest
-from helpers import create_random_packet, create_temporary_root
 
 from outpack.ids import outpack_id
 from outpack.location import (
@@ -13,6 +12,8 @@ from outpack.location import (
     outpack_location_rename,
 )
 from outpack.util import read_string
+
+from .helpers import create_random_packet, create_temporary_root
 
 
 def test_no_locations_except_local_by_default(tmp_path):

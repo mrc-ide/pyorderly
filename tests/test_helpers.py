@@ -1,7 +1,8 @@
-import helpers
 import pytest
 
 from outpack.helpers import _plan_copy_files, _validate_files
+
+from . import helpers
 
 
 def test_can_clean_file_input():

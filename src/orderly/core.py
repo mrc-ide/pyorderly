@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from dataclasses_json import dataclass_json
 
@@ -13,8 +13,8 @@ from outpack.search_query import as_query
 @dataclass_json()
 @dataclass
 class Artefact:
-    name: str = None
-    files: List[str] = None
+    name: str
+    files: List[str]
 
 
 @dataclass_json()
@@ -22,7 +22,7 @@ class Artefact:
 class Description:
     display: str
     long: str
-    custom: Dict[str, str or int or bool]
+    custom: Dict[str, Union[str, int, bool]]
 
     @staticmethod
     def empty():

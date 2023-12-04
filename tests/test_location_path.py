@@ -1,11 +1,12 @@
 import os
 
 import pytest
-from helpers import create_random_packet, create_temporary_root
 
 from outpack.hash import hash_file
 from outpack.location_path import OutpackLocationPath
 from outpack.util import read_string
+
+from .helpers import create_random_packet, create_temporary_root
 
 
 def test_can_construct_location_path_object(tmp_path):

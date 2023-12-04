@@ -4,3 +4,4 @@ __pycache__
 example/.outpack/index/outpack.rds
 example/draft/
 .idea
+/dist

@@ -1,12 +1,13 @@
 import shutil
 
-import helpers
 import pytest
 from orderly.run import _validate_src_directory, orderly_run
 
 from outpack.init import outpack_init
 from outpack.metadata import read_metadata_core
 from outpack.root import root_open
+
+from .. import helpers
 
 
 ## We're going to need a small test helper module here at some point,
