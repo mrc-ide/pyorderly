@@ -1,10 +1,11 @@
+import os
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Set, Union
 
 import outpack_query_parser as parser
 
 from outpack.metadata import MetadataCore, Parameters
-from outpack.root import OutpackRoot
+from outpack.root import OutpackRoot, root_open
 from outpack.search_options import SearchOptions
 
 
@@ -39,7 +40,12 @@ class Query:
 
 
 class QueryEnv:
-    def __init__(self, root, options, this: Optional[Parameters]):
+    def __init__(
+        self,
+        root: OutpackRoot,
+        options: SearchOptions,
+        this: Optional[Parameters],
+    ):
         self.index = QueryIndex(root, options)
         self.this = this
 
@@ -70,7 +76,7 @@ def as_query(query: Union[Query, str]) -> Query:
 def search(
     query: Union[Query, str],
     *,
-    root: OutpackRoot,
+    root: Union[OutpackRoot, str, os.PathLike],
     options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
 ) -> Set[str]:
@@ -81,6 +87,8 @@ def search(
     """
     if options is None:
         options = SearchOptions()
+
+    root = root_open(root)
     query = as_query(query)
     env = QueryEnv(root, options, this)
 
@@ -90,7 +98,7 @@ def search(
 def search_unique(
     query: Union[Query, str],
     *,
-    root: OutpackRoot,
+    root: Union[OutpackRoot, str, os.PathLike],
     options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
 ):

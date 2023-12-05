@@ -9,7 +9,7 @@ from outpack.util import run_script
 
 
 def orderly_run(name, *, root=None, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
 
     path_src = _validate_src_directory(name, root)
 

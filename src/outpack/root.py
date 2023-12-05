@@ -1,6 +1,7 @@
 import os
 import shutil
 from pathlib import Path
+from typing import Union
 
 from outpack.config import read_config
 from outpack.filestore import FileStore
@@ -40,9 +41,12 @@ class OutpackRoot:
         return here
 
 
-def root_open(path, locate):
+def root_open(
+    path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False
+) -> OutpackRoot:
     if isinstance(path, OutpackRoot):
         return path
+
     if path is None:
         path = os.getcwd()
     path = Path(path)

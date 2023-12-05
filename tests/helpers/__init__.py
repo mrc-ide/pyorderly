@@ -43,7 +43,7 @@ def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
 
 def create_temporary_root(path, **kwargs):
     outpack_init(path, **kwargs)
-    return root_open(path, False)
+    return root_open(path, locate=False)
 
 
 def copy_examples(names, root):

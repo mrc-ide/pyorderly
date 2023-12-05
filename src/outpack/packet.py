@@ -23,7 +23,7 @@ class Packet:
     def __init__(
         self, root, path, name, *, parameters=None, id=None, locate=True
     ):
-        self.root = root_open(root, locate)
+        self.root = root_open(root, locate=locate)
         self.path = Path(path)
         if id is None:
             self.id = outpack_id()

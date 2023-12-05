@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from outpack.search import Query, search, search_unique
@@ -192,6 +194,18 @@ def test_search_comparison(tmp_path):
     assert search("parameter:number >= 2", root=root) == {id2, id3, id4}
     assert search("parameter:number < 3", root=root) == {id1, id2}
     assert search("parameter:number <= 3", root=root) == {id1, id2, id3}
+
+
+def test_search_accepts_str_or_path_root(tmp_path):
+    root = create_temporary_root(tmp_path)
+    id = create_random_packet(root, "data")
+
+    assert isinstance(root.path, Path)
+
+    assert search("latest(name == 'data')", root=root.path) == {id}
+    assert search("latest(name == 'data')", root=str(root.path)) == {id}
+    assert search_unique("latest(name == 'data')", root=root.path) == id
+    assert search_unique("latest(name == 'data')", root=str(root.path)) == id
 
 
 def test_search_environment_not_supported(tmp_path):

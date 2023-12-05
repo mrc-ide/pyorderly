@@ -26,7 +26,7 @@ def test_can_run_simple_example(tmp_path):
     assert not (path / "draft" / "data" / res).exists()
     # TODO: need a nicer way of doing this, one that would be part of
     # the public API.
-    meta = root_open(tmp_path, False).index.metadata(res)
+    meta = root_open(tmp_path).index.metadata(res)
     assert meta.id == res
     assert meta.name == "data"
     assert meta.parameters == {}
@@ -54,7 +54,7 @@ def test_failed_reports_are_not_saved(tmp_path):
     with pytest.raises(Exception, match="Running orderly report failed!"):
         orderly_run("data", root=path)
     assert not (tmp_path / "archive" / "data").exists()
-    assert len(root_open(tmp_path, False).index.unpacked()) == 0
+    assert len(root_open(tmp_path).index.unpacked()) == 0
 
     assert (tmp_path / "draft" / "data").exists()
     contents = list((tmp_path / "draft" / "data").iterdir())
@@ -64,7 +64,7 @@ def test_failed_reports_are_not_saved(tmp_path):
 
 def test_validate_report_src_directory(tmp_path):
     path = outpack_init(tmp_path)
-    root = root_open(path, False)
+    root = root_open(path)
     path_src = path / "src"
     path_src.mkdir()
 
@@ -97,7 +97,7 @@ def test_can_run_example_with_resource(tmp_path):
     shutil.copytree("tests/orderly/examples/resource", path_src)
     res = orderly_run("resource", root=path)
 
-    meta = root_open(tmp_path, False).index.metadata(res)
+    meta = root_open(tmp_path).index.metadata(res)
     assert meta.id == res
     assert meta.name == "resource"
     assert meta.parameters == {}
@@ -136,7 +136,7 @@ def test_can_run_example_with_artefact(tmp_path):
     assert not (path / "draft" / "artefact" / res).exists()
     # TODO: need a nicer way of doing this, one that would be part of
     # the public API.
-    meta = root_open(tmp_path, False).index.metadata(res)
+    meta = root_open(tmp_path).index.metadata(res)
     assert meta.id == res
     assert meta.name == "artefact"
     assert meta.parameters == {}
@@ -188,7 +188,7 @@ def test_can_run_with_description(tmp_path):
     helpers.copy_examples("description", root)
 
     id = orderly_run("description", root=tmp_path)
-    meta = root_open(tmp_path, False).index.metadata(id)
+    meta = root_open(tmp_path).index.metadata(id)
     assert meta.custom["orderly"]["description"] == {
         "display": "Some report",
         "long": None,

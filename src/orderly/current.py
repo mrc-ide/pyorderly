@@ -95,4 +95,4 @@ def detect_orderly_interactive_root(path):
     if not ok:
         msg = f"Failed to detect orderly path at {path}"
         raise Exception(msg)
-    return root_open(root, False)
+    return root_open(root, locate=False)

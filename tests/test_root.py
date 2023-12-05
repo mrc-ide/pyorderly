@@ -13,7 +13,7 @@ from . import helpers
 
 
 def test_can_open_existing_root():
-    r = root_open("example", False)
+    r = root_open("example")
     assert r.config == read_config("example")
     assert isinstance(r.files, FileStore)
     assert isinstance(r.index, Index)
@@ -21,51 +21,52 @@ def test_can_open_existing_root():
 
 def test_can_open_root_with_no_store(tmp_path):
     outpack_init(tmp_path)
-    r = root_open(tmp_path, False)
+    r = root_open(tmp_path)
     assert r.config == read_config(tmp_path)
     assert r.files is None
     assert isinstance(r.index, Index)
 
 
 def test_can_open_root_from_a_subdir():
-    r = root_open("example", False)
-    assert root_open("example/src", True).path == r.path
-    assert root_open("example/src/data", True).path == r.path
+    r = root_open("example", locate=False)
+    assert root_open("example/src", locate=True).path == r.path
+    assert root_open("example/src/data", locate=True).path == r.path
 
 
 def test_can_open_root_from_wd():
     p = Path("example").resolve()
     with transient_working_directory("example"):
-        assert root_open(None, True).path == p
-        assert root_open(None, False).path == p
+        assert root_open(None, locate=True).path == p
+        assert root_open(None, locate=False).path == p
 
 
 def test_can_error_if_recursion_to_find_root_fails():
     p = Path("example").resolve()
     with transient_working_directory("example/src/data"):
-        assert root_open(None, True).path == p
+        assert root_open(None, locate=True).path == p
+
         with pytest.raises(Exception, match="Did not find existing outpack"):
-            assert root_open(None, False).path == p
+            assert root_open(None, locate=False).path == p
 
 
 def test_roots_are_handed_back():
-    r = root_open("example", False)
-    assert root_open(r, True) == r
-    assert root_open(r, False) == r
+    r = root_open("example")
+    assert root_open(r, locate=True) == r
+    assert root_open(r, locate=False) == r
 
 
 def test_paths_must_be_directories(tmp_path):
     p = tmp_path / "p"
-    with p.open("w"):
-        pass
+    p.touch()
+
     with pytest.raises(Exception, match="to be an existing directory"):
-        assert root_open(p, False)
+        assert root_open(p)
 
 
 def test_can_find_file_by_hash(tmp_path):
     outpack_init(tmp_path, use_file_store=False, path_archive="archive")
     id = [helpers.create_random_packet(tmp_path) for _ in range(3)]
-    root = root_open(tmp_path, False)
+    root = root_open(tmp_path)
     meta = root.index.metadata(id[1])
     hash = meta.files[0].hash
     assert (
@@ -78,7 +79,7 @@ def test_can_find_file_by_hash(tmp_path):
 def test_can_reject_corrupted_files(tmp_path, capsys):
     outpack_init(tmp_path, use_file_store=False, path_archive="archive")
     id = [helpers.create_random_packet(tmp_path) for _ in range(3)]
-    root = root_open(tmp_path, False)
+    root = root_open(tmp_path)
     meta = root.index.metadata(id[1])
     hash = meta.files[0].hash
     path = root.path / "archive" / "data" / id[1] / "data.txt"
@@ -98,7 +99,7 @@ def test_can_reject_corrupted_files(tmp_path, capsys):
 def test_can_export_files_from_root_using_store(tmp_path):
     outpack_init(tmp_path, use_file_store=True, path_archive=None)
     id = helpers.create_random_packet(tmp_path)
-    r = root_open(tmp_path, False)
+    r = root_open(tmp_path)
     dest = tmp_path / "dest"
     res = r.export_file(id, "data.txt", "result.txt", dest)
     assert res == "result.txt"
@@ -108,7 +109,7 @@ def test_can_export_files_from_root_using_store(tmp_path):
 def test_can_export_files_from_root_using_archive(tmp_path):
     outpack_init(tmp_path, use_file_store=False, path_archive="archive")
     id = helpers.create_random_packet(tmp_path)
-    r = root_open(tmp_path, False)
+    r = root_open(tmp_path)
     dest = tmp_path / "dest"
     res = r.export_file(id, "data.txt", "result.txt", dest)
     assert res == "result.txt"
