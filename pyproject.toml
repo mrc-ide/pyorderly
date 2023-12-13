@@ -29,10 +29,8 @@ dependencies = [
   "importlib_resources",
   "jsonschema",
   "pygit2",
-  "outpack_query_parser @ git+https://github.com/mrc-ide/outpack_server@python-bindings"
+  "outpack-query-parser"
 ]
-[tool.hatch.metadata]
-allow-direct-references = true
 
 [project.urls]
 Documentation = "https://github.com/mrc-ide/outpack#readme"
