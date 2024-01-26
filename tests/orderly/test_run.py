@@ -244,4 +244,3 @@ def test_can_validate_parameters():
     err = "Expected parameter a to be a simple value"
     with pytest.raises(Exception, match=err):
         _validate_parameters({"a": str}, {"a": 1})
-
