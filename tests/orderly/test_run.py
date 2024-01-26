@@ -241,8 +241,7 @@ def test_can_validate_parameters():
         _validate_parameters({}, {"a": 1, "b": None})
     with pytest.raises(Exception, match="Unknown parameters: b$"):
         _validate_parameters({"b": 1}, {"a": 1})
-    with pytest.raises(
-        Exception, match="Expected parameter a to be a simple value"
-    ):
+    err = "Expected parameter a to be a simple value"
+    with pytest.raises(Exception, match=err):
         _validate_parameters({"a": str}, {"a": 1})
 
