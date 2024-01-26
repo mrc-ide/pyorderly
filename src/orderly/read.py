@@ -18,8 +18,8 @@ def _read_py(src):
     ret = {"parameters": []}
     for expr in src.body:
         dat = _read_expr(expr)
-        if dat:
-            if dat["name"] == "parameters" and ret["parameters"]:
+        if dat and dat["name"] == "parameters":
+            if ret["parameters"]:
                 msg = f"Duplicate call to 'parameters()' on line {expr.lineno}"
                 raise Exception(msg)
             ret["parameters"].append(dat["data"])
@@ -28,8 +28,6 @@ def _read_py(src):
 
 
 def _read_expr(expr):
-    if isinstance(expr, ast.Assign):
-        return _read_expr(expr.value)
     if _is_orderly_call(expr):
         if expr.value.func.attr == "parameters":
             return _read_parameters(expr.value)
