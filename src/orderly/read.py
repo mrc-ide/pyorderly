@@ -2,8 +2,7 @@ import ast
 
 
 def orderly_read(path):
-    with open(path) as f:
-        src = ast.parse(f.read())
+    src = ast.parse(path.read_text())
     return _read_py(src)
 
 
