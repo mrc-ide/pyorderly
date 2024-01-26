@@ -1,60 +1,252 @@
-from outpack.root import as_root
+import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional, Set, Union
+
+import outpack_query_parser as parser
+
+from outpack.metadata import MetadataCore, Parameters
+from outpack.root import OutpackRoot, root_open
 from outpack.search_options import SearchOptions
-from outpack.search_query import as_query
+
+
+@dataclass
+class Query:
+    text: str
+    node: Any
+
+    def __str__(self):
+        return self.text
+
+    @classmethod
+    def parse(cls, text):
+        return cls(text, parser.parse_query(text))
+
+    def is_single_valued(self):
+        """
+        Return true if the query is guaranteed to produce at most a single result.
+
+        This could be either an expression wrapped in a `single(...)` or
+        `latest(...)` call, or it is an ID lookup of the form `id == ...`.
+        """
+        if isinstance(self.node, (parser.Single, parser.Latest)):
+            return True
+        elif isinstance(self.node, parser.Test):
+            return self.node.operator == parser.TestOperator.Equal and (
+                isinstance(self.node.lhs, parser.LookupId)
+                or isinstance(self.node.rhs, parser.LookupId)
+            )
+        else:
+            return False
 
 
 class QueryEnv:
-    def __init__(self, root, options):
+    def __init__(
+        self,
+        root: OutpackRoot,
+        options: SearchOptions,
+        this: Optional[Parameters],
+    ):
         self.index = QueryIndex(root, options)
+        self.this = this
 
 
 class QueryIndex:
-    root = None
-    index = None
-    options = None
-    _seen = None
+    root: OutpackRoot
+    index: Dict[str, MetadataCore]
+    options: SearchOptions
 
     def __init__(self, root, options):
         self.root = root
         if options.allow_remote:
             msg = "Can't use 'allow_remote' in search yet"
             raise NotImplementedError(msg)
+
         ids = root.index.unpacked()
         self.index = {i: root.index.metadata(i) for i in ids}
         self.options = options
-        self._seen = {}
 
 
-def search(expr, *, options=None, root=None):
+def as_query(query: Union[Query, str]) -> Query:
+    if isinstance(query, Query):
+        return query
+    else:
+        return Query.parse(query)
+
+
+def search(
+    query: Union[Query, str],
+    *,
+    root: Union[OutpackRoot, str, os.PathLike],
+    options: Optional[SearchOptions] = None,
+    this: Optional[Parameters] = None,
+) -> Set[str]:
+    """
+    Search an outpack repository for all packets that match the given query.
+
+    This may return zero or more packet IDs.
+    """
     if options is None:
         options = SearchOptions()
-    root = as_root(root)
-    query = as_query(expr)
-    env = QueryEnv(root, options)
-    return query_eval(query.expr, env)
+
+    root = root_open(root)
+    query = as_query(query)
+    env = QueryEnv(root, options, this)
+
+    return eval_query(query.node, env)
 
 
-def query_eval(expr, env):
-    if expr.kind == "latest":
-        return query_eval_latest(expr, env)
-    elif expr.kind == "id":
-        return query_eval_id(expr, env)
-    else:
-        msg = "Unhandled expression [outpack bug - please report]"
+def search_unique(
+    query: Union[Query, str],
+    *,
+    root: Union[OutpackRoot, str, os.PathLike],
+    options: Optional[SearchOptions] = None,
+    this: Optional[Parameters] = None,
+):
+    """
+    Search an outpack repository for a packet that matches the given query.
+
+    Returns a single packet ID. Throws an exception if no packet is found or if
+    the query is not syntactically guaranteed to find at most one.
+    """
+    query = as_query(query)
+
+    if not query.is_single_valued():
+        msg = "Query is not guaranteed to return a single packet. Try wrapping it in `latest` or `single`."
+        raise Exception(msg)
+
+    results = search(query, options=options, root=root, this=this)
+    if len(results) > 1:  # pragma: no cover
+        msg = "Query unexpectedly returned more than one result"
+        raise AssertionError(msg)
+
+    if not results:
+        msg = f"Failed to find packet for query {query}"
+        raise Exception(msg)
+
+    return next(iter(results))
+
+
+def eval_test_value(
+    node, env: QueryEnv, metadata: MetadataCore
+) -> Optional[Union[bool, int, float, str]]:
+    if isinstance(node, parser.Literal):
+        return node.value
+    elif isinstance(node, parser.LookupId):
+        return metadata.id
+    elif isinstance(node, parser.LookupName):
+        return metadata.name
+    elif isinstance(node, parser.LookupParameter):
+        return metadata.parameters.get(node.name)
+    elif isinstance(node, parser.LookupThis):
+        if env.this is None:
+            msg = "this parameters are not supported in this context"
+            raise Exception(msg)
+        else:
+            value = env.this.get(node.name)
+            if value is None:
+                msg = f"Parameter `{node.name}` was not found in current packet"
+                raise Exception(msg)
+
+            return value
+    elif isinstance(node, parser.LookupEnvironment):
+        msg = "environment lookup is not supported yet"
+        raise NotImplementedError(msg)
+    else:  # pragma: no cover
+        msg = f"Unhandled test value: {node}"
         raise NotImplementedError(msg)
 
 
-def query_eval_latest(query, env):
-    # Assertion here as a reminder we'll need to expand this.
-    assert len(query.args) == 0  # noqa: S101
-    candidates = env.index.index.keys()
-    if len(candidates) == 0:
-        return None
-    return max(candidates)
+def eval_latest(node: parser.Latest, env: QueryEnv) -> Set[str]:
+    if node.inner:
+        candidates = eval_query(node.inner, env)
+    else:
+        candidates = set(env.index.index.keys())
+
+    if candidates:
+        return {max(candidates)}
+    else:
+        return set()
 
 
-def query_eval_id(query, env):
-    packet_id = query.args[0]
-    if packet_id not in env.index.index:
-        return None
-    return packet_id
+def eval_single(node: parser.Single, env: QueryEnv) -> Set[str]:
+    candidates = eval_query(node.inner, env)
+    if len(candidates) != 1:
+        msg = f"Query found {len(candidates)} packets, but expected exactly one"
+        raise ValueError(msg)
+    return candidates
+
+
+def eval_test_one(
+    node: parser.Test, env: QueryEnv, metadata: MetadataCore
+) -> bool:
+    # mypy isn't very good at inferring type narrowing from the is_numerical
+    # condition. Use `Any` to silence it.
+    lhs: Any = eval_test_value(node.lhs, env, metadata)
+    rhs: Any = eval_test_value(node.rhs, env, metadata)
+
+    # We treat missing or ill-typed values as soft-failures. They evaluate to
+    # False but don't cause errors.
+    is_valid = lhs is not None and rhs is not None
+    is_numerical = isinstance(lhs, (float, int)) and isinstance(
+        rhs, (float, int)
+    )
+
+    if node.operator == parser.TestOperator.Equal:
+        return is_valid and (lhs == rhs)
+    elif node.operator == parser.TestOperator.NotEqual:
+        return is_valid and (lhs != rhs)
+    elif node.operator == parser.TestOperator.LessThan:
+        return is_numerical and (lhs < rhs)
+    elif node.operator == parser.TestOperator.LessThanOrEqual:
+        return is_numerical and (lhs <= rhs)
+    elif node.operator == parser.TestOperator.GreaterThan:
+        return is_numerical and (lhs > rhs)
+    elif node.operator == parser.TestOperator.GreaterThanOrEqual:
+        return is_numerical and (lhs >= rhs)
+    else:  # pragma: no cover
+        msg = f"Unhandled test operator: {node.operator}"
+        raise NotImplementedError(msg)
+
+
+def eval_test(node: parser.Test, env: QueryEnv) -> Set[str]:
+    return {
+        packet_id
+        for (packet_id, metadata) in env.index.index.items()
+        if eval_test_one(node, env, metadata)
+    }
+
+
+def eval_boolean(node: parser.BooleanExpr, env: QueryEnv) -> Set[str]:
+    lhs = eval_query(node.lhs, env)
+    rhs = eval_query(node.rhs, env)
+
+    if node.operator == parser.BooleanOperator.And:
+        return lhs & rhs
+    elif node.operator == parser.BooleanOperator.Or:
+        return lhs | rhs
+    else:  # pragma: no cover
+        msg = f"Unhandled boolean operator: {node.operator}"
+        raise NotImplementedError(msg)
+
+
+def eval_negation(node: parser.Negation, env: QueryEnv) -> Set[str]:
+    complement = eval_query(node.inner, env)
+    return set(env.index.index.keys()).difference(complement)
+
+
+def eval_query(node, env: QueryEnv) -> Set[str]:
+    if isinstance(node, parser.Latest):
+        return eval_latest(node, env)
+    elif isinstance(node, parser.Single):
+        return eval_single(node, env)
+    elif isinstance(node, parser.Test):
+        return eval_test(node, env)
+    elif isinstance(node, parser.BooleanExpr):
+        return eval_boolean(node, env)
+    elif isinstance(node, parser.Negation):
+        return eval_negation(node, env)
+    elif isinstance(node, parser.Brackets):
+        return eval_query(node.inner, env)
+    else:  # pragma: no cover
+        msg = f"Unhandled query expression: {node}"
+        raise NotImplementedError(msg)

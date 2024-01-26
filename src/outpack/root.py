@@ -1,19 +1,13 @@
 import os
 import shutil
 from pathlib import Path
+from typing import Union
 
 from outpack.config import read_config
 from outpack.filestore import FileStore
 from outpack.hash import hash_file, hash_parse
 from outpack.index import Index
 from outpack.util import find_file_descend
-
-
-def as_root(root):
-    if isinstance(root, OutpackRoot):
-        return root
-    else:
-        return OutpackRoot(root)
 
 
 class OutpackRoot:
@@ -47,9 +41,12 @@ class OutpackRoot:
         return here
 
 
-def root_open(path, locate):
+def root_open(
+    path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False
+) -> OutpackRoot:
     if isinstance(path, OutpackRoot):
         return path
+
     if path is None:
         path = os.getcwd()
     path = Path(path)

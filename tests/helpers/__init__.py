@@ -1,6 +1,6 @@
-import os
 import random
 import shutil
+from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -9,30 +9,41 @@ from outpack.packet import Packet
 from outpack.root import root_open
 
 
-def create_random_packet(root, name="data", parameters=None, packet_id=None):
-    d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+@contextmanager
+def create_packet(root, name, *, packet_id=None, parameters=None):
+    """
+    Create an Outpack packet.
+
+    This function should be used as a context manager in a `with` block. The
+    packet can be populated in the block's body. The packet gets completed and
+    added to the repository when the context manager is exited.
+    """
     with TemporaryDirectory() as src:
-        path_data = os.path.join(src, "data.txt")
+        p = Packet(root, src, name, id=packet_id, parameters=parameters)
+        try:
+            yield p
+        except BaseException:
+            p.end(insert=False)
+        else:
+            p.end(insert=True)
+
+
+def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
+    d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+
+    with create_packet(
+        root, name=name, parameters=parameters, packet_id=packet_id
+    ) as p:
+        path_data = p.path / "data.txt"
         with open(path_data, "w") as f:
             f.writelines(d)
-        p = Packet(root, src, name, id=packet_id, parameters=parameters)
-        p.end()
-        return p.id
+
+    return p.id
 
 
 def create_temporary_root(path, **kwargs):
     outpack_init(path, **kwargs)
-    return root_open(path, False)
-
-
-def create_orderly_root(path, examples):
-    outpack_init(path)
-    if isinstance(examples, str):
-        examples = [examples]
-    for ex in examples:
-        path_src = path / "src" / ex
-        path_src.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(f"tests/orderly/examples/{ex}", path_src)
+    return root_open(path, locate=False)
 
 
 def copy_examples(names, root):

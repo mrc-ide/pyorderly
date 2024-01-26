@@ -42,13 +42,16 @@ class PacketDepends:
         return [{"here": h, "there": t} for h, t, in files.items()]
 
 
+Parameters = Dict[str, Union[bool, int, float, str]]
+
+
 @dataclass_json()
 @dataclass
 class MetadataCore:
     schema_version: str
     id: str
     name: str
-    parameters: Dict[str, Union[bool, int, float, str]]
+    parameters: Parameters
     time: Dict[str, float]
     files: List[PacketFile]
     depends: List[PacketDepends]

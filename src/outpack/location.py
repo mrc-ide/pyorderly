@@ -17,12 +17,12 @@ from outpack.static import (
 
 
 def outpack_location_list(root=None, *, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
     return list(root.config.location.keys())
 
 
 def outpack_location_add(name, type, args, root=None, *, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
 
     if name in LOCATION_RESERVED_NAME:
         msg = f"Cannot add a location with reserved name '{name}'"
@@ -44,7 +44,7 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
 
 
 def outpack_location_remove(name, root=None, *, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
 
     if name in LOCATION_RESERVED_NAME:
         msg = f"Cannot remove default location '{name}'"
@@ -66,7 +66,7 @@ def outpack_location_remove(name, root=None, *, locate=True):
 
 
 def outpack_location_rename(old, new, root=None, *, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
 
     if old in LOCATION_RESERVED_NAME:
         msg = f"Cannot rename default location '{old}'"
@@ -120,7 +120,7 @@ def location_resolve_valid(
 
 
 def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
-    root = root_open(root, locate)
+    root = root_open(root, locate=locate)
     location_name = location_resolve_valid(
         location,
         root,

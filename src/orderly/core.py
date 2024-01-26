@@ -6,8 +6,7 @@ from dataclasses_json import dataclass_json
 from orderly.current import get_active_context
 from outpack import util
 from outpack.helpers import copy_files
-from outpack.search import search
-from outpack.search_query import as_query
+from outpack.search import search_unique
 
 
 @dataclass_json()
@@ -145,9 +144,7 @@ def dependency(name, query, files):
         # Later, we need to combine 'query' and 'name' if given.
         msg = "'name' must be None for now, we'll fix this later"
         raise Exception(msg)
-    query = as_query(query)
-    # TODO: once real queries are supporte we need to check that
-    # query.is_single is True
+
     if ctx.is_active:
         # TODO: search options here from need to come through from
         # orderly_run via the context, it's not passed through from
@@ -157,8 +154,9 @@ def dependency(name, query, files):
     else:
         # TODO: get options from the interactive search options, once
         # it does anything.
-        id = search(query, root=ctx.root)
+        id = search_unique(query, root=ctx.root)
         result = copy_files(id, files, ctx.path, root=ctx.root)
+
     # TODO: print about this, once we decide what that looks like generally
     return result
 
