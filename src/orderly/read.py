@@ -1,10 +1,11 @@
 import ast
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
 class ParametersCall:
-    value: ...
+    value: Any
 
 
 def orderly_read(path):
