@@ -1,7 +1,7 @@
 import ast
-from pathlib import Path
 import re
 import sys
+from pathlib import Path
 
 import pytest
 from orderly.read import _read_py, orderly_read
@@ -65,4 +65,4 @@ orderly.parameters(**pars)
 """
     msg = re.escape("Passing parameters as **kwargs is not supported")
     with pytest.raises(Exception, match=msg):
-        res = _read_py(ast.parse(code))
+        _read_py(ast.parse(code))
