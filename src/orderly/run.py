@@ -84,7 +84,7 @@ def _validate_parameters(given, defaults):
     ret = defaults.copy()
 
     for k, v in given.items():
-        if isinstance(v, (int, float, str)):
+        if not isinstance(v, (int, float, str)):
             msg = f"Expected parameter {k} to be a simple value"
             raise Exception(msg)
         ret[k] = v
