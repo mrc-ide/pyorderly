@@ -1,4 +1,5 @@
 import ast
+from pathlib import Path
 import re
 import sys
 
@@ -45,10 +46,10 @@ def test_prevent_multiple_calls_to_parameters():
 
 
 def test_can_read_orderly_py_with_no_parameters():
-    path = "tests/orderly/examples/data/orderly.py"
+    path = Path("tests/orderly/examples/data/orderly.py")
     assert orderly_read(path) == {"parameters": {}}
 
 
 def test_can_read_orderly_py_with_parameters():
-    path = "tests/orderly/examples/parameters/orderly.py"
+    path = Path("tests/orderly/examples/parameters/orderly.py")
     assert orderly_read(path) == {"parameters": {"a": 1, "b": None}}
