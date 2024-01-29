@@ -58,8 +58,14 @@ def _read_parameters(call):
         if nm in data:
             msg = f"Duplicate argument '{nm}' to 'parameters()'"
             raise Exception(msg)
-        if not isinstance(value, ast.Constant):
+        if not _is_valid_parameter_value(value):
             msg = f"Invalid value for argument '{nm}' to 'parameters()'"
             raise Exception(msg)
         data[nm] = kw.value.value
     return {"name": "parameters", "data": data}
+
+
+def _is_valid_parameter_value(value):
+    if not isinstance(value, ast.Constant):
+        return False
+    return value.value is None or isinstance(value.value, (float, int, str))
