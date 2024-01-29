@@ -70,8 +70,8 @@ def _validate_parameters(given, defaults):
         msg = "Parameters given, but none declared"
         raise Exception(msg)
 
-    required = [k for k, v in defaults.items() if v is None]
-    missing = set(required).difference(given.keys())
+    required = {k for k, v in defaults.items() if v is None}
+    missing = required.difference(given.keys())
     if missing:
         msg = f"Missing parameters: {', '.join(missing)}"
         raise Exception(msg)
