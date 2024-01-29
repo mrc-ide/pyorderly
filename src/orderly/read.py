@@ -51,6 +51,9 @@ def _read_parameters(call):
     data = {}
     for kw in call.keywords:
         nm = kw.arg
+        if kw.arg is None:
+            msg = "Passing parameters as **kwargs is not supported"
+            raise Exception(msg)
         value = kw.value
         if nm in data:
             msg = f"Duplicate argument '{nm}' to 'parameters()'"

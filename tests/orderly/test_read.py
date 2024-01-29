@@ -53,3 +53,16 @@ def test_can_read_orderly_py_with_no_parameters():
 def test_can_read_orderly_py_with_parameters():
     path = Path("tests/orderly/examples/parameters/orderly.py")
     assert orderly_read(path) == {"parameters": {"a": 1, "b": None}}
+
+
+def test_throw_nice_error_with_kwargs():
+    code = """
+pars = {
+  "x": 0,
+  "y": False
+}
+orderly.parameters(**pars)
+"""
+    msg = re.escape("Passing parameters as **kwargs is not supported")
+    with pytest.raises(Exception, match=msg):
+        res = _read_py(ast.parse(code))
