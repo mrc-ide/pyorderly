@@ -28,6 +28,22 @@ class Description:
         return Description(None, None, None)
 
 
+def parameters(**kwargs):  # noqa: ARG001
+    """Declare parameters used in a report.
+
+    Parameters
+    ----------
+    kwargs :
+      Keyword mappings of parameter names to default values (or to None
+      if no default is given)
+
+    Returns
+    -------
+    Nothing, this function has no effect at all!
+    """
+    pass
+
+
 def resource(files):
     """Declare that a file, or group of files, are an orderly resource.
 

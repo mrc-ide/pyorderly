@@ -2,16 +2,20 @@ import shutil
 
 from orderly.core import Description
 from orderly.current import ActiveOrderlyContext
+from orderly.read import orderly_read
 from outpack.ids import outpack_id
 from outpack.packet import Packet
 from outpack.root import root_open
 from outpack.util import run_script
 
 
-def orderly_run(name, *, root=None, locate=True):
+def orderly_run(name, *, parameters=None, root=None, locate=True):
     root = root_open(root, locate=locate)
 
     path_src = _validate_src_directory(name, root)
+
+    dat = orderly_read(path_src / "orderly.py")
+    envir = _validate_parameters(parameters, dat["parameters"])
 
     packet_id = outpack_id()
     path_dest = root.path / "draft" / name / packet_id
@@ -19,11 +23,13 @@ def orderly_run(name, *, root=None, locate=True):
 
     _copy_resources_implicit(path_src, path_dest)
 
-    packet = Packet(root, path_dest, name, id=packet_id, locate=False)
+    packet = Packet(
+        root, path_dest, name, id=packet_id, locate=False, parameters=envir
+    )
     try:
         with ActiveOrderlyContext(packet, path_src) as orderly:
             packet.mark_file_immutable("orderly.py")
-            run_script(path_dest, "orderly.py")
+            run_script(path_dest, "orderly.py", envir)
     except Exception as error:
         _orderly_cleanup_failure(packet)
         # This is pretty barebones for now; we will need to do some
@@ -54,6 +60,36 @@ def _validate_src_directory(name, root):
         msg = f"{msg}\n* {detail}"
         raise Exception(msg)
     return path
+
+
+def _validate_parameters(given, defaults):
+    if given is None:
+        given = {}
+
+    if given and not defaults:
+        msg = "Parameters given, but none declared"
+        raise Exception(msg)
+
+    required = {k for k, v in defaults.items() if v is None}
+    missing = required.difference(given.keys())
+    if missing:
+        msg = f"Missing parameters: {', '.join(missing)}"
+        raise Exception(msg)
+
+    extra = set(given.keys()).difference(defaults.keys())
+    if extra:
+        msg = f"Unknown parameters: {', '.join(extra)}"
+        raise Exception(msg)
+
+    ret = defaults.copy()
+
+    for k, v in given.items():
+        if not isinstance(v, (int, float, str)):
+            msg = f"Expected parameter {k} to be a simple value"
+            raise Exception(msg)
+        ret[k] = v
+
+    return ret
 
 
 def _copy_resources_implicit(src, dest):

@@ -11,6 +11,7 @@ from outpack.util import (
     match_value,
     num_to_time,
     read_string,
+    run_script,
     time_to_num,
 )
 
@@ -103,3 +104,14 @@ def test_read_string(tmp_path):
         f.writelines(lines)
 
     assert read_string(path) == "  this is my first  line\t  this is the second"
+
+
+def test_can_inject_data_into_run(tmp_path):
+    lines = ["with open('result.txt', 'w') as f:\n  f.write(str(a))\n"]
+    path = tmp_path / "script.py"
+    with open(path, "w") as f:
+        f.writelines(lines)
+    run_script(tmp_path, "script.py", {"a": "hello"})
+    assert tmp_path.joinpath("result.txt").exists()
+    with open(tmp_path.joinpath("result.txt")) as f:
+        assert f.read() == "hello"
