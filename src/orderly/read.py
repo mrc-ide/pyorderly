@@ -1,4 +1,10 @@
 import ast
+from dataclasses import dataclass
+
+
+@dataclass
+class ParametersCall:
+    value: ...
 
 
 def orderly_read(path):
@@ -18,11 +24,11 @@ def _read_py(src):
     ret = {"parameters": []}
     for expr in src.body:
         dat = _read_expr(expr)
-        if dat and dat["name"] == "parameters":
+        if dat and isinstance(dat, ParametersCall):
             if ret["parameters"]:
                 msg = f"Duplicate call to 'parameters()' on line {expr.lineno}"
                 raise Exception(msg)
-            ret["parameters"].append(dat["data"])
+            ret["parameters"].append(dat.value)
     ret["parameters"] = ret["parameters"][0] if ret["parameters"] else {}
     return ret
 
@@ -62,7 +68,7 @@ def _read_parameters(call):
             msg = f"Invalid value for argument '{nm}' to 'parameters()'"
             raise Exception(msg)
         data[nm] = kw.value.value
-    return {"name": "parameters", "data": data}
+    return ParametersCall(data)
 
 
 def _is_valid_parameter_value(value):
