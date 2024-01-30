@@ -12,7 +12,7 @@ from outpack.util import (
     num_to_time,
     read_string,
     run_script,
-    time_to_num,
+    time_to_num, format_list, pl, partition,
 )
 
 
@@ -115,3 +115,33 @@ def test_can_inject_data_into_run(tmp_path):
     assert tmp_path.joinpath("result.txt").exists()
     with open(tmp_path.joinpath("result.txt")) as f:
         assert f.read() == "hello"
+
+
+def test_can_format_list():
+    assert format_list(["one", "two"]) == "'one', 'two'"
+    assert format_list(["one"]) == "'one'"
+    format_set = format_list({"one", "two"})
+    assert format_set == "'one', 'two'" or format_set == "'two', 'one'"
+    assert format_list({"one", "one"}) == "'one'"
+
+
+def test_can_pluralise():
+    assert pl([], "item") == "items"
+    assert pl(["one"], "item") == "item"
+    assert pl(["one", "two"], "item") == "items"
+    assert pl({"Inky"}, "octopus", "octopodes") == "octopus"
+    assert (pl({"Inky", "Tentacool"}, "octopus", "octopodes") ==
+            "octopodes")
+    assert pl(2, "item") == "items"
+    assert pl(1, "item") == "item"
+
+
+def test_can_partition():
+    test_list = ["one", "two", "three", "four", "five"]
+    true_list, false_list = partition(lambda x: "e" in x, test_list)
+    assert true_list == ["one", "three", "five"]
+    assert false_list == ["two", "four"]
+
+    true_list, false_list = partition(lambda x: "z" in x, test_list)
+    assert true_list == []
+    assert false_list == test_list

@@ -1,15 +1,15 @@
 import pathlib
 from dataclasses import dataclass
-from typing import List
 
-from outpack.metadata import read_metadata_core, read_packet_location
+from outpack.metadata import read_metadata_core, read_packet_location, \
+    MetadataCore, PacketLocation
 
 
 @dataclass
 class IndexData:
-    metadata: dict
-    location: dict
-    unpacked: List[str]
+    metadata: dict[str, MetadataCore]
+    location: dict[str, dict[str, PacketLocation]]
+    unpacked: list[str]
 
     @staticmethod
     def new():
@@ -29,21 +29,28 @@ class Index:
         self.data = _index_update(self._path, self.data)
         return self
 
-    def all_metadata(self):
+    def all_metadata(self) -> dict[str, MetadataCore]:
         return self.refresh().data.metadata
 
-    def metadata(self, id):
+    def metadata(self, id) -> MetadataCore:
         if id in self.data.metadata:
             return self.data.metadata[id]
         return self.refresh().data.metadata[id]
 
-    def all_locations(self):
+    def all_locations(self) -> dict[str, dict[str, PacketLocation]]:
         return self.refresh().data.location
 
-    def location(self, name):
+    def location(self, name) -> dict[str, PacketLocation]:
         return self.refresh().data.location[name]
 
-    def unpacked(self):
+    def packets_in_location(self, name) -> list[str]:
+        try:
+            packets = list(self.location(name).keys())
+        except KeyError:
+            packets = []
+        return packets
+
+    def unpacked(self) -> list[str]:
         return self.refresh().data.unpacked
 
 
@@ -62,7 +69,7 @@ def _read_metadata(path_root, data):
     return data
 
 
-def _read_locations(path_root, data):
+def _read_locations(path_root, data) -> dict[str, dict[str, PacketLocation]]:
     path = path_root / ".outpack" / "location"
     for loc in path.iterdir():
         if loc.name not in data:

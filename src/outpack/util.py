@@ -3,6 +3,7 @@ import os
 import runpy
 import time
 from contextlib import contextmanager
+from itertools import tee, filterfalse
 from pathlib import Path
 
 
@@ -106,3 +107,30 @@ def read_string(path):
     with open(path) as f:
         lines = f.read().rstrip()
     return lines
+
+
+def format_list(x):
+    return ", ".join("'" + item + "'" for item in x)
+
+
+def pl(x, singular, plural=None):
+    if plural is None:
+        plural = singular + 's'
+
+    if isinstance(x, int):
+        length = x
+    else:
+        length = len(x)
+    return "{}".format(singular if length == 1 else plural)
+
+
+def partition(pred, iterable):
+    """Partition entries into false entries and true entries.
+
+    This is slightly modified version of partition from itertools
+    recipes https://docs.python.org/dev/library/itertools.html#itertools-recipes
+    If *pred* is slow, consider wrapping it with functools.lru_cache().
+    """
+    # partition(is_odd, range(10)) --> 1 3 5 7 9 and 0 2 4 6 8
+    t1, t2 = tee(iterable)
+    return list(filter(pred, t1)), list(filterfalse(pred, t2))

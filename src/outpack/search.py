@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Set, Union
 
 import outpack_query_parser as parser
 
+from outpack.ids import is_outpack_id
 from outpack.metadata import MetadataCore, Parameters
 from outpack.root import OutpackRoot, root_open
 from outpack.search_options import SearchOptions
@@ -70,6 +71,8 @@ def as_query(query: Union[Query, str]) -> Query:
     if isinstance(query, Query):
         return query
     else:
+        if is_outpack_id(query):
+            query = f"'{query}'"
         return Query.parse(query)
 
 

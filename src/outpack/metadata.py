@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -14,6 +14,7 @@ class PacketFile:
     path: str
     size: float
     hash: str
+    location: Optional[str] = field(default=None)
 
     @staticmethod
     def from_file(directory, path, hash_algorithm):
@@ -74,11 +75,11 @@ class PacketLocation:
     hash: str
 
 
-def read_metadata_core(path):
+def read_metadata_core(path) -> MetadataCore:
     with open(path) as f:
         return MetadataCore.from_json(f.read().strip())
 
 
-def read_packet_location(path):
+def read_packet_location(path) -> PacketLocation:
     with open(path) as f:
         return PacketLocation.from_json(f.read().strip())
