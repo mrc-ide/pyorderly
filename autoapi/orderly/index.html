@@ -21,12 +21,12 @@
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="orderly.core" href="core/index.html" />
-    <link rel="prev" title="outpack.util" href="../outpack/util/index.html" /> 
+    <link rel="prev" title="API Reference" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,11 +53,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../outpack/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="current/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.current</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="read/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.read</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="run/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a></li>
 </ul>
 </li>
@@ -67,6 +67,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../outpack/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -104,6 +105,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="current/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.current</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="read/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.read</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="run/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a></li>
 </ul>
 </div>
@@ -123,7 +125,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#orderly.description" title="orderly.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a>(*[, display, long, custom])</p></td>
 <td><p>Describe the current report.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#orderly.resource" title="orderly.resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code></a>(files)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.parameters" title="orderly.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code></a>(**kwargs)</p></td>
+<td><p>Declare parameters used in a report.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.resource" title="orderly.resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code></a>(files)</p></td>
 <td><p>Declare that a file, or group of files, are an orderly resource.</p></td>
 </tr>
 </tbody>
@@ -204,18 +209,36 @@ and string, number or boolean values.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="orderly.parameters">
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.parameters" title="Link to this definition"></a></dt>
+<dd><p>Declare parameters used in a report.</p>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>kwargs :</dt><dd><p>Keyword mappings of parameter names to default values (or to None
+if no default is given)</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<p>Nothing, this function has no effect at all!</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="orderly.resource">
 <span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.resource" title="Link to this definition"></a></dt>
 <dd><p>Declare that a file, or group of files, are an orderly resource.</p>
 <p>By explicitly declaring files as resources, orderly will mark the
 files as immutable inputs and validate that your analysis does not
 modify them with ‘orderly.run’.</p>
-<section id="id5">
-<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
 <p>files : str|Path or [str|Path]</p>
 </section>
-<section id="id6">
-<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<section id="id8">
+<h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
@@ -228,7 +251,7 @@ modify them with ‘orderly.run’.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../outpack/util/index.html" class="btn btn-neutral float-left" title="outpack.util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="core/index.html" class="btn btn-neutral float-right" title="orderly.core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

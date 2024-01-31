@@ -21,7 +21,7 @@
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
@@ -71,7 +72,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_options</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../search_query/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_query</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../static/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.static</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.util</span></code></a></li>
@@ -79,7 +79,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -143,15 +142,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.config.update_config" title="outpack.config.update_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_config</span></code></a>(config, root_path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.config._encode_location_dict" title="outpack.config._encode_location_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_encode_location_dict</span></code></a>(d)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.config._decode_location_dict" title="outpack.config._decode_location_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_decode_location_dict</span></code></a>(d)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.config._config_path" title="outpack.config._config_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_config_path</span></code></a>(root_path)</p></td>
-<td><p></p></td>
-</tr>
 </tbody>
 </table>
 <dl class="py function">
@@ -167,16 +157,6 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.config.update_config">
 <span class="sig-prename descclassname"><span class="pre">outpack.config.</span></span><span class="sig-name descname"><span class="pre">update_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.config.update_config" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.config._encode_location_dict">
-<span class="sig-prename descclassname"><span class="pre">outpack.config.</span></span><span class="sig-name descname"><span class="pre">_encode_location_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.config._encode_location_dict" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.config._decode_location_dict">
-<span class="sig-prename descclassname"><span class="pre">outpack.config.</span></span><span class="sig-name descname"><span class="pre">_decode_location_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.config._decode_location_dict" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -248,11 +228,6 @@
 <dd></dd></dl>
 
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.config._config_path">
-<span class="sig-prename descclassname"><span class="pre">outpack.config.</span></span><span class="sig-name descname"><span class="pre">_config_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.config._config_path" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 </section>
 </section>

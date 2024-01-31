@@ -21,7 +21,7 @@
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+        <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -53,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
@@ -71,7 +72,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_options</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../search_query/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_query</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../static/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.static</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.util</span></code></a></li>
@@ -79,7 +79,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -128,16 +127,7 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.packet._insert" title="outpack.packet._insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_insert</span></code></a>(root, path, meta)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.packet._cancel" title="outpack.packet._cancel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_cancel</span></code></a>(_root, path, meta)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.packet._check_immutable_files" title="outpack.packet._check_immutable_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_immutable_files</span></code></a>(files, immutable)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.packet.mark_known" title="outpack.packet.mark_known"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_known</span></code></a>(root, packet_id, location, hash, time)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.packet.mark_known" title="outpack.packet.mark_known"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_known</span></code></a>(root, packet_id, location, hash, time)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -147,7 +137,7 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">Packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet" title="Link to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="outpack.packet.Packet.use_dependency">
-<span class="sig-name descname"><span class="pre">use_dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet.use_dependency" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">use_dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet.use_dependency" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -165,27 +155,7 @@
 <span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet.end" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="outpack.packet.Packet._build_metadata">
-<span class="sig-name descname"><span class="pre">_build_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet._build_metadata" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.packet._insert">
-<span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet._insert" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.packet._cancel">
-<span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">_cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet._cancel" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.packet._check_immutable_files">
-<span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">_check_immutable_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immutable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet._check_immutable_files" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.packet.mark_known">

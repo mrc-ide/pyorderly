@@ -22,18 +22,10 @@ Functions
 .. autoapisummary::
 
    outpack.helpers.copy_files
-   outpack.helpers._validate_files
-   outpack.helpers._plan_copy_files
 
 
 
-.. py:function:: copy_files(id, files, dest, *, root=None)
-
-
-.. py:function:: _validate_files(files)
-
-
-.. py:function:: _plan_copy_files(root, id, files)
+.. py:function:: copy_files(id, files, dest, root)
 
 
 .. py:class:: Plan

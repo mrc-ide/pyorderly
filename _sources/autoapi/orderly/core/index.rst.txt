@@ -22,11 +22,11 @@ Functions
 
 .. autoapisummary::
 
+   orderly.core.parameters
    orderly.core.resource
    orderly.core.artefact
    orderly.core.description
    orderly.core.dependency
-   orderly.core._prevent_multiple_calls
 
 
 
@@ -65,6 +65,21 @@ Functions
    .. py:method:: empty()
       :staticmethod:
 
+
+
+.. py:function:: parameters(**kwargs)
+
+   Declare parameters used in a report.
+
+   Parameters
+   ----------
+   kwargs :
+     Keyword mappings of parameter names to default values (or to None
+     if no default is given)
+
+   Returns
+   -------
+   Nothing, this function has no effect at all!
 
 
 .. py:function:: resource(files)
@@ -158,8 +173,5 @@ Functions
    -------
    Data on the resolved dependency; this is an `orderly.helpers.Plan` object,
    which contains elements `id`, `name` and `files`
-
-
-.. py:function:: _prevent_multiple_calls(obj, what)
 
 

@@ -17,16 +17,6 @@ Classes
 
 
 
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   outpack.index._index_update
-   outpack.index._read_metadata
-   outpack.index._read_locations
-
-
 
 .. py:class:: IndexData
 
@@ -74,14 +64,5 @@ Functions
 
    .. py:method:: unpacked()
 
-
-
-.. py:function:: _index_update(path_root, data)
-
-
-.. py:function:: _read_metadata(path_root, data)
-
-
-.. py:function:: _read_locations(path_root, data)
 
 

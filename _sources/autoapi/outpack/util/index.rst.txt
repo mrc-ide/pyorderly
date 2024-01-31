@@ -43,7 +43,7 @@ Functions
 .. py:function:: all_normal_files(path)
 
 
-.. py:function:: run_script(wd, path)
+.. py:function:: run_script(wd, path, init_globals)
 
 
 .. py:function:: transient_working_directory(path)

@@ -34,7 +34,6 @@ Submodules
    root/index.rst
    search/index.rst
    search_options/index.rst
-   search_query/index.rst
    static/index.rst
    tools/index.rst
    util/index.rst

@@ -26,9 +26,6 @@ Functions
    outpack.config.read_config
    outpack.config.write_config
    outpack.config.update_config
-   outpack.config._encode_location_dict
-   outpack.config._decode_location_dict
-   outpack.config._config_path
 
 
 
@@ -39,12 +36,6 @@ Functions
 
 
 .. py:function:: update_config(config, root_path)
-
-
-.. py:function:: _encode_location_dict(d)
-
-
-.. py:function:: _decode_location_dict(d)
 
 
 .. py:class:: ConfigCore
@@ -111,8 +102,5 @@ Functions
    .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)
       :staticmethod:
 
-
-
-.. py:function:: _config_path(root_path)
 
 

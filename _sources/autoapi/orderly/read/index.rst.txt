@@ -1,0 +1,39 @@
+:py:mod:`orderly.read`
+======================
+
+.. py:module:: orderly.read
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   orderly.read.ParametersCall
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   orderly.read.orderly_read
+
+
+
+.. py:class:: ParametersCall
+
+
+   .. py:attribute:: value
+      :type: Any
+
+      
+
+
+.. py:function:: orderly_read(path)
+
+

@@ -12,6 +12,7 @@ Classes
 
 .. autoapisummary::
 
+   outpack.search.Query
    outpack.search.QueryEnv
    outpack.search.QueryIndex
 
@@ -22,14 +23,52 @@ Functions
 
 .. autoapisummary::
 
+   outpack.search.as_query
    outpack.search.search
-   outpack.search.query_eval
-   outpack.search.query_eval_latest
-   outpack.search.query_eval_id
+   outpack.search.search_unique
+   outpack.search.eval_test_value
+   outpack.search.eval_latest
+   outpack.search.eval_single
+   outpack.search.eval_test_one
+   outpack.search.eval_test
+   outpack.search.eval_boolean
+   outpack.search.eval_negation
+   outpack.search.eval_query
 
 
 
-.. py:class:: QueryEnv(root, options)
+.. py:class:: Query
+
+
+   .. py:attribute:: text
+      :type: str
+
+      
+
+   .. py:attribute:: node
+      :type: Any
+
+      
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+   .. py:method:: parse(text)
+      :classmethod:
+
+
+   .. py:method:: is_single_valued()
+
+      Return true if the query is guaranteed to produce at most a single result.
+
+      This could be either an expression wrapped in a `single(...)` or
+      `latest(...)` call, or it is an ID lookup of the form `id == ...`.
+
+
+
+.. py:class:: QueryEnv(root: outpack.root.OutpackRoot, options: outpack.search_options.SearchOptions, this: Optional[outpack.metadata.Parameters])
 
 
 
@@ -37,31 +76,60 @@ Functions
 
 
    .. py:attribute:: root
+      :type: outpack.root.OutpackRoot
 
       
 
    .. py:attribute:: index
+      :type: Dict[str, outpack.metadata.MetadataCore]
 
       
 
    .. py:attribute:: options
+      :type: outpack.search_options.SearchOptions
 
       
 
-   .. py:attribute:: _seen
 
-      
-
-
-.. py:function:: search(expr, *, options=None, root=None)
+.. py:function:: as_query(query: Union[Query, str]) -> Query
 
 
-.. py:function:: query_eval(expr, env)
+.. py:function:: search(query: Union[Query, str], *, root: Union[outpack.root.OutpackRoot, str, os.PathLike], options: Optional[outpack.search_options.SearchOptions] = None, this: Optional[outpack.metadata.Parameters] = None) -> Set[str]
+
+   Search an outpack repository for all packets that match the given query.
+
+   This may return zero or more packet IDs.
 
 
-.. py:function:: query_eval_latest(query, env)
+.. py:function:: search_unique(query: Union[Query, str], *, root: Union[outpack.root.OutpackRoot, str, os.PathLike], options: Optional[outpack.search_options.SearchOptions] = None, this: Optional[outpack.metadata.Parameters] = None)
+
+   Search an outpack repository for a packet that matches the given query.
+
+   Returns a single packet ID. Throws an exception if no packet is found or if
+   the query is not syntactically guaranteed to find at most one.
 
 
-.. py:function:: query_eval_id(query, env)
+.. py:function:: eval_test_value(node, env: QueryEnv, metadata: outpack.metadata.MetadataCore) -> Optional[Union[bool, int, float, str]]
+
+
+.. py:function:: eval_latest(node: outpack_query_parser.Latest, env: QueryEnv) -> Set[str]
+
+
+.. py:function:: eval_single(node: outpack_query_parser.Single, env: QueryEnv) -> Set[str]
+
+
+.. py:function:: eval_test_one(node: outpack_query_parser.Test, env: QueryEnv, metadata: outpack.metadata.MetadataCore) -> bool
+
+
+.. py:function:: eval_test(node: outpack_query_parser.Test, env: QueryEnv) -> Set[str]
+
+
+.. py:function:: eval_boolean(node: outpack_query_parser.BooleanExpr, env: QueryEnv) -> Set[str]
+
+
+.. py:function:: eval_negation(node: outpack_query_parser.Negation, env: QueryEnv) -> Set[str]
+
+
+.. py:function:: eval_query(node, env: QueryEnv) -> Set[str]
 
 

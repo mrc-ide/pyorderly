@@ -12,6 +12,7 @@ Submodules
 
    core/index.rst
    current/index.rst
+   read/index.rst
    run/index.rst
 
 
@@ -27,6 +28,7 @@ Functions
    orderly.artefact
    orderly.dependency
    orderly.description
+   orderly.parameters
    orderly.resource
 
 
@@ -104,6 +106,21 @@ Functions
    Returns
    -------
    Nothing, this is called for its side effects within a running packet
+
+
+.. py:function:: parameters(**kwargs)
+
+   Declare parameters used in a report.
+
+   Parameters
+   ----------
+   kwargs :
+     Keyword mappings of parameter names to default values (or to None
+     if no default is given)
+
+   Returns
+   -------
+   Nothing, this function has no effect at all!
 
 
 .. py:function:: resource(files)

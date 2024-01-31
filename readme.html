@@ -21,7 +21,7 @@
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -52,7 +52,10 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">outpack</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development">Development</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-the-parser">Modifying the parser</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
@@ -110,6 +113,17 @@
 <span class="n">hatch</span> <span class="n">run</span> <span class="n">lint</span><span class="p">:</span><span class="n">fmt</span>
 </pre></div>
 </div>
+<section id="modifying-the-parser">
+<h3>Modifying the parser<a class="headerlink" href="#modifying-the-parser" title="Link to this heading"></a></h3>
+<p>The outpack query parser is implemented in Rust as part of the
+<a class="reference external" href="https://github.com/mrc-ide/outpack_server">outpack_server</a> repository. When
+developing new features in the query parser, they can be tested out in your
+development environment of <code class="docutils literal notranslate"><span class="pre">outpack-py</span></code> by installing the parser from your local
+checkout:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hatch</span> <span class="n">run</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">outpack_server</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>

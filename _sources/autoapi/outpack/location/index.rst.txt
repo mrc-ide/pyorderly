@@ -19,15 +19,6 @@ Functions
    outpack.location.outpack_location_rename
    outpack.location.location_resolve_valid
    outpack.location.outpack_location_pull_metadata
-   outpack.location._pull_all_metadata
-   outpack.location._get_remove_location_hint
-   outpack.location._pull_packet_metadata
-   outpack.location._validate_hashes
-   outpack.location._mark_all_known
-   outpack.location._location_check_new_name
-   outpack.location._location_check_exists
-   outpack.location._location_exists
-   outpack.location._location_driver
 
 
 
@@ -47,32 +38,5 @@ Functions
 
 
 .. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
-
-
-.. py:function:: _pull_all_metadata(driver, root, location_name)
-
-
-.. py:function:: _get_remove_location_hint(location_name)
-
-
-.. py:function:: _pull_packet_metadata(driver, root, location_name, packet_id)
-
-
-.. py:function:: _validate_hashes(driver, location_name, packets: List[outpack.metadata.PacketLocation])
-
-
-.. py:function:: _mark_all_known(driver, root, location_name)
-
-
-.. py:function:: _location_check_new_name(root, name)
-
-
-.. py:function:: _location_check_exists(root, name)
-
-
-.. py:function:: _location_exists(root, name)
-
-
-.. py:function:: _location_driver(location_name, root)
 
 
