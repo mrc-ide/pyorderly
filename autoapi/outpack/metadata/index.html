@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -17,9 +17,9 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=f6245a2f"></script>
+        <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -53,7 +53,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
@@ -79,6 +78,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -110,11 +110,11 @@
            <div itemprop="articleBody">
              
   <section id="module-outpack.metadata">
-<span id="outpack-metadata"></span><h1><a class="reference internal" href="#module-outpack.metadata" title="outpack.metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a><a class="headerlink" href="#module-outpack.metadata" title="Permalink to this heading"></a></h1>
+<span id="outpack-metadata"></span><h1><a class="reference internal" href="#module-outpack.metadata" title="outpack.metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a><a class="headerlink" href="#module-outpack.metadata" title="Link to this heading"></a></h1>
 <section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketFile</span></code></a></p></td>
@@ -136,7 +136,7 @@
 </table>
 </section>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.read_metadata_core" title="outpack.metadata.read_metadata_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_metadata_core</span></code></a>(path)</p></td>
@@ -149,7 +149,7 @@
 </table>
 </section>
 <section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading"></a></h3>
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.Parameters" title="outpack.metadata.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a></p></td>
@@ -159,157 +159,157 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketFile</span></span><a class="headerlink" href="#outpack.metadata.PacketFile" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketFile</span></span><a class="headerlink" href="#outpack.metadata.PacketFile" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile.path">
-<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.path" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.path" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile.size">
-<span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.size" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.size" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile.hash">
-<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.hash" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFile.hash" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile.from_file">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_algorithm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketFile.from_file" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_algorithm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketFile.from_file" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDependsPath">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketDependsPath</span></span><a class="headerlink" href="#outpack.metadata.PacketDependsPath" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketDependsPath</span></span><a class="headerlink" href="#outpack.metadata.PacketDependsPath" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDependsPath.here">
-<span class="sig-name descname"><span class="pre">here</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDependsPath.here" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">here</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDependsPath.here" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDependsPath.there">
-<span class="sig-name descname"><span class="pre">there</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDependsPath.there" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">there</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDependsPath.there" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDepends">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketDepends</span></span><a class="headerlink" href="#outpack.metadata.PacketDepends" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketDepends</span></span><a class="headerlink" href="#outpack.metadata.PacketDepends" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDepends.packet">
-<span class="sig-name descname"><span class="pre">packet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.packet" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">packet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.packet" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDepends.query">
-<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.query" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.query" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDepends.files">
-<span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketDependsPath" title="outpack.metadata.PacketDependsPath"><span class="pre">PacketDependsPath</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.files" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketDependsPath" title="outpack.metadata.PacketDependsPath"><span class="pre">PacketDependsPath</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.PacketDepends.files" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.metadata.PacketDepends.files_from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">files_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketDepends.files_from_dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">files_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketDepends.files_from_dict" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="outpack.metadata.Parameters">
-<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><a class="headerlink" href="#outpack.metadata.Parameters" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><a class="headerlink" href="#outpack.metadata.Parameters" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">MetadataCore</span></span><a class="headerlink" href="#outpack.metadata.MetadataCore" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">MetadataCore</span></span><a class="headerlink" href="#outpack.metadata.MetadataCore" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.schema_version">
-<span class="sig-name descname"><span class="pre">schema_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.schema_version" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">schema_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.schema_version" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.id" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.parameters">
-<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Parameters</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.parameters" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Parameters</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.parameters" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.time">
-<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.time" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.files">
-<span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">PacketFile</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.files" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">PacketFile</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.files" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.depends">
-<span class="sig-name descname"><span class="pre">depends</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketDepends" title="outpack.metadata.PacketDepends"><span class="pre">PacketDepends</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.depends" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">depends</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#outpack.metadata.PacketDepends" title="outpack.metadata.PacketDepends"><span class="pre">PacketDepends</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.depends" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.git">
-<span class="sig-name descname"><span class="pre">git</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../tools/index.html#outpack.tools.GitInfo" title="outpack.tools.GitInfo"><span class="pre">outpack.tools.GitInfo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.git" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">git</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../tools/index.html#outpack.tools.GitInfo" title="outpack.tools.GitInfo"><span class="pre">outpack.tools.GitInfo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.git" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.custom">
-<span class="sig-name descname"><span class="pre">custom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.custom" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">custom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#outpack.metadata.MetadataCore.custom" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.metadata.MetadataCore.file_hash">
-<span class="sig-name descname"><span class="pre">file_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.MetadataCore.file_hash" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">file_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.MetadataCore.file_hash" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.metadata.PacketLocation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketLocation</span></span><a class="headerlink" href="#outpack.metadata.PacketLocation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketLocation</span></span><a class="headerlink" href="#outpack.metadata.PacketLocation" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketLocation.packet">
-<span class="sig-name descname"><span class="pre">packet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.packet" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">packet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.packet" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketLocation.time">
-<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.time" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.metadata.PacketLocation.hash">
-<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.hash" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketLocation.hash" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.metadata.read_metadata_core">
-<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_metadata_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_metadata_core" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_metadata_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_metadata_core" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.metadata.read_packet_location">
-<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_packet_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_packet_location" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_packet_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_packet_location" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

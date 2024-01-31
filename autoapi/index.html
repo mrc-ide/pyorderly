@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -17,15 +17,15 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=f6245a2f"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=30646c52"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="orderly" href="orderly/index.html" />
+    <link rel="next" title="outpack" href="outpack/index.html" />
     <link rel="prev" title="Code examples" href="../code.html" /> 
 </head>
 
@@ -53,8 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="outpack/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -84,17 +84,10 @@
            <div itemprop="articleBody">
              
   <section id="api-reference">
-<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this heading"></a></h1>
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
 <p>This page contains auto-generated API reference documentation <a class="footnote-reference brackets" href="#f1" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="orderly/core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="orderly/current/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.current</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="orderly/read/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.read</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="orderly/run/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="outpack/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="outpack/schema/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.schema</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="outpack/__about__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.__about__</span></code></a></li>
@@ -117,6 +110,13 @@
 <li class="toctree-l2"><a class="reference internal" href="outpack/util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.util</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orderly/core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orderly/current/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.current</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orderly/read/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.read</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="orderly/run/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 <aside class="footnote-list brackets">
@@ -132,7 +132,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../code.html" class="btn btn-neutral float-left" title="Code examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="orderly/index.html" class="btn btn-neutral float-right" title="orderly" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="outpack/index.html" class="btn btn-neutral float-right" title="outpack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
