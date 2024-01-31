@@ -54,3 +54,12 @@ jobs:
           # This can be useful, but the false positive rate is
           # annoyingly high.
           fail_ci_if_error: false
+      - name: Generate Docs
+        run: |
+          scripts/generate_docs
+      - name: Deploy Docs
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs/_build

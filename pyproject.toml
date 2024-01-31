@@ -43,6 +43,10 @@ path = "src/outpack/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "sphinx",
+  "sphinx-rtd-theme",
+  "myst-parser",
+  "sphinx-copybutton"
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"

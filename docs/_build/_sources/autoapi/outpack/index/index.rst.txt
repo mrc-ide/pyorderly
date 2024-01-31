@@ -1,0 +1,87 @@
+:py:mod:`outpack.index`
+=======================
+
+.. py:module:: outpack.index
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.index.IndexData
+   outpack.index.Index
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.index._index_update
+   outpack.index._read_metadata
+   outpack.index._read_locations
+
+
+
+.. py:class:: IndexData
+
+
+   .. py:attribute:: metadata
+      :type: dict
+
+      
+
+   .. py:attribute:: location
+      :type: dict
+
+      
+
+   .. py:attribute:: unpacked
+      :type: List[str]
+
+      
+
+   .. py:method:: new()
+      :staticmethod:
+
+
+
+.. py:class:: Index(path)
+
+
+   .. py:method:: rebuild()
+
+
+   .. py:method:: refresh()
+
+
+   .. py:method:: all_metadata()
+
+
+   .. py:method:: metadata(id)
+
+
+   .. py:method:: all_locations()
+
+
+   .. py:method:: location(name)
+
+
+   .. py:method:: unpacked()
+
+
+
+.. py:function:: _index_update(path_root, data)
+
+
+.. py:function:: _read_metadata(path_root, data)
+
+
+.. py:function:: _read_locations(path_root, data)
+
+

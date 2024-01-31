@@ -1,0 +1,38 @@
+:py:mod:`outpack.filestore`
+===========================
+
+.. py:module:: outpack.filestore
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.filestore.FileStore
+
+
+
+
+.. py:class:: FileStore(path)
+
+
+   .. py:method:: filename(hash)
+
+
+   .. py:method:: get(hash, dst)
+
+
+   .. py:method:: exists(hash)
+
+
+   .. py:method:: put(src, hash)
+
+
+   .. py:method:: ls()
+
+
+

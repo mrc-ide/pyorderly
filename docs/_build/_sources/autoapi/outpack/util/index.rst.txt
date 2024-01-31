@@ -1,0 +1,66 @@
+:py:mod:`outpack.util`
+======================
+
+.. py:module:: outpack.util
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.util.find_file_descend
+   outpack.util.iso_time_str
+   outpack.util.time_to_num
+   outpack.util.num_to_time
+   outpack.util.all_normal_files
+   outpack.util.run_script
+   outpack.util.transient_working_directory
+   outpack.util.assert_file_exists
+   outpack.util.expand_dirs
+   outpack.util.match_value
+   outpack.util.relative_path_array
+   outpack.util.read_string
+
+
+
+.. py:function:: find_file_descend(filename, path)
+
+
+.. py:function:: iso_time_str(t)
+
+
+.. py:function:: time_to_num(x)
+
+
+.. py:function:: num_to_time(x)
+
+
+.. py:function:: all_normal_files(path)
+
+
+.. py:function:: run_script(wd, path)
+
+
+.. py:function:: transient_working_directory(path)
+
+
+.. py:function:: assert_file_exists(path, *, workdir=None, name='File')
+
+
+.. py:function:: expand_dirs(paths, *, workdir=None)
+
+
+.. py:function:: match_value(arg, choices, name)
+
+
+.. py:function:: relative_path_array(files, name)
+
+
+.. py:function:: read_string(path)
+
+

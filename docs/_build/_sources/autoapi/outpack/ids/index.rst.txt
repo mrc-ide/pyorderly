@@ -1,0 +1,46 @@
+:py:mod:`outpack.ids`
+=====================
+
+.. py:module:: outpack.ids
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.ids.fractional_to_bytes
+   outpack.ids.outpack_id
+   outpack.ids.is_outpack_id
+   outpack.ids.validate_outpack_id
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.ids.RE_ID
+
+
+.. py:data:: RE_ID
+
+   
+
+.. py:function:: fractional_to_bytes(x)
+
+
+.. py:function:: outpack_id()
+
+
+.. py:function:: is_outpack_id(x: str)
+
+
+.. py:function:: validate_outpack_id(x: str)
+
+

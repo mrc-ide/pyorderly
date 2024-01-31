@@ -1,0 +1,61 @@
+:py:mod:`outpack.packet`
+========================
+
+.. py:module:: outpack.packet
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.packet.Packet
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.packet._insert
+   outpack.packet._cancel
+   outpack.packet._check_immutable_files
+   outpack.packet.mark_known
+
+
+
+.. py:class:: Packet(root, path, name, *, parameters=None, id=None, locate=True)
+
+
+   .. py:method:: use_dependency(query, files, search_options=None)
+
+
+   .. py:method:: mark_file_immutable(path)
+
+
+   .. py:method:: add_custom_metadata(key, value)
+
+
+   .. py:method:: end(*, insert=True)
+
+
+   .. py:method:: _build_metadata()
+
+
+
+.. py:function:: _insert(root, path, meta)
+
+
+.. py:function:: _cancel(_root, path, meta)
+
+
+.. py:function:: _check_immutable_files(files, immutable)
+
+
+.. py:function:: mark_known(root, packet_id, location, hash, time)
+
+

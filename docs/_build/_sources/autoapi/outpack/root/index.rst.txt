@@ -1,0 +1,49 @@
+:py:mod:`outpack.root`
+======================
+
+.. py:module:: outpack.root
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.root.OutpackRoot
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.root.as_root
+   outpack.root.root_open
+   outpack.root.find_file_by_hash
+
+
+
+.. py:function:: as_root(root)
+
+
+.. py:class:: OutpackRoot(path)
+
+
+   .. py:attribute:: files
+
+      
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+
+.. py:function:: root_open(path, locate)
+
+
+.. py:function:: find_file_by_hash(root, hash)
+
+
