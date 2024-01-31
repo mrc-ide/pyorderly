@@ -46,7 +46,8 @@ dependencies = [
   "sphinx",
   "sphinx-rtd-theme",
   "myst-parser",
-  "sphinx-copybutton"
+  "sphinx-copybutton",
+  "sphinx-autoapi"
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
