@@ -1,0 +1,57 @@
+:py:mod:`outpack.helpers`
+=========================
+
+.. py:module:: outpack.helpers
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.helpers.Plan
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.helpers.copy_files
+   outpack.helpers._validate_files
+   outpack.helpers._plan_copy_files
+
+
+
+.. py:function:: copy_files(id, files, dest, *, root=None)
+
+
+.. py:function:: _validate_files(files)
+
+
+.. py:function:: _plan_copy_files(root, id, files)
+
+
+.. py:class:: Plan
+
+
+   .. py:attribute:: id
+      :type: str
+
+      
+
+   .. py:attribute:: name
+      :type: str
+
+      
+
+   .. py:attribute:: files
+      :type: Dict[str, str]
+
+      
+
+

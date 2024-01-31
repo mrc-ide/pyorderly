@@ -1,0 +1,169 @@
+:py:mod:`outpack.metadata`
+==========================
+
+.. py:module:: outpack.metadata
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.metadata.PacketFile
+   outpack.metadata.PacketDependsPath
+   outpack.metadata.PacketDepends
+   outpack.metadata.MetadataCore
+   outpack.metadata.PacketLocation
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.metadata.read_metadata_core
+   outpack.metadata.read_packet_location
+
+
+
+.. py:class:: PacketFile
+
+
+   .. py:attribute:: path
+      :type: str
+
+      
+
+   .. py:attribute:: size
+      :type: float
+
+      
+
+   .. py:attribute:: hash
+      :type: str
+
+      
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:class:: PacketDependsPath
+
+
+   .. py:attribute:: here
+      :type: str
+
+      
+
+   .. py:attribute:: there
+      :type: str
+
+      
+
+
+.. py:class:: PacketDepends
+
+
+   .. py:attribute:: packet
+      :type: str
+
+      
+
+   .. py:attribute:: query
+      :type: str
+
+      
+
+   .. py:attribute:: files
+      :type: List[PacketDependsPath]
+
+      
+
+   .. py:method:: files_from_dict(files)
+      :staticmethod:
+
+
+
+.. py:class:: MetadataCore
+
+
+   .. py:attribute:: schema_version
+      :type: str
+
+      
+
+   .. py:attribute:: id
+      :type: str
+
+      
+
+   .. py:attribute:: name
+      :type: str
+
+      
+
+   .. py:attribute:: parameters
+      :type: Dict[str, Union[bool, int, float, str]]
+
+      
+
+   .. py:attribute:: time
+      :type: Dict[str, float]
+
+      
+
+   .. py:attribute:: files
+      :type: List[PacketFile]
+
+      
+
+   .. py:attribute:: depends
+      :type: List[PacketDepends]
+
+      
+
+   .. py:attribute:: git
+      :type: Optional[outpack.tools.GitInfo]
+
+      
+
+   .. py:attribute:: custom
+      :type: Optional[dict]
+
+      
+
+   .. py:method:: file_hash(name)
+
+
+
+.. py:class:: PacketLocation
+
+
+   .. py:attribute:: packet
+      :type: str
+
+      
+
+   .. py:attribute:: time
+      :type: float
+
+      
+
+   .. py:attribute:: hash
+      :type: str
+
+      
+
+
+.. py:function:: read_metadata_core(path)
+
+
+.. py:function:: read_packet_location(path)
+
+

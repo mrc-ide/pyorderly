@@ -1,0 +1,26 @@
+:py:mod:`outpack.init`
+======================
+
+.. py:module:: outpack.init
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.init.outpack_init
+   outpack.init._validate_same_core_configuration
+
+
+
+.. py:function:: outpack_init(path, *, path_archive='archive', use_file_store=False, require_complete_tree=False)
+
+
+.. py:function:: _validate_same_core_configuration(now, then)
+
+

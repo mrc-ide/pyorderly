@@ -1,0 +1,42 @@
+:py:mod:`orderly.run`
+=====================
+
+.. py:module:: orderly.run
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   orderly.run.orderly_run
+   orderly.run._validate_src_directory
+   orderly.run._copy_resources_implicit
+   orderly.run._orderly_cleanup_success
+   orderly.run._custom_metadata
+   orderly.run._orderly_cleanup_failure
+
+
+
+.. py:function:: orderly_run(name, *, root=None, locate=True)
+
+
+.. py:function:: _validate_src_directory(name, root)
+
+
+.. py:function:: _copy_resources_implicit(src, dest)
+
+
+.. py:function:: _orderly_cleanup_success(packet, orderly)
+
+
+.. py:function:: _custom_metadata(orderly)
+
+
+.. py:function:: _orderly_cleanup_failure(packet)
+
+

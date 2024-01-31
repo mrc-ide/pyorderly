@@ -1,0 +1,79 @@
+:py:mod:`outpack.search_query`
+==============================
+
+.. py:module:: outpack.search_query
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.search_query.Query
+   outpack.search_query.QueryComponent
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.search_query.query_parse_latest
+   outpack.search_query.query_parse_id
+   outpack.search_query.query_parse
+   outpack.search_query.as_query
+   outpack.search_query.query_parse_expr
+   outpack.search_query.query_format
+
+
+
+.. py:class:: Query(expr)
+
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+
+.. py:class:: QueryComponent(kind, expr, args)
+
+
+   .. py:attribute:: kind
+      :type: str
+
+      
+
+   .. py:attribute:: expr
+      :type: str
+
+      
+
+   .. py:attribute:: args
+      :type: List[str]
+
+      
+
+
+.. py:function:: query_parse_latest(expr)
+
+
+.. py:function:: query_parse_id(expr)
+
+
+.. py:function:: query_parse(expr)
+
+
+.. py:function:: as_query(expr)
+
+
+.. py:function:: query_parse_expr(expr)
+
+
+.. py:function:: query_format(expr)
+
+

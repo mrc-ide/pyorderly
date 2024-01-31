@@ -1,0 +1,67 @@
+:py:mod:`outpack.search`
+========================
+
+.. py:module:: outpack.search
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.search.QueryEnv
+   outpack.search.QueryIndex
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.search.search
+   outpack.search.query_eval
+   outpack.search.query_eval_latest
+   outpack.search.query_eval_id
+
+
+
+.. py:class:: QueryEnv(root, options)
+
+
+
+.. py:class:: QueryIndex(root, options)
+
+
+   .. py:attribute:: root
+
+      
+
+   .. py:attribute:: index
+
+      
+
+   .. py:attribute:: options
+
+      
+
+   .. py:attribute:: _seen
+
+      
+
+
+.. py:function:: search(expr, *, options=None, root=None)
+
+
+.. py:function:: query_eval(expr, env)
+
+
+.. py:function:: query_eval_latest(query, env)
+
+
+.. py:function:: query_eval_id(query, env)
+
+
