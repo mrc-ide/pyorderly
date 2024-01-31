@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -17,9 +17,9 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=f6245a2f"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -98,9 +98,9 @@
            <div itemprop="articleBody">
              
   <section id="module-orderly">
-<span id="orderly"></span><h1><a class="reference internal" href="#module-orderly" title="orderly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><a class="headerlink" href="#module-orderly" title="Link to this heading"></a></h1>
+<span id="orderly"></span><h1><a class="reference internal" href="#module-orderly" title="orderly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><a class="headerlink" href="#module-orderly" title="Permalink to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
@@ -111,9 +111,9 @@
 </div>
 </section>
 <section id="package-contents">
-<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading"></a></h2>
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Permalink to this heading"></a></h2>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#orderly.artefact" title="orderly.artefact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artefact</span></code></a>(name, files)</p></td>
@@ -135,7 +135,7 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.artefact">
-<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">artefact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.artefact" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">artefact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.artefact" title="Permalink to this definition"></a></dt>
 <dd><p>Declare an artefact.</p>
 <p>By doing this you turn on a number of orderly features:</p>
 <p>(1) Files that are artefacts will not be copied from the src
@@ -147,7 +147,7 @@ produce the things you need it do.</p>
 <p>(3) Within the final metadata, your artefacts will have additional
 metadata; the description that you provide and a grouping.</p>
 <section id="parameters">
-<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h4>
 <dl class="simple">
 <dt>description<span class="classifier">str</span></dt><dd><p>The name of the artefact</p>
 </dd>
@@ -157,17 +157,17 @@ are relative paths.</p>
 </dl>
 </section>
 <section id="returns">
-<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<h4>Returns<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.dependency">
-<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.dependency" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.dependency" title="Permalink to this definition"></a></dt>
 <dd><p>Declare a dependency on another packet.</p>
 <section id="id1">
-<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
 <dl class="simple">
 <dt>name: str | None</dt><dd><p>The name of the packet to depend on, or None</p>
 </dd>
@@ -179,7 +179,7 @@ are relative paths.</p>
 </dl>
 </section>
 <section id="id2">
-<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<h4>Returns<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h4>
 <p>Data on the resolved dependency; this is an <cite>orderly.helpers.Plan</cite> object,
 which contains elements <cite>id</cite>, <cite>name</cite> and <cite>files</cite></p>
 </section>
@@ -187,10 +187,10 @@ which contains elements <cite>id</cite>, <cite>name</cite> and <cite>files</cite
 
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.description">
-<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.description" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.description" title="Permalink to this definition"></a></dt>
 <dd><p>Describe the current report.</p>
 <section id="id3">
-<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h4>
 <dl class="simple">
 <dt>display<span class="classifier">str</span></dt><dd><p>A friendly name for the report; this will be displayed in some
 locations of the web interfaces, packit.</p>
@@ -203,17 +203,17 @@ and string, number or boolean values.</p>
 </dl>
 </section>
 <section id="id4">
-<h4>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<h4>Returns<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.parameters">
-<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.parameters" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.parameters" title="Permalink to this definition"></a></dt>
 <dd><p>Declare parameters used in a report.</p>
 <section id="id5">
-<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h4>
 <dl class="simple">
 <dt>kwargs :</dt><dd><p>Keyword mappings of parameter names to default values (or to None
 if no default is given)</p>
@@ -221,24 +221,24 @@ if no default is given)</p>
 </dl>
 </section>
 <section id="id6">
-<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<h4>Returns<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h4>
 <p>Nothing, this function has no effect at all!</p>
 </section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.resource">
-<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.resource" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.resource" title="Permalink to this definition"></a></dt>
 <dd><p>Declare that a file, or group of files, are an orderly resource.</p>
 <p>By explicitly declaring files as resources, orderly will mark the
 files as immutable inputs and validate that your analysis does not
 modify them with ‘orderly.run’.</p>
 <section id="id7">
-<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h4>
 <p>files : str|Path or [str|Path]</p>
 </section>
 <section id="id8">
-<h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<h4>Returns<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
