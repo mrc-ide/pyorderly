@@ -23,6 +23,17 @@ extensions = [
 ]
 
 autoapi_dirs = ["../src"]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
+
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
 
 templates_path = ["_templates"]
 exclude_patterns = []

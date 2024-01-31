@@ -67,7 +67,10 @@ cov-ci = [
   "test-cov",
   "cov-report-xml",
 ]
-
+generate-docs = [
+  "sphinx-autogen ./docs/*.md",
+  "sphinx-build -b html ./docs ./docs/_build"
+]
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]

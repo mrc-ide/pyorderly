@@ -54,6 +54,9 @@ jobs:
           # This can be useful, but the false positive rate is
           # annoyingly high.
           fail_ci_if_error: false
+      - name: Generate Docs
+        run: |
+          hatch run generate-docs
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
