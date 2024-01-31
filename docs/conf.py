@@ -20,6 +20,7 @@ extensions = [
     "myst_parser",
     "sphinx.ext.autosectionlabel",
     "sphinx_copybutton",
+    "sphinxcontrib.jquery",
 ]
 
 autoapi_dirs = ["../src"]
