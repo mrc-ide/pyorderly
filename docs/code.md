@@ -10,16 +10,21 @@ def add(x, y):
     return x + y
 ```
 
-This is an example of running code in the docs
+This is an example of running code in the docs. You can define everything in the code block like so:
 
 
 ```{runblock} pycon
 >>> def add(x, y):
-        return x + y
+...     return x + y
 
->>> list = [0, 1, 2]
->>> print([add(x, 1) for x in list])
->>> print("You cannot setup code beforehand however so was looking for other extensions") 
+>>> print(add(1, 2))
+```
+
+This is a potential pattern I came up with for code that requires setup
+
+```{runblock} pycon
+>>> exec(open("./docs/setup/helper.py").read()) # ignore
+>>> print(multiply(1, 2))
 ```
 
 ```{warning}
