@@ -5,11 +5,12 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+import outpack.__about__ as info
 
-project = "outpack-py"
-copyright = "2024, Rich FitzJohn"
+project = info.__name__
+copyright = "2023-present Imperial College of Science, Technology and Medicine"
 author = "Rich FitzJohn"
-release = "0.0.1"
+release = info.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
