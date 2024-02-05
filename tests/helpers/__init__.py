@@ -133,3 +133,17 @@ def create_metadata_depends(id: str, depends: List[str] = None):
 def random_characters(n):
     return ''.join(random.choice(string.ascii_letters + string.digits)
                    for _ in range(n))
+
+
+# Like Rs rep function, useful for setting up test values
+def rep(x, each):
+    ret = []
+    if isinstance(each, int):
+        each = [each] * len(x)
+    if len(x) != len(each):
+        raise Exception("Repeats must be int or same length as the thing you "
+                        "want to repeat")
+    for item, times in zip(x, each):
+        ret.extend([item] * times)
+
+    return ret

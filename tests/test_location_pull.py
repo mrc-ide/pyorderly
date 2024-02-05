@@ -9,14 +9,22 @@ import pytest
 
 from outpack.hash import hash_file
 from outpack.ids import outpack_id
-from outpack.location import outpack_location_add, location_resolve_valid, \
-    outpack_location_list
-from outpack.location_pull import find_all_dependencies, \
-    outpack_location_pull_metadata, outpack_location_pull_packet
+from outpack.location import (outpack_location_add,
+                              location_resolve_valid,
+                              outpack_location_list)
+from outpack.location_pull import (_find_all_dependencies,
+                                   outpack_location_pull_metadata,
+                                   outpack_location_pull_packet,
+                                   _location_build_pull_plan,
+                                   PullPlanInfo)
 from outpack.packet import Packet
 from outpack.util import read_string
-from .helpers import create_metadata_depends, create_temporary_root, \
-    create_random_packet, create_temporary_roots, create_random_packet_chain
+from .helpers import (create_metadata_depends,
+                      create_temporary_root,
+                      create_random_packet,
+                      create_temporary_roots,
+                      create_random_packet_chain,
+                      rep)
 
 
 def test_can_pull_metadata_from_a_file_base_location(tmp_path):
@@ -248,12 +256,12 @@ def test_informative_error_when_no_locations_configured(tmp_path):
 
 def test_can_resolve_dependencies_where_there_are_none():
     metadata = create_metadata_depends("a")
-    deps = find_all_dependencies(["a"], metadata)
+    deps = _find_all_dependencies(["a"], metadata)
     assert deps == ["a"]
 
     metadata = (create_metadata_depends("a") |
                 create_metadata_depends("b", ["a"]))
-    deps = find_all_dependencies(["a"], metadata)
+    deps = _find_all_dependencies(["a"], metadata)
     assert deps == ["a"]
 
 
@@ -269,21 +277,21 @@ def test_can_find_dependencies():
                 create_metadata_depends("i", ["f"]) |
                 create_metadata_depends("j", ["i", "e", "a"]))
 
-    assert find_all_dependencies(["a"], metadata) == ["a"]
-    assert find_all_dependencies(["b"], metadata) == ["b"]
-    assert find_all_dependencies(["c"], metadata) == ["c"]
+    assert _find_all_dependencies(["a"], metadata) == ["a"]
+    assert _find_all_dependencies(["b"], metadata) == ["b"]
+    assert _find_all_dependencies(["c"], metadata) == ["c"]
 
-    assert find_all_dependencies(["d"], metadata) == ["a", "b", "d"]
-    assert find_all_dependencies(["e"], metadata) == ["b", "c", "e"]
-    assert find_all_dependencies(["f"], metadata) == ["a", "c", "f"]
+    assert _find_all_dependencies(["d"], metadata) == ["a", "b", "d"]
+    assert _find_all_dependencies(["e"], metadata) == ["b", "c", "e"]
+    assert _find_all_dependencies(["f"], metadata) == ["a", "c", "f"]
 
-    assert (find_all_dependencies(["g"], metadata) ==
+    assert (_find_all_dependencies(["g"], metadata) ==
             ["a", "c", "f", "g"])
-    assert (find_all_dependencies(["h"], metadata) ==
+    assert (_find_all_dependencies(["h"], metadata) ==
             ["a", "b", "c", "h"])
-    assert (find_all_dependencies(["i"], metadata) ==
+    assert (_find_all_dependencies(["i"], metadata) ==
             ["a", "c", "f", "i"])
-    assert (find_all_dependencies(["j"], metadata) ==
+    assert (_find_all_dependencies(["j"], metadata) ==
             ["a", "b", "c", "e", "f", "i", "j"])
 
 
@@ -299,10 +307,10 @@ def test_can_find_multiple_dependencies_at_once():
                 create_metadata_depends("i", ["f"]) |
                 create_metadata_depends("j", ["i", "e", "a"]))
 
-    assert find_all_dependencies([], metadata) == []
-    assert (find_all_dependencies(["c", "b", "a"], metadata) ==
+    assert _find_all_dependencies([], metadata) == []
+    assert (_find_all_dependencies(["c", "b", "a"], metadata) ==
             ["a", "b", "c"])
-    assert (find_all_dependencies(["d", "e", "f"], metadata) ==
+    assert (_find_all_dependencies(["d", "e", "f"], metadata) ==
             ["a", "b", "c", "d", "e", "f"])
 
 
@@ -488,7 +496,47 @@ def test_can_filter_locations(tmp_path):
 
     outpack_location_pull_metadata(root=root["dst"])
 
-    ids = set(ids_a + ids_b + ids_c + ids_d)
+    ids = list(set(ids_a + ids_b + ids_c + ids_d))
+
+    def locs(location_names):
+        return location_resolve_valid(location_names, root["dst"],
+                                      include_local=False,
+                                      include_orphan=False,
+                                      allow_no_locations=False)
+
+    plan = _location_build_pull_plan(ids, None, None,
+                                     root=root["dst"])
+    locations = [file.location for file in plan.files]
+    assert locations == rep(["a", "b", "c", "d"], 3)
+
+    # Invert order, prefer "d"
+    plan = _location_build_pull_plan(ids, locs(["d", "c", "b", "a"]), None,
+                                     root=root["dst"])
+    locations = [file.location for file in plan.files]
+    assert locations == rep(["d", "b"], [9, 3])
+
+    # Drop redundant locations
+    plan = _location_build_pull_plan(ids, locs(["b", "d"]), None,
+                                     root=root["dst"])
+    locations = [file.location for file in plan.files]
+    assert locations == rep(["b", "d"], 6)
+
+    # Corner cases
+    plan = _location_build_pull_plan([ids_a[0]], None, None, root=root["dst"])
+    locations = [file.location for file in plan.files]
+    assert locations == ["a"]
+
+    plan = _location_build_pull_plan([], None, None, root=root["dst"])
+    assert plan.files == []
+    assert plan.packets == {}
+    assert plan.info == PullPlanInfo(0, 0, 0)
+
+    # Failure to find packets
+    with pytest.raises(Exception) as e:
+        _location_build_pull_plan(ids, ["a", "b", "c"], None, root=root["dst"])
+    assert "Looked in locations 'a', 'b', 'c'" in e.value.args[0]
+    assert ("Do you need to run 'outpack_location_pull_metadata()'?"
+            in e.value.args[0])
 
 
 def test_nonrecursive_pulls_are_prevented_by_configuration(tmp_path):

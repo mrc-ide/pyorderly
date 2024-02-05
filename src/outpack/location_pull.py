@@ -1,8 +1,9 @@
+import dataclasses
 import itertools
 import os
 import time
 from dataclasses import dataclass
-from typing import Callable, Union
+from typing import Callable, Union, Optional
 
 import humanize
 
@@ -122,7 +123,7 @@ def outpack_location_pull_packet(ids: Union[str, list[str]],
     options = SearchOptions(options)
     if isinstance(ids, str):
         ids = [ids]
-    plan = location_build_pull_plan(ids, options.location, recursive, root)
+    plan = _location_build_pull_plan(ids, options.location, recursive, root)
 
     ## Warn people of extra pulls and skips
     if plan.info.n_extra > 0:
@@ -134,7 +135,7 @@ def outpack_location_pull_packet(ids: Union[str, list[str]],
               f"{pl(plan.info.n_total, 'packet')} which are already "
               f"unpacked")
 
-    store, cleanup = location_pull_files(plan.files, root)
+    store, cleanup = _location_pull_files(plan.files, root)
 
     use_archive = root.config.core.path_archive is not None
     n_packets = len(plan.packets)
@@ -144,7 +145,7 @@ def outpack_location_pull_packet(ids: Union[str, list[str]],
             print(
                 f"Writing files for '{packet.packet}' (packet {idx + 1}/"
                 f"{n_packets})")
-            location_pull_files_archive(packet.packet, store, root)
+            _location_pull_files_archive(packet.packet, store, root)
 
         mark_known(
             root,
@@ -178,7 +179,7 @@ def outpack_location_pull_packet(ids: Union[str, list[str]],
 # and copes well with data races and corruption of data on disk
 # (e.g., users having edited files that we rely on, or editing them
 # after we hash them the first time).
-def location_pull_files(files: list[PacketFile], root: OutpackRoot) \
+def _location_pull_files(files: list[PacketFile], root: OutpackRoot) \
         -> (FileStore, Callable[[], None]):
 
     store = root.files
@@ -193,7 +194,7 @@ def location_pull_files(files: list[PacketFile], root: OutpackRoot) \
                   f"file store")
     else:
         print("Looking for suitable files already on disk")
-        store = temporary_filestore(root)
+        store = _temporary_filestore(root)
 
         def cleanup():
             store.destroy()
@@ -214,17 +215,16 @@ def location_pull_files(files: list[PacketFile], root: OutpackRoot) \
         for location in locations:
             from_this_location = [file for file in files
                                 if file.location == location]
-            location_pull_hash_store(from_this_location, location,
-                                    _location_driver(location, root), store)
+            _location_pull_hash_store(from_this_location, location,
+                                      _location_driver(location, root), store)
 
     return store, cleanup
 
 
-def location_pull_hash_store(files: list[PacketFile],
-                             location_name: str,
-                             driver,
-                             store: FileStore):
-    total_size = humanize.naturalsize(sum(file.size for file in files))
+def _location_pull_hash_store(files: list[PacketFile],
+                              location_name: str,
+                              driver,
+                              store: FileStore):
     no_of_files = len(files)
     # TODO: show a nice progress bar for users
     for idx, file in enumerate(files):
@@ -234,9 +234,9 @@ def location_pull_hash_store(files: list[PacketFile],
         store.put(tmp, file.hash)
 
 
-def location_pull_files_archive(packet_id: str,
-                                store,
-                                root: OutpackRoot):
+def _location_pull_files_archive(packet_id: str,
+                                 store,
+                                 root: OutpackRoot):
     meta = root.index.metadata(packet_id)
     dest_root = (root.path / root.config.core.path_archive / meta.name /
                  packet_id)
@@ -274,14 +274,14 @@ class PullPlanPackets:
     fetch: set[str]
 
 
-def location_build_pull_plan(packet_ids: list[str],
-                             locations: list[str],
-                             recursive: bool,
-                             root: OutpackRoot) -> LocationPullPlan:
-    packets = location_build_pull_plan_packets(packet_ids, recursive, root)
-    locations = location_build_pull_plan_location(packets, locations, root)
-    files = location_build_pull_plan_files(packets.fetch, locations, root)
-    fetch = location_build_packet_locations(packets.fetch, locations, root)
+def _location_build_pull_plan(packet_ids: list[str],
+                              locations: Optional[list[str]],
+                              recursive: Optional[bool],
+                              root: OutpackRoot) -> LocationPullPlan:
+    packets = _location_build_pull_plan_packets(packet_ids, recursive, root)
+    locations = _location_build_pull_plan_location(packets, locations, root)
+    files = _location_build_pull_plan_files(packets.fetch, locations, root)
+    fetch = _location_build_packet_locations(packets.fetch, locations, root)
 
     info = PullPlanInfo(n_extra=len(packets.full) - len(packets.requested),
                         n_skip=len(packets.skip),
@@ -292,9 +292,9 @@ def location_build_pull_plan(packet_ids: list[str],
                             info=info)
 
 
-def location_build_pull_plan_packets(packet_ids: list[str],
-                                     recursive: bool,
-                                     root: OutpackRoot) -> PullPlanPackets:
+def _location_build_pull_plan_packets(packet_ids: list[str],
+                                      recursive: bool,
+                                      root: OutpackRoot) -> PullPlanPackets:
     requested = packet_ids
     if recursive is None:
         recursive = root.config.core.require_complete_tree
@@ -307,7 +307,7 @@ def location_build_pull_plan_packets(packet_ids: list[str],
 
     index = root.index
     if recursive:
-        full = find_all_dependencies(packet_ids, index.all_metadata())
+        full = _find_all_dependencies(packet_ids, index.all_metadata())
     else:
         full = packet_ids
 
@@ -320,8 +320,8 @@ def location_build_pull_plan_packets(packet_ids: list[str],
                            fetch=fetch)
 
 
-def find_all_dependencies(packet_ids: list[str],
-                          metadata: dict[str, MetadataCore]) -> list[str]:
+def _find_all_dependencies(packet_ids: list[str],
+                           metadata: dict[str, MetadataCore]) -> list[str]:
     ret = set(packet_ids)
     while len(packet_ids) > 0:
         dependency_ids = set(
@@ -335,9 +335,9 @@ def find_all_dependencies(packet_ids: list[str],
     return sorted(ret)
 
 
-def location_build_pull_plan_location(packets: PullPlanPackets,
-                                      locations: list[str],
-                                      root: OutpackRoot) -> list[str]:
+def _location_build_pull_plan_location(packets: PullPlanPackets,
+                                       locations: list[str],
+                                       root: OutpackRoot) -> list[str]:
     location_names = location_resolve_valid(
         locations,
         root,
@@ -373,9 +373,9 @@ def location_build_pull_plan_location(packets: PullPlanPackets,
     return location_names
 
 
-def location_build_pull_plan_files(packet_ids: set[str],
-                                   locations: list[str],
-                                   root: OutpackRoot) -> list[PacketFile]:
+def _location_build_pull_plan_files(packet_ids: set[str],
+                                    locations: list[str],
+                                    root: OutpackRoot) -> list[PacketFile]:
     metadata = root.index.all_metadata()
     file_hashes = [file.hash
                    for packet_id in packet_ids
@@ -389,24 +389,22 @@ def location_build_pull_plan_files(packet_ids: set[str],
     # We've already checked earlier that the file is in at least 1
     # location so we don't have to worry about that here
     all_files = []
-    files = {}
+    file_hashes = set()
     for location_name in locations:
         location_packets = set(root.index.packets_in_location(location_name))
         packets_in_location = location_packets & packet_ids
         for packet_id in packets_in_location:
             for file in metadata[packet_id].files:
-                file.location = location_name
-                all_files.append(files.setdefault(file.hash, file))
-
-    # We only want to pull each file once, remove any with duplicate hashes
-    # files = {}
-    # packet_files = [files.setdefault(packet.hash, packet)
-    #                 for packet in packet_files if packet.hash not in files]
+                new_file = dataclasses.replace(file)
+                new_file.location = location_name
+                if file.hash not in file_hashes:
+                    file_hashes.add(file.hash)
+                    all_files.append(new_file)
 
     return all_files
 
 
-def location_build_packet_locations(
+def _location_build_packet_locations(
         packets: set[str],
         locations: list[str],
         root: OutpackRoot) -> dict[str, PacketLocation]:
@@ -419,5 +417,5 @@ def location_build_packet_locations(
     return packets_fetch
 
 
-def temporary_filestore(root: OutpackRoot) -> FileStore:
+def _temporary_filestore(root: OutpackRoot) -> FileStore:
     return FileStore(root.path / "orderly" / "pull")

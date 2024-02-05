@@ -12,7 +12,10 @@ from outpack.util import (
     num_to_time,
     read_string,
     run_script,
-    time_to_num, format_list, pl, partition,
+    time_to_num,
+    format_list,
+    pl,
+    partition,
 )
 
 
