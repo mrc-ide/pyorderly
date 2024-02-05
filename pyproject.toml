@@ -29,7 +29,8 @@ dependencies = [
   "importlib_resources",
   "jsonschema",
   "pygit2",
-  "outpack-query-parser"
+  "outpack-query-parser",
+  "humanize"
 ]
 
 [project.urls]
