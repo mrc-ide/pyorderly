@@ -1,7 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 from outpack.config import read_config
 from outpack.filestore import FileStore

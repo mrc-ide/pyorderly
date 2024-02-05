@@ -8,6 +8,7 @@ from outpack.index import Index
 from outpack.init import outpack_init
 from outpack.root import find_file_by_hash, root_open
 from outpack.util import transient_working_directory
+
 from . import helpers
 
 

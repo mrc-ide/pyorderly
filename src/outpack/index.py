@@ -1,8 +1,12 @@
 import pathlib
 from dataclasses import dataclass
 
-from outpack.metadata import read_metadata_core, read_packet_location, \
-    MetadataCore, PacketLocation
+from outpack.metadata import (
+    MetadataCore,
+    PacketLocation,
+    read_metadata_core,
+    read_packet_location,
+)
 
 
 @dataclass

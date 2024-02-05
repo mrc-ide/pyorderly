@@ -9,22 +9,29 @@ import pytest
 
 from outpack.hash import hash_file
 from outpack.ids import outpack_id
-from outpack.location import (outpack_location_add,
-                              location_resolve_valid,
-                              outpack_location_list)
-from outpack.location_pull import (_find_all_dependencies,
-                                   outpack_location_pull_metadata,
-                                   outpack_location_pull_packet,
-                                   _location_build_pull_plan,
-                                   PullPlanInfo)
+from outpack.location import (
+    location_resolve_valid,
+    outpack_location_add,
+    outpack_location_list,
+)
+from outpack.location_pull import (
+    PullPlanInfo,
+    _find_all_dependencies,
+    _location_build_pull_plan,
+    outpack_location_pull_metadata,
+    outpack_location_pull_packet,
+)
 from outpack.packet import Packet
 from outpack.util import read_string
-from .helpers import (create_metadata_depends,
-                      create_temporary_root,
-                      create_random_packet,
-                      create_temporary_roots,
-                      create_random_packet_chain,
-                      rep)
+
+from .helpers import (
+    create_metadata_depends,
+    create_random_packet,
+    create_random_packet_chain,
+    create_temporary_root,
+    create_temporary_roots,
+    rep,
+)
 
 
 def test_can_pull_metadata_from_a_file_base_location(tmp_path):
@@ -259,23 +266,26 @@ def test_can_resolve_dependencies_where_there_are_none():
     deps = _find_all_dependencies(["a"], metadata)
     assert deps == ["a"]
 
-    metadata = (create_metadata_depends("a") |
-                create_metadata_depends("b", ["a"]))
+    metadata = create_metadata_depends("a") | create_metadata_depends(
+        "b", ["a"]
+    )
     deps = _find_all_dependencies(["a"], metadata)
     assert deps == ["a"]
 
 
 def test_can_find_dependencies():
-    metadata = (create_metadata_depends("a") |
-                create_metadata_depends("b") |
-                create_metadata_depends("c") |
-                create_metadata_depends("d", ["a", "b"]) |
-                create_metadata_depends("e", ["b", "c"]) |
-                create_metadata_depends("f", ["a", "c"]) |
-                create_metadata_depends("g", ["a", "f", "c"]) |
-                create_metadata_depends("h", ["a", "b", "c"]) |
-                create_metadata_depends("i", ["f"]) |
-                create_metadata_depends("j", ["i", "e", "a"]))
+    metadata = (
+        create_metadata_depends("a")
+        | create_metadata_depends("b")
+        | create_metadata_depends("c")
+        | create_metadata_depends("d", ["a", "b"])
+        | create_metadata_depends("e", ["b", "c"])
+        | create_metadata_depends("f", ["a", "c"])
+        | create_metadata_depends("g", ["a", "f", "c"])
+        | create_metadata_depends("h", ["a", "b", "c"])
+        | create_metadata_depends("i", ["f"])
+        | create_metadata_depends("j", ["i", "e", "a"])
+    )
 
     assert _find_all_dependencies(["a"], metadata) == ["a"]
     assert _find_all_dependencies(["b"], metadata) == ["b"]
@@ -285,49 +295,61 @@ def test_can_find_dependencies():
     assert _find_all_dependencies(["e"], metadata) == ["b", "c", "e"]
     assert _find_all_dependencies(["f"], metadata) == ["a", "c", "f"]
 
-    assert (_find_all_dependencies(["g"], metadata) ==
-            ["a", "c", "f", "g"])
-    assert (_find_all_dependencies(["h"], metadata) ==
-            ["a", "b", "c", "h"])
-    assert (_find_all_dependencies(["i"], metadata) ==
-            ["a", "c", "f", "i"])
-    assert (_find_all_dependencies(["j"], metadata) ==
-            ["a", "b", "c", "e", "f", "i", "j"])
+    assert _find_all_dependencies(["g"], metadata) == ["a", "c", "f", "g"]
+    assert _find_all_dependencies(["h"], metadata) == ["a", "b", "c", "h"]
+    assert _find_all_dependencies(["i"], metadata) == ["a", "c", "f", "i"]
+    assert _find_all_dependencies(["j"], metadata) == [
+        "a",
+        "b",
+        "c",
+        "e",
+        "f",
+        "i",
+        "j",
+    ]
 
 
 def test_can_find_multiple_dependencies_at_once():
-    metadata = (create_metadata_depends("a") |
-                create_metadata_depends("b") |
-                create_metadata_depends("c") |
-                create_metadata_depends("d", ["a", "b"]) |
-                create_metadata_depends("e", ["b", "c"]) |
-                create_metadata_depends("f", ["a", "c"]) |
-                create_metadata_depends("g", ["a", "f", "c"]) |
-                create_metadata_depends("h", ["a", "b", "c"]) |
-                create_metadata_depends("i", ["f"]) |
-                create_metadata_depends("j", ["i", "e", "a"]))
+    metadata = (
+        create_metadata_depends("a")
+        | create_metadata_depends("b")
+        | create_metadata_depends("c")
+        | create_metadata_depends("d", ["a", "b"])
+        | create_metadata_depends("e", ["b", "c"])
+        | create_metadata_depends("f", ["a", "c"])
+        | create_metadata_depends("g", ["a", "f", "c"])
+        | create_metadata_depends("h", ["a", "b", "c"])
+        | create_metadata_depends("i", ["f"])
+        | create_metadata_depends("j", ["i", "e", "a"])
+    )
 
     assert _find_all_dependencies([], metadata) == []
-    assert (_find_all_dependencies(["c", "b", "a"], metadata) ==
-            ["a", "b", "c"])
-    assert (_find_all_dependencies(["d", "e", "f"], metadata) ==
-            ["a", "b", "c", "d", "e", "f"])
+    assert _find_all_dependencies(["c", "b", "a"], metadata) == ["a", "b", "c"]
+    assert _find_all_dependencies(["d", "e", "f"], metadata) == [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+    ]
 
 
 def test_can_pull_packet_from_location_into_another_file_store(tmp_path):
     root = create_temporary_roots(tmp_path, use_file_store=True)
 
     id = create_random_packet(root["src"])
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root=root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(id, root=root["dst"])
 
     index = root["dst"].index
     assert index.unpacked() == [id]
-    assert os.path.exists(root["dst"].path / "archive" / "data" / id /
-                          "data.txt")
+    assert os.path.exists(
+        root["dst"].path / "archive" / "data" / id / "data.txt"
+    )
 
     meta = index.metadata(id)
     assert all(root["dst"].files.exists(file.hash) for file in meta.files)
@@ -337,16 +359,17 @@ def test_can_pull_packet_from_one_location_to_another_archive(tmp_path):
     root = create_temporary_roots(tmp_path, use_file_store=False)
 
     id = create_random_packet(root["src"])
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root=root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(id, root=root["dst"])
 
     index = root["dst"].index
     assert index.unpacked() == [id]
-    assert os.path.exists(root["dst"].path / "archive" / "data" / id /
-                          "data.txt")
+    assert os.path.exists(
+        root["dst"].path / "archive" / "data" / id / "data.txt"
+    )
 
 
 def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
@@ -364,9 +387,9 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
         p.end()
         ids[i] = p.id
 
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root["dst"]
+    )
     outpack_location_pull_metadata(root=root["dst"])
 
     ## When I corrupt the file in the first ID by truncating it:
@@ -382,22 +405,24 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
 
     print(f.getvalue())
     assert re.search(
-        r"Rejecting file from archive 'a\.txt' in 'data/",
-        f.getvalue())
+        r"Rejecting file from archive 'a\.txt' in 'data/", f.getvalue()
+    )
 
-    assert (hash_file(dest_data / ids[0] / "a.txt") ==
-            hash_file(src_data / ids[1] / "a.txt"))
-    assert (hash_file(dest_data / ids[0] / "b.txt") ==
-            hash_file(src_data / ids[1] / "b.txt"))
+    assert hash_file(dest_data / ids[0] / "a.txt") == hash_file(
+        src_data / ids[1] / "a.txt"
+    )
+    assert hash_file(dest_data / ids[0] / "b.txt") == hash_file(
+        src_data / ids[1] / "b.txt"
+    )
 
 
 def test_do_not_unpack_packet_twice(tmp_path):
     root = create_temporary_roots(tmp_path)
 
     id = create_random_packet(root["src"])
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root["dst"]
+    )
     outpack_location_pull_metadata(root=root["dst"])
 
     assert outpack_location_pull_packet(id, root=root["dst"]) == [id]
@@ -407,9 +432,9 @@ def test_do_not_unpack_packet_twice(tmp_path):
 def test_sensible_error_if_packet_not_known(tmp_path):
     root = create_temporary_roots(tmp_path)
     id = create_random_packet(root["src"])
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root=root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
 
     with pytest.raises(Exception) as e:
         outpack_location_pull_packet(id, root=root["dst"])
@@ -419,21 +444,23 @@ def test_sensible_error_if_packet_not_known(tmp_path):
 
 
 def test_error_if_dependent_packet_not_known(tmp_path):
-    root = create_temporary_roots(tmp_path, ["a", "c"],
-                                  require_complete_tree=True)
-    root["b"] = create_temporary_root(tmp_path / "b",
-                                      require_complete_tree=False)
+    root = create_temporary_roots(
+        tmp_path, ["a", "c"], require_complete_tree=True
+    )
+    root["b"] = create_temporary_root(
+        tmp_path / "b", require_complete_tree=False
+    )
 
     ids = create_random_packet_chain(root["a"], 5)
-    outpack_location_add("a", "path",
-                         {"path": str(root["a"].path)},
-                         root=root["b"])
+    outpack_location_add(
+        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
+    )
     outpack_location_pull_metadata(root=root["b"])
     outpack_location_pull_packet(ids["e"], root=root["b"])
 
-    outpack_location_add("b", "path",
-                         {"path": str(root["b"].path)},
-                         root=root["c"])
+    outpack_location_add(
+        "b", "path", {"path": str(root["b"].path)}, root=root["c"]
+    )
     outpack_location_pull_metadata(root=root["c"])
 
     with pytest.raises(Exception) as e:
@@ -441,27 +468,32 @@ def test_error_if_dependent_packet_not_known(tmp_path):
     print(e.value)
     assert e.match(f"Failed to find packet '{ids['d']}")
     assert e.match("Looked in location 'b'")
-    assert e.match("1 missing packet was requested as dependency of the "
-                   f"one you asked for: '{ids['d']}'")
+    assert e.match(
+        "1 missing packet was requested as dependency of the "
+        f"one you asked for: '{ids['d']}'"
+    )
 
 
 def test_can_pull_a_tree_recursively(tmp_path):
     root = create_temporary_roots(tmp_path)
     ids = create_random_packet_chain(root["src"], 3)
 
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root["dst"]
+    )
     outpack_location_pull_metadata(root=root["dst"])
-    pulled_packets = outpack_location_pull_packet(ids["c"], recursive=True,
-                                                  root=root["dst"])
+    pulled_packets = outpack_location_pull_packet(
+        ids["c"], recursive=True, root=root["dst"]
+    )
     assert set(pulled_packets) == set(itemgetter("a", "b", "c")(ids))
 
-    assert (set(root["dst"].index.unpacked()) ==
-            set(root["src"].index.unpacked()))
+    assert set(root["dst"].index.unpacked()) == set(
+        root["src"].index.unpacked()
+    )
 
-    pulled_packets = outpack_location_pull_packet(ids["c"], recursive=True,
-                                                  root=root["dst"])
+    pulled_packets = outpack_location_pull_packet(
+        ids["c"], recursive=True, root=root["dst"]
+    )
     assert pulled_packets == []
 
 
@@ -470,25 +502,25 @@ def test_can_filter_locations(tmp_path):
     root = create_temporary_roots(tmp_path, location_names, use_file_store=True)
     for name in location_names:
         if name != "dst":
-            outpack_location_add(name, "path",
-                                 {"path": str(root[name].path)},
-                                 root=root["dst"])
+            outpack_location_add(
+                name, "path", {"path": str(root[name].path)}, root=root["dst"]
+            )
 
     ids_a = [create_random_packet(root["a"]) for _ in range(3)]
-    outpack_location_add("a", "path",
-                         {"path": str(root["a"].path)},
-                         root=root["b"])
+    outpack_location_add(
+        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
+    )
     outpack_location_pull_metadata(root=root["b"])
     outpack_location_pull_packet(ids_a, root=root["b"])
 
     ids_b = ids_a + [create_random_packet(root["b"]) for _ in range(3)]
     ids_c = [create_random_packet(root["c"]) for _ in range(3)]
-    outpack_location_add("a", "path",
-                         {"path": str(root["a"].path)},
-                         root=root["d"])
-    outpack_location_add("c", "path",
-                         {"path": str(root["c"].path)},
-                         root=root["d"])
+    outpack_location_add(
+        "a", "path", {"path": str(root["a"].path)}, root=root["d"]
+    )
+    outpack_location_add(
+        "c", "path", {"path": str(root["c"].path)}, root=root["d"]
+    )
     outpack_location_pull_metadata(root=root["d"])
     outpack_location_pull_packet(ids_a, root=root["d"])
     outpack_location_pull_packet(ids_c, root=root["d"])
@@ -499,25 +531,29 @@ def test_can_filter_locations(tmp_path):
     ids = list(set(ids_a + ids_b + ids_c + ids_d))
 
     def locs(location_names):
-        return location_resolve_valid(location_names, root["dst"],
-                                      include_local=False,
-                                      include_orphan=False,
-                                      allow_no_locations=False)
+        return location_resolve_valid(
+            location_names,
+            root["dst"],
+            include_local=False,
+            include_orphan=False,
+            allow_no_locations=False,
+        )
 
-    plan = _location_build_pull_plan(ids, None, None,
-                                     root=root["dst"])
+    plan = _location_build_pull_plan(ids, None, None, root=root["dst"])
     locations = [file.location for file in plan.files]
     assert locations == rep(["a", "b", "c", "d"], 3)
 
     # Invert order, prefer "d"
-    plan = _location_build_pull_plan(ids, locs(["d", "c", "b", "a"]), None,
-                                     root=root["dst"])
+    plan = _location_build_pull_plan(
+        ids, locs(["d", "c", "b", "a"]), None, root=root["dst"]
+    )
     locations = [file.location for file in plan.files]
     assert locations == rep(["d", "b"], [9, 3])
 
     # Drop redundant locations
-    plan = _location_build_pull_plan(ids, locs(["b", "d"]), None,
-                                     root=root["dst"])
+    plan = _location_build_pull_plan(
+        ids, locs(["b", "d"]), None, root=root["dst"]
+    )
     locations = [file.location for file in plan.files]
     assert locations == rep(["b", "d"], 6)
 
@@ -535,8 +571,10 @@ def test_can_filter_locations(tmp_path):
     with pytest.raises(Exception) as e:
         _location_build_pull_plan(ids, ["a", "b", "c"], None, root=root["dst"])
     assert "Looked in locations 'a', 'b', 'c'" in e.value.args[0]
-    assert ("Do you need to run 'outpack_location_pull_metadata()'?"
-            in e.value.args[0])
+    assert (
+        "Do you need to run 'outpack_location_pull_metadata()'?"
+        in e.value.args[0]
+    )
 
 
 def test_nonrecursive_pulls_are_prevented_by_configuration(tmp_path):
@@ -544,24 +582,28 @@ def test_nonrecursive_pulls_are_prevented_by_configuration(tmp_path):
     ids = create_random_packet_chain(root["src"], 3)
 
     with pytest.raises(Exception) as e:
-        outpack_location_pull_packet(ids["c"], recursive=False,
-                                     root=root["dst"])
+        outpack_location_pull_packet(
+            ids["c"], recursive=False, root=root["dst"]
+        )
 
-    assert e.match("'recursive' must be True \(or None\) with your "
-                   "configuration")
+    assert (
+        "'recursive' must be True (or None) with your configuration"
+        in e.value.args[0]
+    )
 
 
 def test_if_recursive_pulls_are_required_pulls_are_default_recursive(tmp_path):
-    root = create_temporary_roots(tmp_path, ["src", "shallow"],
-                                  require_complete_tree=False)
+    root = create_temporary_roots(
+        tmp_path, ["src", "shallow"], require_complete_tree=False
+    )
     root["deep"] = create_temporary_root(tmp_path, require_complete_tree=True)
 
     ids = create_random_packet_chain(root["src"], 3)
 
     for r in [root["shallow"], root["deep"]]:
-        outpack_location_add("src", "path",
-                             {"path": str(root["src"].path)},
-                             root=r)
+        outpack_location_add(
+            "src", "path", {"path": str(root["src"].path)}, root=r
+        )
         outpack_location_pull_metadata(root=r)
 
     outpack_location_pull_packet(ids["c"], recursive=None, root=root["shallow"])
@@ -569,6 +611,7 @@ def test_if_recursive_pulls_are_required_pulls_are_default_recursive(tmp_path):
 
     outpack_location_pull_packet(ids["c"], recursive=None, root=root["deep"])
     assert root["deep"].index.unpacked() == list(ids.values())
+
 
 ## TODO: Uncomment when wired up with searching
 # def test_can_pull_packets_as_result_of_query(tmp_path):
@@ -591,9 +634,9 @@ def test_skip_files_in_file_store(tmp_path):
     root = create_temporary_roots(tmp_path, use_file_store=True)
 
     ids = create_random_packet_chain(root["src"], 3)
-    outpack_location_add("src", "path",
-                         {"path": str(root["src"].path)},
-                         root=root["dst"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
 
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(ids["a"], root=root["dst"])
@@ -604,4 +647,5 @@ def test_skip_files_in_file_store(tmp_path):
     text = f.getvalue()
     assert re.search("Found 1 file in the file store", text)
     assert re.search(
-        r"Need to fetch 3 files \([0-9]* Bytes\) from 1 location", text)
+        r"Need to fetch 3 files \([0-9]* Bytes\) from 1 location", text
+    )

@@ -31,7 +31,7 @@ class FileStore:
     def exists(self, hash):
         return os.path.exists(self.filename(hash))
 
-    def put(self, src, hash, move=False):
+    def put(self, src, hash, *, move=False):
         hash_validate_file(src, hash)
         dst = self.filename(hash)
         if not os.path.exists(dst):
@@ -62,4 +62,3 @@ class FileStore:
         path = self._path / "tmp"
         path.mkdir(exist_ok=True)
         return tempfile.NamedTemporaryFile(dir=path).name
-

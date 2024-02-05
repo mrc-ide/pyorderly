@@ -5,7 +5,7 @@ import string
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List
+from typing import List, Optional
 
 from outpack.ids import outpack_id
 from outpack.init import outpack_init
@@ -59,20 +59,20 @@ def create_random_packet_chain(root, length, base=None):
             packet_path = Path(src) / name / packet_id
             os.makedirs(packet_path)
 
-            packet = Packet(
-                root, packet_path, name, id=packet_id, locate=False
-            )
+            packet = Packet(root, packet_path, name, id=packet_id, locate=False)
 
             if i == 0 and base is None:
                 with open(packet_path / "data.txt", "w") as f:
                     f.write("0")
             else:
-                lines = ["with open('input.txt', 'r') as f:",
-                         "    data = f.read()",
-                         "with open('data.txt', 'w') as f:",
-                         f"    f.write(data + '{i}')"]
+                lines = [
+                    "with open('input.txt', 'r') as f:",
+                    "    data = f.read()",
+                    "with open('data.txt', 'w') as f:",
+                    f"    f.write(data + '{i}')",
+                ]
                 with open(packet_path / "orderly.py", "w") as f:
-                    f.write('\n'.join(lines) + '\n')
+                    f.write("\n".join(lines) + "\n")
 
                 if i > 0:
                     id_use = ids[chr(i - 1 + ord("a"))]
@@ -112,27 +112,32 @@ def copy_examples(names, root):
         shutil.copytree(Path("tests/orderly/examples") / nm, path_src)
 
 
-def create_metadata_depends(id: str, depends: List[str] = None):
+def create_metadata_depends(id: str, depends: Optional[List[str]] = None):
     if depends is None:
         depends = []
-    dependencies = [PacketDepends(dependency_id, "", [])
-                    for dependency_id in depends]
-    return {id: MetadataCore(
-        outpack_schema_version(),
-        id,
-        "name_" + random_characters(4),
-        {},
-        {},
-        [],
-        dependencies,
-        None,
-        None
-    )}
+    dependencies = [
+        PacketDepends(dependency_id, "", []) for dependency_id in depends
+    ]
+    return {
+        id: MetadataCore(
+            outpack_schema_version(),
+            id,
+            "name_" + random_characters(4),
+            {},
+            {},
+            [],
+            dependencies,
+            None,
+            None,
+        )
+    }
 
 
 def random_characters(n):
-    return ''.join(random.choice(string.ascii_letters + string.digits)
-                   for _ in range(n))
+    return "".join(
+        random.choice(string.ascii_letters + string.digits)  # noqa: S311
+        for _ in range(n)
+    )
 
 
 # Like Rs rep function, useful for setting up test values
@@ -141,8 +146,10 @@ def rep(x, each):
     if isinstance(each, int):
         each = [each] * len(x)
     if len(x) != len(each):
-        raise Exception("Repeats must be int or same length as the thing you "
-                        "want to repeat")
+        msg = (
+            "Repeats must be int or same length as the thing you want to repeat"
+        )
+        raise Exception(msg)
     for item, times in zip(x, each):
         ret.extend([item] * times)
 

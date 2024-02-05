@@ -3,7 +3,7 @@ import os
 import runpy
 import time
 from contextlib import contextmanager
-from itertools import tee, filterfalse
+from itertools import filterfalse, tee
 from pathlib import Path
 
 
@@ -115,13 +115,13 @@ def format_list(x):
 
 def pl(x, singular, plural=None):
     if plural is None:
-        plural = singular + 's'
+        plural = singular + "s"
 
     if isinstance(x, int):
         length = x
     else:
         length = len(x)
-    return "{}".format(singular if length == 1 else plural)
+    return f"{singular if length == 1 else plural}"
 
 
 def partition(pred, iterable):

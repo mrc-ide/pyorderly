@@ -141,5 +141,6 @@ def _location_driver(location_name, root):
         msg = "custom remote not yet supported"
         raise Exception(msg)
 
+
 # TODO: Create a driver interface and have location path extend it?
 # Because atm we can't specify a type for driver as a function arg

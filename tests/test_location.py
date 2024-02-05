@@ -5,7 +5,9 @@ from outpack.location import (
     outpack_location_add,
     outpack_location_list,
     outpack_location_remove,
-    outpack_location_rename)
+    outpack_location_rename,
+)
+
 from .helpers import create_temporary_root
 
 

@@ -7,15 +7,15 @@ from outpack.util import (
     assert_file_exists,
     expand_dirs,
     find_file_descend,
+    format_list,
     iso_time_str,
     match_value,
     num_to_time,
+    partition,
+    pl,
     read_string,
     run_script,
     time_to_num,
-    format_list,
-    pl,
-    partition,
 )
 
 
@@ -123,9 +123,8 @@ def test_can_inject_data_into_run(tmp_path):
 def test_can_format_list():
     assert format_list(["one", "two"]) == "'one', 'two'"
     assert format_list(["one"]) == "'one'"
-    format_set = format_list({"one", "two"})
-    assert format_set == "'one', 'two'" or format_set == "'two', 'one'"
-    assert format_list({"one", "one"}) == "'one'"
+    assert format_list({"one", "two"}) in ("'one', 'two'", "'two', 'one'")
+    assert format_list({"one", "one"}) == "'one'"  # noqa:B033
 
 
 def test_can_pluralise():
@@ -133,8 +132,7 @@ def test_can_pluralise():
     assert pl(["one"], "item") == "item"
     assert pl(["one", "two"], "item") == "items"
     assert pl({"Inky"}, "octopus", "octopodes") == "octopus"
-    assert (pl({"Inky", "Tentacool"}, "octopus", "octopodes") ==
-            "octopodes")
+    assert pl({"Inky", "Tentacool"}, "octopus", "octopodes") == "octopodes"
     assert pl(2, "item") == "items"
     assert pl(1, "item") == "item"
 
