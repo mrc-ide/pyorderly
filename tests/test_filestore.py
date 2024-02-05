@@ -72,7 +72,7 @@ def test_get_files_fails_if_overwrite_false(tmp_path):
 
     with pytest.raises(Exception) as e:
         store.get(h, dest, False)
-    assert e.match(f"Failed to copy '.+' to '{dest}', file already exists")
+    assert e.match(rf"Failed to copy '.+' to '{dest}', file already exists")
 
 
 def test_if_hash_not_found(tmp_path):

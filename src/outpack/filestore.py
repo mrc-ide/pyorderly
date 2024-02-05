@@ -56,7 +56,26 @@ class FileStore:
         return ret
 
     def destroy(self) -> None:
-        shutil.rmtree(self._path)
+        def onerror(func, path, _exc_info):
+            """
+            Error handler for ``shutil.rmtree``.
+
+            If the error is due to an access error (read only file)
+            it attempts to add write permission and then retries.
+
+            If the error is for another reason it re-raises the error.
+            We manually remove write permission in ``put`` above so this
+            is expected
+
+            Usage : ``shutil.rmtree(path, onerror=onerror)``
+            """
+            if not os.access(path, os.W_OK):
+                os.chmod(path, stat.S_IWUSR)
+                func(path)
+            else:
+                raise
+
+        shutil.rmtree(self._path, onerror=onerror)
 
     def tmp(self) -> str:
         path = self._path / "tmp"

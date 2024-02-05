@@ -23,6 +23,7 @@ from outpack.location_pull import (
 )
 from outpack.packet import Packet
 from outpack.util import read_string
+
 from .helpers import (
     create_metadata_depends,
     create_random_packet,
@@ -275,16 +276,16 @@ def test_can_resolve_dependencies_where_there_are_none():
 
 def test_can_find_dependencies():
     metadata = {
-        **create_metadata_depends("a")
-        **create_metadata_depends("b")
-        **create_metadata_depends("c")
-        **create_metadata_depends("d", ["a", "b"])
-        **create_metadata_depends("e", ["b", "c"])
-        **create_metadata_depends("f", ["a", "c"])
-        **create_metadata_depends("g", ["a", "f", "c"])
-        **create_metadata_depends("h", ["a", "b", "c"])
-        **create_metadata_depends("i", ["f"])
-        **create_metadata_depends("j", ["i", "e", "a"])
+        **create_metadata_depends("a"),
+        **create_metadata_depends("b"),
+        **create_metadata_depends("c"),
+        **create_metadata_depends("d", ["a", "b"]),
+        **create_metadata_depends("e", ["b", "c"]),
+        **create_metadata_depends("f", ["a", "c"]),
+        **create_metadata_depends("g", ["a", "f", "c"]),
+        **create_metadata_depends("h", ["a", "b", "c"]),
+        **create_metadata_depends("i", ["f"]),
+        **create_metadata_depends("j", ["i", "e", "a"]),
     }
 
     assert _find_all_dependencies(["a"], metadata) == ["a"]
@@ -311,16 +312,16 @@ def test_can_find_dependencies():
 
 def test_can_find_multiple_dependencies_at_once():
     metadata = {
-        **create_metadata_depends("a")
-        **create_metadata_depends("b")
-        **create_metadata_depends("c")
-        **create_metadata_depends("d", ["a", "b"])
-        **create_metadata_depends("e", ["b", "c"])
-        **create_metadata_depends("f", ["a", "c"])
-        **create_metadata_depends("g", ["a", "f", "c"])
-        **create_metadata_depends("h", ["a", "b", "c"])
-        **create_metadata_depends("i", ["f"])
-        **create_metadata_depends("j", ["i", "e", "a"])
+        **create_metadata_depends("a"),
+        **create_metadata_depends("b"),
+        **create_metadata_depends("c"),
+        **create_metadata_depends("d", ["a", "b"]),
+        **create_metadata_depends("e", ["b", "c"]),
+        **create_metadata_depends("f", ["a", "c"]),
+        **create_metadata_depends("g", ["a", "f", "c"]),
+        **create_metadata_depends("h", ["a", "b", "c"]),
+        **create_metadata_depends("i", ["f"]),
+        **create_metadata_depends("j", ["i", "e", "a"]),
     }
 
     assert _find_all_dependencies([], metadata) == []
