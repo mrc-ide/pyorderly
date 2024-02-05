@@ -2,7 +2,7 @@ import itertools
 import os
 import time
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 import humanize
 
@@ -74,7 +74,7 @@ def _get_remove_location_hint(location_name):
     )
 
 
-def _validate_hashes(driver, location_name, packets: list[PacketLocation]):
+def _validate_hashes(driver, location_name, packets: List[PacketLocation]):
     mismatched_hashes = set()
     known_there = driver.list()
     for packet in packets:
@@ -119,7 +119,7 @@ def _mark_all_known(driver, root, location_name):
 
 
 def outpack_location_pull_packet(
-    ids: Union[str, list[str]],
+    ids: Union[str, List[str]],
     options=None,
     recursive=None,
     root=None,
@@ -190,7 +190,7 @@ def outpack_location_pull_packet(
 # (e.g., users having edited files that we rely on, or editing them
 # after we hash them the first time).
 def _location_pull_files(
-    files: list[PacketFileWithLocation], root: OutpackRoot
+    files: List[PacketFileWithLocation], root: OutpackRoot
 ) -> Tuple[FileStore, Callable[[], None]]:
     store = root.files
     if store is not None:
@@ -242,7 +242,7 @@ def _location_pull_files(
 
 
 def _location_pull_hash_store(
-    files: list[PacketFileWithLocation],
+    files: List[PacketFileWithLocation],
     location_name: str,
     driver,
     store: FileStore,
@@ -284,22 +284,22 @@ class PullPlanInfo:
 
 @dataclass
 class LocationPullPlan:
-    packets: dict[str, PacketLocation]
-    files: list[PacketFileWithLocation]
+    packets: Dict[str, PacketLocation]
+    files: List[PacketFileWithLocation]
     info: PullPlanInfo
 
 
 @dataclass
 class PullPlanPackets:
-    requested: list[str]
-    full: list[str]
-    skip: set[str]
-    fetch: set[str]
+    requested: List[str]
+    full: List[str]
+    skip: Set[str]
+    fetch: Set[str]
 
 
 def _location_build_pull_plan(
-    packet_ids: list[str],
-    locations: Optional[list[str]],
+    packet_ids: List[str],
+    locations: Optional[List[str]],
     recursive: Optional[bool],
     root: OutpackRoot,
 ) -> LocationPullPlan:
@@ -320,7 +320,7 @@ def _location_build_pull_plan(
 
 
 def _location_build_pull_plan_packets(
-    packet_ids: list[str], root: OutpackRoot, *, recursive: Optional[bool]
+    packet_ids: List[str], root: OutpackRoot, *, recursive: Optional[bool]
 ) -> PullPlanPackets:
     requested = packet_ids
     if recursive is None:
@@ -349,8 +349,8 @@ def _location_build_pull_plan_packets(
 
 
 def _find_all_dependencies(
-    packet_ids: list[str], metadata: dict[str, MetadataCore]
-) -> list[str]:
+    packet_ids: List[str], metadata: Dict[str, MetadataCore]
+) -> List[str]:
     ret = set(packet_ids)
     packets = set(packet_ids)
     while len(packets) > 0:
@@ -371,8 +371,8 @@ def _find_all_dependencies(
 
 
 def _location_build_pull_plan_location(
-    packets: PullPlanPackets, locations: Optional[list[str]], root: OutpackRoot
-) -> list[str]:
+    packets: PullPlanPackets, locations: Optional[List[str]], root: OutpackRoot
+) -> List[str]:
     location_names = location_resolve_valid(
         locations,
         root,
@@ -414,8 +414,8 @@ def _location_build_pull_plan_location(
 
 
 def _location_build_pull_plan_files(
-    packet_ids: set[str], locations: list[str], root: OutpackRoot
-) -> list[PacketFileWithLocation]:
+    packet_ids: Set[str], locations: List[str], root: OutpackRoot
+) -> List[PacketFileWithLocation]:
     metadata = root.index.all_metadata()
     file_hashes = {
         file.hash
@@ -431,6 +431,7 @@ def _location_build_pull_plan_files(
     # We've already checked earlier that the file is in at least 1
     # location so we don't have to worry about that here
     all_files = []
+    seen_hashes = set()
     for location_name in locations:
         location_packets = set(root.index.packets_in_location(location_name))
         packets_in_location = location_packets & packet_ids
@@ -439,15 +440,16 @@ def _location_build_pull_plan_files(
                 file_with_location = PacketFileWithLocation.from_packet_file(
                     file, location_name
                 )
-                if file.hash not in file_hashes:
+                if file.hash not in seen_hashes:
+                    seen_hashes.add(file_with_location.hash)
                     all_files.append(file_with_location)
 
     return all_files
 
 
 def _location_build_packet_locations(
-    packets: set[str], locations: list[str], root: OutpackRoot
-) -> dict[str, PacketLocation]:
+    packets: Set[str], locations: List[str], root: OutpackRoot
+) -> Dict[str, PacketLocation]:
     packets_fetch = {}
     for location in locations:
         packets_from_location = root.index.location(location)
