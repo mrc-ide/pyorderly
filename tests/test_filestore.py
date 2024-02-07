@@ -81,14 +81,14 @@ def test_if_hash_not_found(tmp_path):
     h = Hash("md5", "7c4d97e580abb6c2ffb8b1872907d84b")
     dest = tmp_path / "dest"
     with pytest.raises(Exception) as e:
-        s.get(h, dest, False)
+        s.get(h, dest, overwrite=False)
     assert e.match("Hash 'md5:7c4d97e.+' not found in store")
 
 
 def test_can_create_filename_within_the_store(tmp_path):
     path = str(tmp_path / "store")
     store = FileStore(path)
-    temp_file = store.tmp()
-    assert os.path.dirname(temp_file) == str(store._path / "tmp")
-    assert not os.path.exists(temp_file)
-    assert os.path.exists(os.path.dirname(temp_file))
+    with store.tmp() as temp_file:
+        assert os.path.dirname(temp_file.name) == str(store._path / "tmp")
+        assert os.path.exists(temp_file.name)
+        assert os.path.exists(os.path.dirname(temp_file.name))

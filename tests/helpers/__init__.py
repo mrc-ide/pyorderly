@@ -1,4 +1,3 @@
-import os
 import random
 import shutil
 import string
@@ -7,13 +6,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List, Optional
 
-from outpack.ids import outpack_id
 from outpack.init import outpack_init
 from outpack.metadata import MetadataCore, PacketDepends
 from outpack.packet import Packet
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version
-from outpack.util import run_script
 
 
 @contextmanager

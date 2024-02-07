@@ -1,8 +1,9 @@
 import itertools
 import os
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, Generator, List, Optional, Set, Union
 
 import humanize
 
@@ -146,29 +147,27 @@ def outpack_location_pull_packet(
             f"unpacked"
         )
 
-    store, cleanup = _location_pull_files(plan.files, root)
+    with _location_pull_files(plan.files, root) as store:
+        use_archive = root.config.core.path_archive is not None
+        n_packets = len(plan.packets)
+        time_start = time.time()
+        for idx, packet in enumerate(plan.packets.values()):
+            if use_archive:
+                print(
+                    f"Writing files for '{packet.packet}' (packet {idx + 1}/"
+                    f"{n_packets})"
+                )
+                _location_pull_files_archive(packet.packet, store, root)
 
-    use_archive = root.config.core.path_archive is not None
-    n_packets = len(plan.packets)
-    time_start = time.time()
-    for idx, packet in enumerate(plan.packets.values()):
-        if use_archive:
-            print(
-                f"Writing files for '{packet.packet}' (packet {idx + 1}/"
-                f"{n_packets})"
+            mark_known(
+                root, packet.packet, LOCATION_LOCAL, packet.hash, time.time()
             )
-            _location_pull_files_archive(packet.packet, store, root)
-
-        mark_known(
-            root, packet.packet, LOCATION_LOCAL, packet.hash, time.time()
-        )
 
     print(
         f"Unpacked {n_packets} {pl(n_packets, 'packet')} in "
         f"{humanize.time.precisedelta(int(time.time() - time_start))}."
     )
 
-    cleanup()
     return list(plan.packets.keys())
 
 
@@ -189,15 +188,13 @@ def outpack_location_pull_packet(
 # and copes well with data races and corruption of data on disk
 # (e.g., users having edited files that we rely on, or editing them
 # after we hash them the first time).
+@contextmanager
 def _location_pull_files(
     files: List[PacketFileWithLocation], root: OutpackRoot
-) -> Tuple[FileStore, Callable[[], None]]:
+) -> Generator[FileStore, None, None]:
     store = root.files
+    cleanup_store = False
     if store is not None:
-
-        def cleanup():
-            return None
-
         exists, missing = partition(lambda file: store.exists(file.hash), files)
 
         if exists:
@@ -208,9 +205,7 @@ def _location_pull_files(
     else:
         print("Looking for suitable files already on disk")
         store = _temporary_filestore(root)
-
-        def cleanup():
-            store.destroy()
+        cleanup_store = True
 
         missing = []
         no_found = 0
@@ -245,7 +240,9 @@ def _location_pull_files(
                 store,
             )
 
-    return store, cleanup
+    yield store
+    if cleanup_store:
+        store.destroy()
 
 
 def _location_pull_hash_store(
@@ -261,8 +258,9 @@ def _location_pull_hash_store(
             f"Fetching file {idx + 1}/{no_of_files} "
             f"({humanize.naturalsize(file.size)}) from '{location_name}'"
         )
-        tmp = driver.fetch_file(file.hash, store.tmp())
-        store.put(tmp, file.hash)
+        with store.tmp() as temp_file:
+            tmp = driver.fetch_file(file.hash, temp_file.name)
+            store.put(tmp, file.hash)
 
 
 def _location_pull_files_archive(packet_id: str, store, root: OutpackRoot):
