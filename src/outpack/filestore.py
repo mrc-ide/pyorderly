@@ -81,4 +81,4 @@ class FileStore:
     def tmp(self) -> _TemporaryFileWrapper:
         path = self._path / "tmp"
         path.mkdir(exist_ok=True)
-        return tempfile.NamedTemporaryFile(dir=path)
+        return tempfile.NamedTemporaryFile(dir=path, mode="wb")

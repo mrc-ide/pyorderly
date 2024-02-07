@@ -32,7 +32,6 @@ class OutpackLocationPath:
     def fetch_file(self, hash, dest):
         if self.__root.config.core.use_file_store:
             path = self.__root.files.filename(hash)
-            print(path)
             if not os.path.exists(path):
                 msg = f"Hash '{hash}' not found at location"
                 raise Exception(msg)
