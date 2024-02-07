@@ -91,7 +91,7 @@ def location_resolve_valid(
         isinstance(item, str) for item in location
     ):
         unknown = set(location).difference(outpack_location_list(root))
-        if len(unknown) > 0:
+        if unknown:
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
             raise Exception(msg)
@@ -130,6 +130,13 @@ def _location_exists(root, name):
     return name in outpack_location_list(root)
 
 
+# TODO: Create a driver interface type
+# atm we can't specify a type for driver return
+# in this function. We want to return either an
+# OutpackLocationPath driver or an http driver
+# or other types down the line. We could set union type but
+# would be nicer to use an interface-like pattern
+# see mrc-5043
 def _location_driver(location_name, root):
     location = root.config.location[location_name]
     if location.type == "path":
@@ -140,7 +147,3 @@ def _location_driver(location_name, root):
     elif location.type == "custom":  # pragma: no cover
         msg = "custom remote not yet supported"
         raise Exception(msg)
-
-
-# TODO: Create a driver interface and have location path extend it?
-# Because atm we can't specify a type for driver as a function arg

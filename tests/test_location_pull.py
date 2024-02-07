@@ -648,5 +648,26 @@ def test_skip_files_in_file_store(tmp_path):
     text = f.getvalue()
     assert re.search("Found 1 file in the file store", text)
     assert re.search(
-        r"Need to fetch 3 files \([0-9]* Bytes\) from 1 location", text
+        r"Need to fetch 2 files \([0-9]* Bytes\) from 1 location", text
+    )
+
+
+def test_skip_files_already_on_disk(tmp_path):
+    root = create_temporary_roots(tmp_path, use_file_store=False)
+
+    ids = create_random_packet_chain(root["src"], 3)
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
+
+    outpack_location_pull_metadata(root=root["dst"])
+    outpack_location_pull_packet(ids["a"], root=root["dst"])
+
+    f = io.StringIO()
+    with contextlib.redirect_stdout(f):
+        outpack_location_pull_packet(ids["b"], root=root["dst"])
+    text = f.getvalue()
+    assert re.search("Found 1 file on disk", text)
+    assert re.search(
+        r"Need to fetch 2 files \([0-9]* Bytes\) from 1 location", text
     )

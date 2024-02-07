@@ -84,7 +84,7 @@ def _validate_hashes(driver, location_name, packets: List[PacketLocation]):
             if hash_there != hash_here:
                 mismatched_hashes.add(packet.packet)
 
-    if len(mismatched_hashes) > 0:
+    if mismatched_hashes:
         id_text = "', '".join(mismatched_hashes)
         msg = (
             f"Location '{location_name}' has conflicting metadata\n"
@@ -120,10 +120,10 @@ def _mark_all_known(driver, root, location_name):
 
 def outpack_location_pull_packet(
     ids: Union[str, List[str]],
+    *,
     options=None,
     recursive=None,
     root=None,
-    *,
     locate=True,
 ):
     root = root_open(root, locate=locate)
@@ -200,7 +200,7 @@ def _location_pull_files(
 
         exists, missing = partition(lambda file: store.exists(file.hash), files)
 
-        if len(exists) > 0:
+        if exists:
             print(
                 f"Found {len(exists)} {pl(exists, 'file')} in the "
                 f"file store"
@@ -212,24 +212,31 @@ def _location_pull_files(
         def cleanup():
             store.destroy()
 
+        missing = []
+        no_found = 0
         for file in files:
             path = find_file_by_hash(root, file.hash)
             if path is not None:
                 store.put(path, file.hash)
+                no_found += 1
+            else:
+                missing.append(file)
 
-    if len(files) == 0:
+        print(f"Found {no_found} {pl(no_found, 'file')} on disk ")
+
+    if len(missing) == 0:
         print("All files available locally, no need to fetch any")
     else:
-        locations = {file.location for file in files}
-        total_size = humanize.naturalsize(sum(file.size for file in files))
+        locations = {file.location for file in missing}
+        total_size = humanize.naturalsize(sum(file.size for file in missing))
         print(
-            f"Need to fetch {len(files)} {pl(files, 'file')} "
+            f"Need to fetch {len(missing)} {pl(missing, 'file')} "
             f"({total_size}) from {len(locations)} "
             f"{pl(locations, 'location')}"
         )
         for location in locations:
             from_this_location = [
-                file for file in files if file.location == location
+                file for file in missing if file.location == location
             ]
             _location_pull_hash_store(
                 from_this_location,
@@ -326,12 +333,12 @@ def _location_build_pull_plan_packets(
     if recursive is None:
         recursive = root.config.core.require_complete_tree
     if root.config.core.require_complete_tree and not recursive:
-        msg = (
-            "'recursive' must be True (or None) with your "
-            "configuration\nBecause 'core.require_complete_tree' is "
-            "true, we can't do a non-recursive pull, as this might "
-            "leave an incomplete tree"
-        )
+        msg = """
+            'recursive' must be True (or None) with your
+            configuration\nBecause 'core.require_complete_tree' is
+            true, we can't do a non-recursive pull, as this might
+            leave an incomplete tree
+            """
         raise Exception(msg)
 
     index = root.index
@@ -340,8 +347,8 @@ def _location_build_pull_plan_packets(
     else:
         full = packet_ids
 
-    skip = set(full) & set(index.unpacked())
-    fetch = set(full) - skip
+    skip = set(full).intersection(index.unpacked())
+    fetch = set(full).difference(skip)
 
     return PullPlanPackets(
         requested=requested, full=full, skip=skip, fetch=fetch
@@ -353,7 +360,7 @@ def _find_all_dependencies(
 ) -> List[str]:
     ret = set(packet_ids)
     packets = set(packet_ids)
-    while len(packets) > 0:
+    while packets:
         dependency_ids = {
             dependencies.packet
             for packet_id in packets
@@ -385,10 +392,10 @@ def _location_build_pull_plan_location(
         root.index.packets_in_location(location_name)
         for location_name in location_names
     ]
-    missing = packets.fetch - set(itertools.chain(*known_packets))
-    if len(missing) > 0:
-        extra = missing - set(packets.requested)
-        if len(extra) > 0:
+    missing = packets.fetch.difference(itertools.chain(*known_packets))
+    if missing:
+        extra = missing.difference(packets.requested)
+        if extra:
             hint = (
                 f"{len(extra)} missing "
                 f"{pl(extra, 'packet was', 'packets were')} "
@@ -434,7 +441,7 @@ def _location_build_pull_plan_files(
     seen_hashes = set()
     for location_name in locations:
         location_packets = set(root.index.packets_in_location(location_name))
-        packets_in_location = location_packets & packet_ids
+        packets_in_location = location_packets.intersection(packet_ids)
         for packet_id in packets_in_location:
             for file in metadata[packet_id].files:
                 file_with_location = PacketFileWithLocation.from_packet_file(
