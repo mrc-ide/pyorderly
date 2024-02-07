@@ -26,7 +26,7 @@ class OutpackRoot:
         dest = Path(dest)
         here_full = dest / here
         if self.config.core.use_file_store:
-            self.files.get(hash, here_full, False)
+            self.files.get(hash, here_full, overwrite=False)
         else:
             # consider starting from the case most likely to contain
             # this hash, since we already know that it's 'id' unless

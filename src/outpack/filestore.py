@@ -17,7 +17,7 @@ class FileStore:
         dat = hash_parse(hash)
         return self._path / dat.algorithm / dat.value[:2] / dat.value[2:]
 
-    def get(self, hash, dst, overwrite):
+    def get(self, hash, dst, *, overwrite=False):
         src = self.filename(hash)
         if not os.path.exists(src):
             msg = f"Hash '{hash}' not found in store"

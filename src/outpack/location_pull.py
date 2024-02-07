@@ -333,12 +333,9 @@ def _location_build_pull_plan_packets(
     if recursive is None:
         recursive = root.config.core.require_complete_tree
     if root.config.core.require_complete_tree and not recursive:
-        msg = """
-            'recursive' must be True (or None) with your
-            configuration\nBecause 'core.require_complete_tree' is
-            true, we can't do a non-recursive pull, as this might
-            leave an incomplete tree
-            """
+        msg = """'recursive' must be True (or None) with your configuration
+Because 'core.require_complete_tree' is true, we can't do a \
+non-recursive pull, as this might leave an incomplete tree"""
         raise Exception(msg)
 
     index = root.index

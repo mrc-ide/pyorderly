@@ -34,7 +34,7 @@ def test_can_store_files(tmp_path):
     assert s.ls() == [h]
 
     dest = tmp_path / "dest"
-    s.get(h, dest, False)
+    s.get(h, dest, overwrite=False)
     assert dest.exists()
     assert hash_file(dest, "md5") == h
 
@@ -62,16 +62,16 @@ def test_get_files_fails_if_overwrite_false(tmp_path):
 
     dest = tmp_path / "dest"
     assert not dest.exists()
-    store.get(h, dest, False)
+    store.get(h, dest, overwrite=False)
     assert dest.exists()
     assert hash_file(dest, "md5") == h
 
-    store.get(h, dest, True)
+    store.get(h, dest, overwrite=True)
     assert dest.exists()
     assert hash_file(dest, "md5") == h
 
     with pytest.raises(Exception) as e:
-        store.get(h, dest, False)
+        store.get(h, dest, overwrite=False)
     assert e.match(r"Failed to copy '.+' to '.+', file already exists")
 
 

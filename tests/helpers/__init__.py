@@ -29,7 +29,8 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
         p = Packet(root, src, name, id=packet_id, parameters=parameters)
         try:
             yield p
-        except BaseException:
+        except BaseException as e:
+            print("Error in packet creation: ", e)
             p.end(insert=False)
         else:
             p.end(insert=True)
@@ -51,40 +52,18 @@ def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
 ## Create a chain of packets a, b, c, ... that depend on each other
 def create_random_packet_chain(root, length, base=None):
     ids = {}
-    with TemporaryDirectory() as src:
-        for i in range(length):
-            name = chr(i + ord("a"))
-            packet_id = outpack_id()
-            ids[name] = packet_id
-            packet_path = Path(src) / name / packet_id
-            os.makedirs(packet_path)
+    for i in range(length):
+        name = chr(i + ord("a"))
+        with create_packet(root, name) as p:
+            if base is not None:
+                p.use_dependency(base, {"input.txt": "data.txt"})
 
-            packet = Packet(root, packet_path, name, id=packet_id, locate=False)
+            d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+            with open(p.path / "data.txt", "w") as f:
+                f.writelines(d)
 
-            if i == 0 and base is None:
-                with open(packet_path / "data.txt", "w") as f:
-                    f.write("0")
-            else:
-                lines = [
-                    "with open('input.txt', 'r') as f:",
-                    "    data = f.read()",
-                    "with open('data.txt', 'w') as f:",
-                    f"    f.write(data + '{i}')",
-                ]
-                with open(packet_path / "orderly.py", "w") as f:
-                    f.write("\n".join(lines) + "\n")
-
-                if i > 0:
-                    id_use = ids[chr(i - 1 + ord("a"))]
-                else:
-                    id_use = base
-
-                if id_use is not None:
-                    packet.use_dependency(id_use, {"input.txt": "data.txt"})
-
-                run_script(packet_path, "orderly.py", None)
-
-            packet.end(insert=True)
+            ids[name] = p.id
+            base = p.id
 
     return ids
 

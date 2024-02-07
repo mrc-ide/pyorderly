@@ -404,7 +404,6 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
     with contextlib.redirect_stdout(f):
         outpack_location_pull_packet(ids[0], root=root["dst"])
 
-    print(f.getvalue())
     assert re.search(
         r"Rejecting file from archive 'a\.txt' in 'data/", f.getvalue()
     )
@@ -466,7 +465,6 @@ def test_error_if_dependent_packet_not_known(tmp_path):
 
     with pytest.raises(Exception) as e:
         outpack_location_pull_packet(ids["e"], root=root["c"])
-    print(e.value)
     assert e.match(f"Failed to find packet '{ids['d']}")
     assert e.match("Looked in location 'b'")
     assert e.match(
@@ -648,7 +646,7 @@ def test_skip_files_in_file_store(tmp_path):
     text = f.getvalue()
     assert re.search("Found 1 file in the file store", text)
     assert re.search(
-        r"Need to fetch 2 files \([0-9]* Bytes\) from 1 location", text
+        r"Need to fetch 1 file \([0-9]* Bytes\) from 1 location", text
     )
 
 
@@ -669,5 +667,5 @@ def test_skip_files_already_on_disk(tmp_path):
     text = f.getvalue()
     assert re.search("Found 1 file on disk", text)
     assert re.search(
-        r"Need to fetch 2 files \([0-9]* Bytes\) from 1 location", text
+        r"Need to fetch 1 file \([0-9]* Bytes\) from 1 location", text
     )
