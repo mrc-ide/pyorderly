@@ -12,3 +12,8 @@ Module Contents
 
    
 
+.. py:data:: __name__
+   :value: 'outpack-py'
+
+   
+
