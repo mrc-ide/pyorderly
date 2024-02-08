@@ -1,0 +1,33 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install hatch
+      - name: Generate Docs
+        run: |
+          hatch run generate-docs
+      - name: Deploy Docs
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        if: github.event_name != 'pull_request'
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs/_build
