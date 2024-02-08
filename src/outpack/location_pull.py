@@ -258,8 +258,8 @@ def _location_pull_hash_store(
             f"Fetching file {idx + 1}/{no_of_files} "
             f"({humanize.naturalsize(file.size)}) from '{location_name}'"
         )
-        with store.tmp() as temp_file:
-            tmp = driver.fetch_file(file.hash, temp_file.name)
+        with store.tmp() as path:
+            tmp = driver.fetch_file(file.hash, path)
             store.put(tmp, file.hash)
 
 

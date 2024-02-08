@@ -89,6 +89,6 @@ def test_can_create_filename_within_the_store(tmp_path):
     path = str(tmp_path / "store")
     store = FileStore(path)
     with store.tmp() as temp_file:
-        assert os.path.dirname(temp_file.name) == str(store._path / "tmp")
-        assert os.path.exists(temp_file.name)
-        assert os.path.exists(os.path.dirname(temp_file.name))
+        assert os.path.dirname(temp_file) == str(store._path / "tmp")
+        assert os.path.exists(temp_file)
+        assert os.path.exists(os.path.dirname(temp_file))

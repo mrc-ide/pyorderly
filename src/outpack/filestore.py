@@ -3,8 +3,8 @@ import os.path
 import shutil
 import stat
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
-from tempfile import _TemporaryFileWrapper
 
 from outpack.hash import Hash, hash_parse, hash_validate_file
 
@@ -78,7 +78,16 @@ class FileStore:
 
         shutil.rmtree(self._path, onerror=onerror)
 
-    def tmp(self) -> _TemporaryFileWrapper:
+    @contextmanager
+    def tmp(self):
+        # On a newer version of tempfile we could use `delete_on_close = True`
         path = self._path / "tmp"
         path.mkdir(exist_ok=True)
-        return tempfile.NamedTemporaryFile(dir=path, mode="wb")
+        f = tempfile.NamedTemporaryFile(dir=path, delete=False)
+        try:
+            yield f.name
+        finally:
+            try:
+                os.unlink(f.name)
+            except OSError:
+                pass
