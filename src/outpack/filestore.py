@@ -67,7 +67,11 @@ class FileStore:
 
             If the error is for another reason it re-raises the error.
             We manually remove write permission in ``put`` above so this
-            is expected
+            is expected.
+
+            Note we only need this on windows, on Linux shutils.rmtree will
+            successfully remove the dir and its contents without having
+            to add write permission to individual files
 
             Usage : ``shutil.rmtree(path, onerror=onerror)``
             """

@@ -1,4 +1,5 @@
 import os
+import platform
 import random
 
 import pytest
@@ -54,7 +55,11 @@ def test_can_store_files(tmp_path):
     assert len(s.ls()) == 10
 
 
+@pytest.mark.skipif(platform.system() != "Windows",
+                    reason="destroy onerror handler only invoked on Windows \
+so only run this test on Windows")
 def test_destroy_store_raises_error(tmp_path, mocker):
+
     store_path = tmp_path / "store"
 
     with mocker.patch("os.chmod", side_effect=Exception("unexpected err")):
@@ -66,14 +71,11 @@ def test_destroy_store_raises_error(tmp_path, mocker):
         file_hash = hash_file(file_path, "md5")
         assert store.put(file_path, file_hash, move=False) == file_hash
         assert store.ls() == [file_hash]
-        # Force the directory to be readonly, otherwise on linux
-        # this is removing the directory and it's contents without
-        # dropping into the onerror function we are trying to test here
-        store_path.chmod(0o444)
 
         # Error raised from anything other than file permission issue
-        with pytest.raises(Exception, matches="unexpected err") as e:
+        with pytest.raises(Exception, match="unexpected err"):
             store.destroy()
+
 
 
 def test_get_files_fails_if_overwrite_false(tmp_path):
