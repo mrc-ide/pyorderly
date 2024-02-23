@@ -2,3 +2,4 @@
 #
 # SPDX-License-Identifier: MIT
 __version__ = "0.0.1"
+__name__ = "outpack-py"

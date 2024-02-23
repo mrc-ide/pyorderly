@@ -45,7 +45,12 @@ path = "src/outpack/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
-  "pytest_mock"
+  "pytest_mock",
+  "sphinx",
+  "sphinx-rtd-theme",
+  "myst-parser",
+  "sphinx-copybutton",
+  "sphinx-autoapi"
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
@@ -66,7 +71,10 @@ cov-ci = [
   "test-cov",
   "cov-report-xml",
 ]
-
+generate-docs = [
+  "sphinx-autogen ./docs/*.md",
+  "sphinx-build -b html ./docs ./docs/_build"
+]
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
