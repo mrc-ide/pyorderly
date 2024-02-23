@@ -55,14 +55,15 @@ def test_can_store_files(tmp_path):
     assert len(s.ls()) == 10
 
 
-@pytest.mark.skipif(platform.system() != "Windows",
-                    reason="destroy onerror handler only invoked on Windows \
-so only run this test on Windows")
+@pytest.mark.skipif(
+    platform.system() != "Windows",
+    reason="destroy onerror handler only invoked on Windows \
+so only run this test on Windows",
+)
 def test_destroy_store_raises_error(tmp_path, mocker):
-
     store_path = tmp_path / "store"
 
-    with mocker.patch("os.chmod", side_effect=Exception("unexpected err")):
+    with mocker.patch("os.chmod", side_effect=[1, Exception("unexpected err")]):
         store = FileStore(str(store_path))
         assert store_path.exists()
         file_path = tmp_path / "a"
@@ -75,7 +76,6 @@ def test_destroy_store_raises_error(tmp_path, mocker):
         # Error raised from anything other than file permission issue
         with pytest.raises(Exception, match="unexpected err"):
             store.destroy()
-
 
 
 def test_get_files_fails_if_overwrite_false(tmp_path):
