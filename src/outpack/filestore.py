@@ -80,7 +80,9 @@ class FileStore:
 
     @contextmanager
     def tmp(self):
-        # On a newer version of tempfile we could use `delete_on_close = True`
+        # On a newer version of tempfile we could use `delete_on_close = False`
+        # see
+        # https://github.com/mrc-ide/outpack-py/pull/33#discussion_r1500522877
         path = self._path / "tmp"
         path.mkdir(exist_ok=True)
         f = tempfile.NamedTemporaryFile(dir=path, delete=False)
