@@ -240,9 +240,11 @@ def _location_pull_files(
                 store,
             )
 
-    yield store
-    if cleanup_store:
-        store.destroy()
+    try:
+        yield store
+    finally:
+        if cleanup_store:
+            store.destroy()
 
 
 def _location_pull_hash_store(
