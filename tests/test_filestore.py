@@ -63,19 +63,20 @@ so only run this test on Windows",
 def test_destroy_store_raises_error(tmp_path, mocker):
     store_path = tmp_path / "store"
 
-    with mocker.patch("os.chmod", side_effect=[1, Exception("unexpected err")]):
-        store = FileStore(str(store_path))
-        assert store_path.exists()
-        file_path = tmp_path / "a"
-        with open(file_path, "w") as f:
-            f.write(randstr(10))
-        file_hash = hash_file(file_path, "md5")
-        assert store.put(file_path, file_hash, move=False) == file_hash
-        assert store.ls() == [file_hash]
+    mocker.patch("os.chmod", side_effect=[1, Exception("unexpected err")])
 
-        # Error raised from anything other than file permission issue
-        with pytest.raises(Exception, match="unexpected err"):
-            store.destroy()
+    store = FileStore(str(store_path))
+    assert store_path.exists()
+    file_path = tmp_path / "a"
+    with open(file_path, "w") as f:
+        f.write(randstr(10))
+    file_hash = hash_file(file_path, "md5")
+    assert store.put(file_path, file_hash, move=False) == file_hash
+    assert store.ls() == [file_hash]
+
+    # Error raised from anything other than file permission issue
+    with pytest.raises(Exception, match="unexpected err"):
+        store.destroy()
 
 
 def test_get_files_fails_if_overwrite_false(tmp_path):
