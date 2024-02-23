@@ -26,23 +26,54 @@ def test_can_store_files(tmp_path):
             f.write(randstr(10))
 
     s = FileStore(str(tmp_path / "store"))
-    p = tmp_path / "tmp" / "a"
-    h = hash_file(p, "md5")
-    assert not s.exists(h)
-    assert s.put(p, h) == h
-    assert s.exists(h)
-    assert s.ls() == [h]
+    path_a = tmp_path / "tmp" / "a"
+    hash_a = hash_file(path_a, "md5")
+    assert not s.exists(hash_a)
+    assert s.put(path_a, hash_a, move=True) == hash_a
+    assert s.exists(hash_a)
+    assert not path_a.exists()
+    assert s.ls() == [hash_a]
+
+    path_b = tmp_path / "tmp" / "b"
+    hash_b = hash_file(path_b, "md5")
+    assert not s.exists(hash_b)
+    assert s.put(path_b, hash_b) == hash_b
+    assert s.exists(hash_b)
+    assert path_b.exists()
+    assert all(h in s.ls() for h in [hash_a, hash_b])
 
     dest = tmp_path / "dest"
-    s.get(h, dest, overwrite=False)
+    s.get(hash_a, dest, overwrite=False)
     assert dest.exists()
-    assert hash_file(dest, "md5") == h
+    assert hash_file(dest, "md5") == hash_a
 
-    for i in range(10):
-        p = tmp_path / "tmp" / letters[i]
+    for i in range(9):
+        p = tmp_path / "tmp" / letters[i + 1]
         s.put(p, hash_file(p, "md5"))
 
     assert len(s.ls()) == 10
+
+
+def test_destroy_store_raises_error(tmp_path, mocker):
+    store_path = tmp_path / "store"
+
+    with mocker.patch("os.chmod", side_effect=Exception("unexpected err")):
+        store = FileStore(str(store_path))
+        assert store_path.exists()
+        file_path = tmp_path / "a"
+        with open(file_path, "w") as f:
+            f.write(randstr(10))
+        file_hash = hash_file(file_path, "md5")
+        assert store.put(file_path, file_hash, move=False) == file_hash
+        assert store.ls() == [file_hash]
+        # Force the directory to be readonly, otherwise on linux
+        # this is removing the directory and it's contents without
+        # dropping into the onerror function we are trying to test here
+        store_path.chmod(0o444)
+
+        # Error raised from anything other than file permission issue
+        with pytest.raises(Exception, matches="unexpected err") as e:
+            store.destroy()
 
 
 def test_get_files_fails_if_overwrite_false(tmp_path):

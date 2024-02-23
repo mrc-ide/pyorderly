@@ -45,6 +45,7 @@ path = "src/outpack/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "pytest_mock"
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"

@@ -41,7 +41,8 @@ class FileStore:
                 shutil.move(src, dst)
             else:
                 shutil.copyfile(src, dst)
-            os.chmod(dst, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH)
+            # Make file readonly for everyone
+            dst.chmod(0o444)
         return hash
 
     def ls(self):
