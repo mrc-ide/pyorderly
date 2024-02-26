@@ -63,7 +63,7 @@ so only run this test on Windows",
 def test_destroy_store_raises_error(tmp_path, mocker):
     store_path = tmp_path / "store"
 
-    mocker.patch("os.chmod", side_effect=[1, Exception("unexpected err")])
+    mocker.patch("os.access", return_value=True)
 
     store = FileStore(str(store_path))
     assert store_path.exists()
@@ -75,7 +75,7 @@ def test_destroy_store_raises_error(tmp_path, mocker):
     assert store.ls() == [file_hash]
 
     # Error raised from anything other than file permission issue
-    with pytest.raises(Exception, match="unexpected err"):
+    with pytest.raises(Exception, match="Access is denied"):
         store.destroy()
 
 
