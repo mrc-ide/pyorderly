@@ -356,6 +356,28 @@ def test_can_pull_packet_from_location_into_another_file_store(tmp_path):
     assert all(root["dst"].files.exists(file.hash) for file in meta.files)
 
 
+def test_can_pull_packet_from_location_file_store_only(tmp_path):
+    root = create_temporary_roots(
+        tmp_path, use_file_store=True, path_archive=None
+    )
+
+    id = create_random_packet(root["src"])
+    outpack_location_add(
+        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
+    )
+    outpack_location_pull_metadata(root=root["dst"])
+    outpack_location_pull_packet(id, root=root["dst"])
+
+    index = root["dst"].index
+    assert index.unpacked() == [id]
+    assert not os.path.exists(
+        root["dst"].path / "archive" / "data" / id / "data.txt"
+    )
+
+    meta = index.metadata(id)
+    assert all(root["dst"].files.exists(file.hash) for file in meta.files)
+
+
 def test_can_pull_packet_from_one_location_to_another_archive(tmp_path):
     root = create_temporary_roots(tmp_path, use_file_store=False)
 
