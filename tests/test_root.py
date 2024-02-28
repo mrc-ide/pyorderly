@@ -89,7 +89,7 @@ def test_can_reject_corrupted_files(tmp_path, capsys):
     captured = capsys.readouterr()
     assert (
         captured.out
-        == f"Rejecting file from archive 'data.txt'in data/{id[1]}\n"
+        == f"Rejecting file from archive 'data.txt' in 'data/{id[1]}'\n"
     )
     dest = tmp_path / "dest"
     with pytest.raises(Exception, match="File not found in archive"):

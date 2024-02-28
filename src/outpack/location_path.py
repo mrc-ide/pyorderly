@@ -19,7 +19,7 @@ class OutpackLocationPath:
 
         all_ids = self.__root.index.location(LOCATION_LOCAL).keys()
         missing_ids = set(packet_ids).difference(all_ids)
-        if len(missing_ids) > 0:
+        if missing_ids:
             missing_msg = "', '".join(missing_ids)
             msg = f"Some packet ids not found: '{missing_msg}'"
             raise Exception(msg)
@@ -32,7 +32,6 @@ class OutpackLocationPath:
     def fetch_file(self, hash, dest):
         if self.__root.config.core.use_file_store:
             path = self.__root.files.filename(hash)
-            print(path)
             if not os.path.exists(path):
                 msg = f"Hash '{hash}' not found at location"
                 raise Exception(msg)

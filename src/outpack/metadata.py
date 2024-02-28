@@ -23,6 +23,18 @@ class PacketFile:
         return PacketFile(path, s, h)
 
 
+@dataclass
+class PacketFileWithLocation:
+    path: str
+    size: float
+    hash: str
+    location: str
+
+    @staticmethod
+    def from_packet_file(file: PacketFile, location: str):
+        return PacketFileWithLocation(file.path, file.size, file.hash, location)
+
+
 @dataclass_json()
 @dataclass
 class PacketDependsPath:
@@ -74,11 +86,11 @@ class PacketLocation:
     hash: str
 
 
-def read_metadata_core(path):
+def read_metadata_core(path) -> MetadataCore:
     with open(path) as f:
-        return MetadataCore.from_json(f.read().strip())
+        return MetadataCore.from_json(f.read().strip())  # type: ignore
 
 
-def read_packet_location(path):
+def read_packet_location(path) -> PacketLocation:
     with open(path) as f:
-        return PacketLocation.from_json(f.read().strip())
+        return PacketLocation.from_json(f.read().strip())  # type: ignore

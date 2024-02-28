@@ -1,12 +1,16 @@
 import random
 import shutil
+import string
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import List, Optional
 
 from outpack.init import outpack_init
+from outpack.metadata import MetadataCore, PacketDepends
 from outpack.packet import Packet
 from outpack.root import root_open
+from outpack.schema import outpack_schema_version
 
 
 @contextmanager
@@ -22,7 +26,8 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
         p = Packet(root, src, name, id=packet_id, parameters=parameters)
         try:
             yield p
-        except BaseException:
+        except BaseException as e:
+            print("Error in packet creation: ", e)
             p.end(insert=False)
         else:
             p.end(insert=True)
@@ -41,9 +46,37 @@ def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
     return p.id
 
 
+## Create a chain of packets a, b, c, ... that depend on each other
+def create_random_packet_chain(root, length, base=None):
+    ids = {}
+    for i in range(length):
+        name = chr(i + ord("a"))
+        with create_packet(root, name) as p:
+            if base is not None:
+                p.use_dependency(base, {"input.txt": "data.txt"})
+
+            d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+            with open(p.path / "data.txt", "w") as f:
+                f.writelines(d)
+
+            ids[name] = p.id
+            base = p.id
+
+    return ids
+
+
 def create_temporary_root(path, **kwargs):
     outpack_init(path, **kwargs)
     return root_open(path, locate=False)
+
+
+def create_temporary_roots(path, location_names=None, **kwargs):
+    if location_names is None:
+        location_names = ["src", "dst"]
+    root = {}
+    for name in location_names:
+        root[name] = create_temporary_root(path / name, **kwargs)
+    return root
 
 
 def copy_examples(names, root):
@@ -53,3 +86,47 @@ def copy_examples(names, root):
         path_src = root.path / "src" / nm
         path_src.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(Path("tests/orderly/examples") / nm, path_src)
+
+
+def create_metadata_depends(id: str, depends: Optional[List[str]] = None):
+    if depends is None:
+        depends = []
+    dependencies = [
+        PacketDepends(dependency_id, "", []) for dependency_id in depends
+    ]
+    return {
+        id: MetadataCore(
+            outpack_schema_version(),
+            id,
+            "name_" + random_characters(4),
+            {},
+            {},
+            [],
+            dependencies,
+            None,
+            None,
+        )
+    }
+
+
+def random_characters(n):
+    return "".join(
+        random.choice(string.ascii_letters + string.digits)  # noqa: S311
+        for _ in range(n)
+    )
+
+
+# Like Rs rep function, useful for setting up test values
+def rep(x, each):
+    ret = []
+    if isinstance(each, int):
+        each = [each] * len(x)
+    if len(x) != len(each):
+        msg = (
+            "Repeats must be int or same length as the thing you want to repeat"
+        )
+        raise Exception(msg)
+    for item, times in zip(x, each):
+        ret.extend([item] * times)
+
+    return ret

@@ -1,7 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 from outpack.config import read_config
 from outpack.filestore import FileStore
@@ -11,7 +11,7 @@ from outpack.util import find_file_descend
 
 
 class OutpackRoot:
-    files = None
+    files: Optional[FileStore] = None
 
     def __init__(self, path):
         self.path = Path(path)
@@ -26,7 +26,7 @@ class OutpackRoot:
         dest = Path(dest)
         here_full = dest / here
         if self.config.core.use_file_store:
-            self.files.get(hash, here_full)
+            self.files.get(hash, here_full, overwrite=False)
         else:
             # consider starting from the case most likely to contain
             # this hash, since we already know that it's 'id' unless
@@ -78,8 +78,8 @@ def find_file_by_hash(root, hash):
                     return path
                 else:
                     msg = (
-                        f"Rejecting file from archive '{f.path}'"
-                        f"in {meta.name}/{meta.id}"
+                        f"Rejecting file from archive '{f.path}' "
+                        f"in '{meta.name}/{meta.id}'"
                     )
                     print(msg)
     return None

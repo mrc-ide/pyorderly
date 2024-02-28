@@ -29,7 +29,8 @@ dependencies = [
   "importlib_resources",
   "jsonschema",
   "pygit2",
-  "outpack-query-parser"
+  "outpack-query-parser",
+  "humanize"
 ]
 
 [project.urls]
@@ -44,6 +45,7 @@ path = "src/outpack/__about__.py"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
+  "pytest_mock",
   "sphinx",
   "sphinx-rtd-theme",
   "myst-parser",

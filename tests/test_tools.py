@@ -29,9 +29,9 @@ def test_git_report_no_info_without_git_repo(tmp_path):
 def test_git_report_git_info_if_possible(tmp_path):
     sha = simple_git_example(tmp_path)
     res = git_info(tmp_path)
-    # This default branch name won't be robust to changes in future
-    # git versions
-    assert res == GitInfo(branch="master", sha=sha, url=[])
+    assert res == GitInfo(branch="master", sha=sha, url=[]) or res == GitInfo(
+        branch="main", sha=sha, url=[]
+    )
 
 
 def test_git_report_single_url(tmp_path):

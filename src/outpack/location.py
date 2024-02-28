@@ -1,13 +1,8 @@
 import collections
-import os
 import shutil
-from typing import List
 
 from outpack.config import Location, update_config
-from outpack.hash import hash_validate_string
 from outpack.location_path import OutpackLocationPath
-from outpack.metadata import PacketLocation
-from outpack.packet import mark_known
 from outpack.root import root_open
 from outpack.static import (
     LOCATION_LOCAL,
@@ -96,7 +91,7 @@ def location_resolve_valid(
         isinstance(item, str) for item in location
     ):
         unknown = set(location).difference(outpack_location_list(root))
-        if len(unknown) > 0:
+        if unknown:
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
             raise Exception(msg)
@@ -119,111 +114,6 @@ def location_resolve_valid(
     return location
 
 
-def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
-    root = root_open(root, locate=locate)
-    location_name = location_resolve_valid(
-        location,
-        root,
-        include_local=False,
-        include_orphan=False,
-        allow_no_locations=True,
-    )
-    for name in location_name:
-        driver = _location_driver(name, root)
-        _pull_all_metadata(driver, root, name)
-        known_packets = []
-        for packet_location in root.index.all_locations().values():
-            known_packets.extend(list(packet_location.values()))
-        _validate_hashes(driver, name, known_packets)
-        _mark_all_known(driver, root, name)
-
-    # TODO: mrc-4601 deorphan recovered packets
-
-
-def _pull_all_metadata(driver, root, location_name):
-    known_there = driver.list()
-    known_here = root.index.all_metadata().keys()
-    for packet_id in known_there:
-        if packet_id not in known_here:
-            _pull_packet_metadata(driver, root, location_name, packet_id)
-
-
-def _get_remove_location_hint(location_name):
-    return (
-        f'Probably all you can do at this point is '
-        f'remove this location from your configuration '
-        f'by running '
-        f'orderly_location_remove("{location_name}")'
-    )
-
-
-def _pull_packet_metadata(driver, root, location_name, packet_id):
-    metadata = driver.metadata(packet_id)[packet_id]
-    expected_hash = driver.list()[packet_id].hash
-
-    hash_validate_string(
-        metadata,
-        expected_hash,
-        f"metadata for '{packet_id}' from '{location_name}'",
-        [
-            "This is bad news, I'm afraid. Your location is sending data "
-            "that does not match the hash it says it does. Please let us "
-            "know how this might have happened.",
-            _get_remove_location_hint(location_name),
-        ],
-    )
-
-    path_metadata = root.path / ".outpack" / "metadata"
-    os.makedirs(path_metadata, exist_ok=True)
-    filename = path_metadata / packet_id
-    with open(filename, "w") as f:
-        f.writelines(metadata)
-
-
-def _validate_hashes(driver, location_name, packets: List[PacketLocation]):
-    mismatched_hashes = set()
-    known_there = driver.list()
-    for packet in packets:
-        if known_there.get(packet.packet) is not None:
-            hash_there = known_there[packet.packet].hash
-            hash_here = packet.hash
-            if hash_there != hash_here:
-                mismatched_hashes.add(packet.packet)
-
-    if len(mismatched_hashes) > 0:
-        id_text = "', '".join(mismatched_hashes)
-        msg = (
-            f"Location '{location_name}' has conflicting metadata\n"
-            f"This is really bad news. We have been offered metadata "
-            f"from '{location_name}' that has a different hash to "
-            f"metadata that we have already imported from other "
-            f"locations. I'm not going to import this new metadata, "
-            f"but there's no guarantee that the older metadata is "
-            f"actually what you want!\nConflicts for: '{id_text}'\n"
-            f"We would be interested in this case, please let us know\n"
-            f"{_get_remove_location_hint(location_name)}"
-        )
-        raise Exception(msg)
-
-
-def _mark_all_known(driver, root, location_name):
-    try:
-        known_here = root.index.location(location_name)
-    except KeyError:
-        known_here = {}
-
-    known_there = driver.list()
-    for packet_id in known_there:
-        if packet_id not in known_here.keys():
-            mark_known(
-                root,
-                packet_id,
-                location_name,
-                known_there[packet_id].hash,
-                known_there[packet_id].time,
-            )
-
-
 def _location_check_new_name(root, name):
     if _location_exists(root, name):
         msg = f"A location with name '{name}' already exists"
@@ -240,6 +130,13 @@ def _location_exists(root, name):
     return name in outpack_location_list(root)
 
 
+# TODO: Create a driver interface type
+# atm we can't specify a type for driver return
+# in this function. We want to return either an
+# OutpackLocationPath driver or an http driver
+# or other types down the line. We could set union type but
+# would be nicer to use an interface-like pattern
+# see mrc-5043
 def _location_driver(location_name, root):
     location = root.config.location[location_name]
     if location.type == "path":
