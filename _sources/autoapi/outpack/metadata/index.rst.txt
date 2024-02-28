@@ -13,6 +13,7 @@ Classes
 .. autoapisummary::
 
    outpack.metadata.PacketFile
+   outpack.metadata.PacketFileWithLocation
    outpack.metadata.PacketDependsPath
    outpack.metadata.PacketDepends
    outpack.metadata.MetadataCore
@@ -57,6 +58,34 @@ Attributes
       
 
    .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:class:: PacketFileWithLocation
+
+
+   .. py:attribute:: path
+      :type: str
+
+      
+
+   .. py:attribute:: size
+      :type: float
+
+      
+
+   .. py:attribute:: hash
+      :type: str
+
+      
+
+   .. py:attribute:: location
+      :type: str
+
+      
+
+   .. py:method:: from_packet_file(file: PacketFile, location: str)
       :staticmethod:
 
 
@@ -173,9 +202,9 @@ Attributes
       
 
 
-.. py:function:: read_metadata_core(path)
+.. py:function:: read_metadata_core(path) -> MetadataCore
 
 
-.. py:function:: read_packet_location(path)
+.. py:function:: read_packet_location(path) -> PacketLocation
 
 

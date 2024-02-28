@@ -22,12 +22,12 @@ Classes
 
 
    .. py:attribute:: metadata
-      :type: dict
+      :type: Dict[str, outpack.metadata.MetadataCore]
 
       
 
    .. py:attribute:: location
-      :type: dict
+      :type: Dict[str, Dict[str, outpack.metadata.PacketLocation]]
 
       
 
@@ -50,19 +50,22 @@ Classes
    .. py:method:: refresh()
 
 
-   .. py:method:: all_metadata()
+   .. py:method:: all_metadata() -> Dict[str, outpack.metadata.MetadataCore]
 
 
-   .. py:method:: metadata(id)
+   .. py:method:: metadata(id) -> outpack.metadata.MetadataCore
 
 
-   .. py:method:: all_locations()
+   .. py:method:: all_locations() -> Dict[str, Dict[str, outpack.metadata.PacketLocation]]
 
 
-   .. py:method:: location(name)
+   .. py:method:: location(name) -> Dict[str, outpack.metadata.PacketLocation]
 
 
-   .. py:method:: unpacked()
+   .. py:method:: packets_in_location(name) -> List[str]
+
+
+   .. py:method:: unpacked() -> List[str]
 
 
 

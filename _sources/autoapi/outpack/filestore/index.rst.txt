@@ -23,16 +23,22 @@ Classes
    .. py:method:: filename(hash)
 
 
-   .. py:method:: get(hash, dst)
+   .. py:method:: get(hash, dst, *, overwrite=False)
 
 
    .. py:method:: exists(hash)
 
 
-   .. py:method:: put(src, hash)
+   .. py:method:: put(src, hash, *, move=False)
 
 
    .. py:method:: ls()
+
+
+   .. py:method:: destroy() -> None
+
+
+   .. py:method:: tmp()
 
 
 

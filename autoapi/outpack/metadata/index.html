@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="outpack.packet" href="../packet/index.html" />
-    <link rel="prev" title="outpack.location_path" href="../location_path/index.html" /> 
+    <link rel="prev" title="outpack.location_pull" href="../location_pull/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,7 +53,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
@@ -67,6 +66,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../init/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.init</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location_path/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../location_pull/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_pull</span></code></a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../packet/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.packet</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
@@ -79,6 +79,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -120,16 +121,19 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketFile</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.PacketDependsPath" title="outpack.metadata.PacketDependsPath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketDependsPath</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.PacketFileWithLocation" title="outpack.metadata.PacketFileWithLocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketFileWithLocation</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.PacketDepends" title="outpack.metadata.PacketDepends"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketDepends</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.PacketDependsPath" title="outpack.metadata.PacketDependsPath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketDependsPath</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetadataCore</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.PacketDepends" title="outpack.metadata.PacketDepends"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketDepends</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketLocation</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetadataCore</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PacketLocation</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -139,10 +143,10 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.read_metadata_core" title="outpack.metadata.read_metadata_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_metadata_core</span></code></a>(path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.metadata.read_metadata_core" title="outpack.metadata.read_metadata_core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_metadata_core</span></code></a>(→ MetadataCore)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.read_packet_location" title="outpack.metadata.read_packet_location"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_packet_location</span></code></a>(path)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.metadata.read_packet_location" title="outpack.metadata.read_packet_location"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_packet_location</span></code></a>(→ PacketLocation)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -178,6 +182,36 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.metadata.PacketFile.from_file">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_algorithm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketFile.from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">PacketFileWithLocation</span></span><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation.path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation.size">
+<span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation.size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation.hash">
+<span class="sig-name descname"><span class="pre">hash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation.hash" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation.location">
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation.location" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="outpack.metadata.PacketFileWithLocation.from_packet_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_packet_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">PacketFile</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.PacketFileWithLocation.from_packet_file" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -304,12 +338,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.metadata.read_metadata_core">
-<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_metadata_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_metadata_core" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_metadata_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">MetadataCore</span></a></span></span><a class="headerlink" href="#outpack.metadata.read_metadata_core" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.metadata.read_packet_location">
-<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_packet_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.metadata.read_packet_location" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">outpack.metadata.</span></span><span class="sig-name descname"><span class="pre">read_packet_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">PacketLocation</span></a></span></span><a class="headerlink" href="#outpack.metadata.read_packet_location" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -320,7 +354,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../location_path/index.html" class="btn btn-neutral float-left" title="outpack.location_path" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../location_pull/index.html" class="btn btn-neutral float-left" title="outpack.location_pull" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../packet/index.html" class="btn btn-neutral float-right" title="outpack.packet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

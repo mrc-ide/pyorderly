@@ -29,6 +29,7 @@ Submodules
    init/index.rst
    location/index.rst
    location_path/index.rst
+   location_pull/index.rst
    metadata/index.rst
    packet/index.rst
    root/index.rst

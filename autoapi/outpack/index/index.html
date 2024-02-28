@@ -53,7 +53,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
@@ -67,6 +66,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../init/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.init</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location_path/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../location_pull/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_pull</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../packet/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.packet</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
@@ -79,6 +79,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../orderly/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -130,12 +131,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.index.</span></span><span class="sig-name descname"><span class="pre">IndexData</span></span><a class="headerlink" href="#outpack.index.IndexData" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.index.IndexData.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#outpack.index.IndexData.metadata" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">outpack.metadata.MetadataCore</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.index.IndexData.metadata" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="outpack.index.IndexData.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#outpack.index.IndexData.location" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.index.IndexData.location" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -165,27 +166,32 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.index.Index.all_metadata">
-<span class="sig-name descname"><span class="pre">all_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.index.Index.all_metadata" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">all_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">outpack.metadata.MetadataCore</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.index.Index.all_metadata" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.index.Index.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.index.Index.metadata" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../metadata/index.html#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">outpack.metadata.MetadataCore</span></a></span></span><a class="headerlink" href="#outpack.index.Index.metadata" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.index.Index.all_locations">
-<span class="sig-name descname"><span class="pre">all_locations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.index.Index.all_locations" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">all_locations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.index.Index.all_locations" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.index.Index.location">
-<span class="sig-name descname"><span class="pre">location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.index.Index.location" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.index.Index.location" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="outpack.index.Index.packets_in_location">
+<span class="sig-name descname"><span class="pre">packets_in_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.index.Index.packets_in_location" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.index.Index.unpacked">
-<span class="sig-name descname"><span class="pre">unpacked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.index.Index.unpacked" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">unpacked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.index.Index.unpacked" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

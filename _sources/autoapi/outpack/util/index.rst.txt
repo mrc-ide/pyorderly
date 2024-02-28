@@ -25,6 +25,9 @@ Functions
    outpack.util.match_value
    outpack.util.relative_path_array
    outpack.util.read_string
+   outpack.util.format_list
+   outpack.util.pl
+   outpack.util.partition
 
 
 
@@ -62,5 +65,20 @@ Functions
 
 
 .. py:function:: read_string(path)
+
+
+.. py:function:: format_list(x)
+
+
+.. py:function:: pl(x, singular, plural=None)
+
+
+.. py:function:: partition(pred, iterable)
+
+   Partition entries into false entries and true entries.
+
+   This is slightly modified version of partition from itertools
+   recipes https://docs.python.org/dev/library/itertools.html#itertools-recipes
+   If *pred* is slow, consider wrapping it with functools.lru_cache().
 
 

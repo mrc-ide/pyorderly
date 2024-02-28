@@ -1,0 +1,98 @@
+:py:mod:`outpack.location_pull`
+===============================
+
+.. py:module:: outpack.location_pull
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_pull.PullPlanInfo
+   outpack.location_pull.LocationPullPlan
+   outpack.location_pull.PullPlanPackets
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_pull.outpack_location_pull_metadata
+   outpack.location_pull.outpack_location_pull_packet
+
+
+
+.. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
+
+
+.. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options=None, recursive=None, root=None, locate=True)
+
+
+.. py:class:: PullPlanInfo
+
+
+   .. py:attribute:: n_extra
+      :type: int
+
+      
+
+   .. py:attribute:: n_skip
+      :type: int
+
+      
+
+   .. py:attribute:: n_total
+      :type: int
+
+      
+
+
+.. py:class:: LocationPullPlan
+
+
+   .. py:attribute:: packets
+      :type: Dict[str, outpack.metadata.PacketLocation]
+
+      
+
+   .. py:attribute:: files
+      :type: List[outpack.metadata.PacketFileWithLocation]
+
+      
+
+   .. py:attribute:: info
+      :type: PullPlanInfo
+
+      
+
+
+.. py:class:: PullPlanPackets
+
+
+   .. py:attribute:: requested
+      :type: List[str]
+
+      
+
+   .. py:attribute:: full
+      :type: List[str]
+
+      
+
+   .. py:attribute:: skip
+      :type: Set[str]
+
+      
+
+   .. py:attribute:: fetch
+      :type: Set[str]
+
+      
+
+

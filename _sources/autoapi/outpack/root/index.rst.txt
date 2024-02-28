@@ -30,6 +30,7 @@ Functions
 
 
    .. py:attribute:: files
+      :type: Optional[outpack.filestore.FileStore]
 
       
 

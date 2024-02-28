@@ -18,7 +18,6 @@ Functions
    outpack.location.outpack_location_remove
    outpack.location.outpack_location_rename
    outpack.location.location_resolve_valid
-   outpack.location.outpack_location_pull_metadata
 
 
 
@@ -35,8 +34,5 @@ Functions
 
 
 .. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
-
-
-.. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
 
 
