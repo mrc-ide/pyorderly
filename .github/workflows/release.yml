@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://pypi.org/p/outpack
+      url: https://test.pypi.org/p/outpack
     permissions:
       # This permission is needed for the workflow to authenticate against PyPI
       id-token: write
