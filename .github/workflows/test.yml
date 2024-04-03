@@ -48,6 +48,10 @@ jobs:
       - name: Lint
         run: |
           hatch run lint:all
+      - name: Test install
+        run: |
+          pip install .
+          python -c "import orderly; import outpack"
       - name: Upload to Codecov
         uses: codecov/codecov-action@v3
         with:

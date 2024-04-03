@@ -41,6 +41,9 @@ Source = "https://github.com/mrc-ide/outpack"
 [tool.hatch.version]
 path = "src/outpack/__about__.py"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/outpack", "src/orderly"]
+
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]>=6.5",
