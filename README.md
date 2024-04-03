@@ -42,7 +42,7 @@ hatch run pip install /path/to/outpack_server
 
 ## Releasing
 
-- Increment the version number using [the `hatch version` command](https://hatch.pypa.io/latest/version/).
+- Increment the version number using [the `hatch version` command](https://hatch.pypa.io/latest/version/#updating).
 - Commit the changes and create a PR.
 - Get the PR approved and merged to main.
 - Create a [GitHub release](https://github.com/mrc-ide/outpack-py/releases/new):
