@@ -44,7 +44,7 @@ jobs:
       # This permission is needed for the workflow to authenticate against PyPI
       id-token: write
     steps:
-    - name: Download all the dists
+    - name: Download the artifacts
       uses: actions/download-artifact@v3
       with:
         name: python-artifacts
