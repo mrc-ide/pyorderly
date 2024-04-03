@@ -15,8 +15,17 @@ def test_read_simple_trivial_parameters():
     assert ab == {"parameters": {"a": None, "b": 1}}
 
 
-def test_skip_over_uninteresting_calls():
-    assert _read_py(ast.parse("1")) == {"parameters": {}}
+def test_skip_over_uninteresting_code():
+    code = """
+def foo():
+    pass
+1
+parameters(a=1)
+print("Hello, World")
+foo()
+foo().parameters()
+"""
+    assert _read_py(ast.parse(code)) == {"parameters": {}}
 
 
 def test_prevent_complex_types_in_parameters():
