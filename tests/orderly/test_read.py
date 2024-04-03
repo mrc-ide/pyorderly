@@ -16,7 +16,7 @@ def test_read_simple_trivial_parameters():
 
 
 def test_skip_over_uninteresting_code():
-    code = '''
+    code = """
 def foo():
     pass
 1
@@ -24,7 +24,7 @@ parameters(a=1)
 print("Hello, World")
 foo()
 foo().parameters()
-'''
+"""
     assert _read_py(ast.parse(code)) == {"parameters": {}}
 
 
