@@ -22,7 +22,7 @@ def test_can_run_simple_example(tmp_path):
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(
-        "tests/orderly/examples/data/orderly.py", path_src / "orderly.py"
+        "tests/orderly/examples/data/data.py", path_src / "data.py"
     )
     res = orderly_run("data", root=path)
     path_res = path / "archive" / "data" / res
@@ -36,11 +36,11 @@ def test_can_run_simple_example(tmp_path):
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
     assert len(meta.files) == 2
-    assert {el.path for el in meta.files} == {"orderly.py", "result.txt"}
+    assert {el.path for el in meta.files} == {"data.py", "result.txt"}
     assert meta.depends == []
     custom = {
         "orderly": {
-            "role": [{"path": "orderly.py", "role": "orderly"}],
+            "role": [{"path": "data.py", "role": "orderly"}],
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
         }
@@ -53,7 +53,7 @@ def test_failed_reports_are_not_saved(tmp_path):
     path = outpack_init(tmp_path)
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
-    with open(path_src / "orderly.py", "w") as f:
+    with open(path_src / "data.py", "w") as f:
         f.write("raise Exception('Some error')")
     with pytest.raises(Exception, match="Running orderly report failed!"):
         orderly_run("data", root=path)
@@ -78,7 +78,7 @@ def test_validate_report_src_directory(tmp_path):
     x.mkdir()
     with pytest.raises(
         Exception,
-        match="The path '.+/x' exists but does not contain 'orderly.py'",
+        match="The path '.+/x' exists but does not contain 'x.py'",
     ):
         _validate_src_directory("x", root)
     y = path_src / "y"
@@ -89,9 +89,9 @@ def test_validate_report_src_directory(tmp_path):
     ):
         _validate_src_directory("y", root)
     # Finally, the happy path
-    with open(x / "orderly.py", "w"):
+    with open(x / "x.py", "w"):
         pass
-    assert _validate_src_directory("x", root) == x
+    assert _validate_src_directory("x", root) == (x, "x.py")
 
 
 def test_can_run_example_with_resource(tmp_path):
@@ -108,7 +108,7 @@ def test_can_run_example_with_resource(tmp_path):
     assert list(meta.time.keys()) == ["start", "end"]
     assert len(meta.files) == 3
     assert {el.path for el in meta.files} == {
-        "orderly.py",
+        "resource.py",
         "result.txt",
         "numbers.txt",
     }
@@ -116,7 +116,7 @@ def test_can_run_example_with_resource(tmp_path):
     custom = {
         "orderly": {
             "role": [
-                {"path": "orderly.py", "role": "orderly"},
+                {"path": "resource.py", "role": "orderly"},
                 {"path": "numbers.txt", "role": "resource"},
             ],
             "artefacts": [],
@@ -132,7 +132,7 @@ def test_can_run_example_with_artefact(tmp_path):
     path_src = path / "src" / "artefact"
     path_src.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(
-        "tests/orderly/examples/artefact/orderly.py", path_src / "orderly.py"
+        "tests/orderly/examples/artefact/artefact.py", path_src / "artefact.py"
     )
     res = orderly_run("artefact", root=path)
     path_res = path / "archive" / "artefact" / res
@@ -146,11 +146,11 @@ def test_can_run_example_with_artefact(tmp_path):
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
     assert len(meta.files) == 2
-    assert {el.path for el in meta.files} == {"orderly.py", "result.txt"}
+    assert {el.path for el in meta.files} == {"artefact.py", "result.txt"}
     assert meta.depends == []
     custom = {
         "orderly": {
-            "role": [{"path": "orderly.py", "role": "orderly"}],
+            "role": [{"path": "artefact.py", "role": "orderly"}],
             "artefacts": [{"name": "Random numbers", "files": ["result.txt"]}],
             "description": {"display": None, "long": None, "custom": None},
         }
@@ -165,7 +165,7 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
     path_src.parent.mkdir(parents=True, exist_ok=True)
     shutil.copytree("tests/orderly/examples/resource", path_src)
     orderly_run("resource", root=path)
-    with open(path_src / "orderly.py", "a") as f:
+    with open(path_src / "resource.py", "a") as f:
         f.write("orderly.artefact('something', 'a')\n")
     with pytest.raises(
         Exception, match="Script did not produce the expected artefacts: 'a'"
@@ -178,7 +178,7 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
     meta = read_metadata_core(contents[0].joinpath("outpack.json"))
     assert meta.name == "resource"
     assert meta.custom == {}
-    with open(path_src / "orderly.py", "a") as f:
+    with open(path_src / "resource.py", "a") as f:
         f.write("orderly.artefact('something else', ['c', 'b'])\n")
     with pytest.raises(
         Exception,

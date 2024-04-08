@@ -1,4 +1,5 @@
 import shutil
+from pathlib import Path
 
 from orderly.core import Description
 from orderly.current import ActiveOrderlyContext
@@ -12,9 +13,9 @@ from outpack.util import run_script
 def orderly_run(name, *, parameters=None, root=None, locate=True):
     root = root_open(root, locate=locate)
 
-    path_src = _validate_src_directory(name, root)
+    path_src, entrypoint = _validate_src_directory(name, root)
 
-    dat = orderly_read(path_src / "orderly.py")
+    dat = orderly_read(path_src / entrypoint)
     envir = _validate_parameters(parameters, dat["parameters"])
 
     packet_id = outpack_id()
@@ -28,8 +29,8 @@ def orderly_run(name, *, parameters=None, root=None, locate=True):
     )
     try:
         with ActiveOrderlyContext(packet, path_src) as orderly:
-            packet.mark_file_immutable("orderly.py")
-            run_script(path_dest, "orderly.py", envir)
+            packet.mark_file_immutable(entrypoint)
+            run_script(path_dest, entrypoint, envir)
     except Exception as error:
         _orderly_cleanup_failure(packet)
         # This is pretty barebones for now; we will need to do some
@@ -40,26 +41,28 @@ def orderly_run(name, *, parameters=None, root=None, locate=True):
         raise Exception(msg) from error
 
     try:
-        _orderly_cleanup_success(packet, orderly)
+        _orderly_cleanup_success(packet, entrypoint, orderly)
     except Exception:
         _orderly_cleanup_failure(packet)
         raise
     return packet_id
 
 
-def _validate_src_directory(name, root):
+def _validate_src_directory(name, root) -> tuple[Path, str]:
     path = root.path / "src" / name
-    if not path.joinpath("orderly.py").exists():
+    entrypoint = f"{name}.py"
+
+    if not path.joinpath(entrypoint).exists():
         msg = f"Did not find orderly report '{name}"
         if path.is_dir():
-            detail = f"The path 'src/{name}' exists but does not contain 'orderly.py'"
+            detail = f"The path 'src/{name}' exists but does not contain '{entrypoint}'"
         elif path.exists():
             detail = f"The path 'src/{name}' exists but is not a directory"
         else:
             detail = f"The path 'src/{name}' does not exist"
         msg = f"{msg}\n* {detail}"
         raise Exception(msg)
-    return path
+    return path, entrypoint
 
 
 def _validate_parameters(given, defaults):
@@ -103,7 +106,7 @@ def _copy_resources_implicit(src, dest):
     return info
 
 
-def _orderly_cleanup_success(packet, orderly):
+def _orderly_cleanup_success(packet, entrypoint, orderly):
     missing = set()
     for artefact in orderly.artefacts:
         for path in artefact.files:
@@ -114,13 +117,13 @@ def _orderly_cleanup_success(packet, orderly):
         msg = f"Script did not produce the expected artefacts: {missing}"
         raise Exception(msg)
     # check files (either strict or relaxed) -- but we can't do that yet
-    packet.add_custom_metadata("orderly", _custom_metadata(orderly))
+    packet.add_custom_metadata("orderly", _custom_metadata(entrypoint, orderly))
     packet.end(insert=True)
     shutil.rmtree(packet.path)
 
 
-def _custom_metadata(orderly):
-    role = [{"path": "orderly.py", "role": "orderly"}]
+def _custom_metadata(entrypoint, orderly):
+    role = [{"path": entrypoint, "role": "orderly"}]
     for p in orderly.resources:
         role.append({"path": p, "role": "resource"})
 
