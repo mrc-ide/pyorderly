@@ -14,7 +14,7 @@ from orderly.run import orderly_run
 from outpack.init import outpack_init
 from outpack.location import outpack_location_add_path
 from outpack.metadata import MetadataCore, PacketDepends
-from outpack.packet import Packet
+from outpack.packet import Packet, insert_packet
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version
 from outpack.util import openable_temporary_file
@@ -29,15 +29,17 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
     packet can be populated in the block's body. The packet gets completed and
     added to the repository when the context manager is exited.
     """
+    root = root_open(root, locate=False)
     with TemporaryDirectory() as src:
         p = Packet(root, src, name, id=packet_id, parameters=parameters)
         try:
             yield p
         except BaseException:
-            p.end(insert=False)
+            p.end(succesful=False)
             raise
         else:
-            p.end(insert=True)
+            metadata = p.end(succesful=True)
+            insert_packet(root, Path(src), metadata)
 
 
 def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
