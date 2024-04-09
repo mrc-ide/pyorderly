@@ -6,7 +6,7 @@ import orderly
 # ruff: noqa: F821
 
 
-def f(x):
+def square(x):
     return x * x
 
 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     data = [random.random() for _ in range(10)]  # noqa: S311
 
     with mp.Pool(5) as p:
-        result = p.map(f, data)
+        result = p.map(square, data)
 
     with open("result.txt", "w") as f:
         f.writelines(f"{x}\n" for x in result)
