@@ -631,7 +631,7 @@ def test_if_recursive_pulls_are_required_pulls_are_default_recursive(tmp_path):
     assert root["shallow"].index.unpacked() == [ids["c"]]
 
     outpack_location_pull_packet(ids["c"], recursive=None, root=root["deep"])
-    assert root["deep"].index.unpacked() == list(ids.values())
+    assert root["deep"].index.unpacked() == sorted(ids.values())
 
 
 ## TODO: Uncomment when wired up with searching
