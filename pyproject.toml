@@ -183,6 +183,7 @@ parallel = true
 omit = [
   "src/outpack/__about__.py",
   "tests/helpers/*",
+  "*/draft/*"
 ]
 
 [tool.coverage.paths]
