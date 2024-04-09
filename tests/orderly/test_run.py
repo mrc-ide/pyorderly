@@ -21,9 +21,7 @@ def test_can_run_simple_example(tmp_path):
     path = outpack_init(tmp_path)
     path_src = path / "src" / "data"
     path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(
-        "tests/orderly/examples/data/data.py", path_src / "data.py"
-    )
+    shutil.copyfile("tests/orderly/examples/data/data.py", path_src / "data.py")
     res = orderly_run("data", root=path)
     path_res = path / "archive" / "data" / res
     assert path_res.exists()
