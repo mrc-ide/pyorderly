@@ -2,8 +2,12 @@ import multiprocessing
 import shutil
 
 import pytest
+from orderly.run import (
+    _validate_parameters,
+    _validate_src_directory,
+    orderly_run,
+)
 
-from orderly.run import _validate_parameters, _validate_src_directory, orderly_run
 from outpack.init import outpack_init
 from outpack.metadata import read_metadata_core
 from outpack.root import root_open
@@ -252,5 +256,5 @@ def test_can_run_multiprocessing(tmp_path, method):
 
     meta = root_open(tmp_path).index.metadata(id)
     assert meta.custom["orderly"]["artefacts"] == [
-        {'name': 'Squared numbers', 'files': ['result.txt']}
+        {"name": "Squared numbers", "files": ["result.txt"]}
     ]

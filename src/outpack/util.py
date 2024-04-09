@@ -47,7 +47,7 @@ def run_script(wd, path, init_globals):
         # other ways to do this include importlib, subprocess and
         # multiprocess
         runpy.run_path(
-            wd / path, init_globals=init_globals, run_name="__main__"
+            str(wd / path), init_globals=init_globals, run_name="__main__"
         )
 
 
