@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from typing import Tuple
 
 from orderly.core import Description
 from orderly.current import ActiveOrderlyContext
@@ -48,7 +49,7 @@ def orderly_run(name, *, parameters=None, root=None, locate=True):
     return packet_id
 
 
-def _validate_src_directory(name, root) -> tuple[Path, str]:
+def _validate_src_directory(name, root) -> Tuple[Path, str]:
     path = root.path / "src" / name
     entrypoint = f"{name}.py"
 
