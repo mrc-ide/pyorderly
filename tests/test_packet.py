@@ -1,5 +1,3 @@
-import time
-
 import pytest
 
 from outpack.init import outpack_init
@@ -99,12 +97,12 @@ def test_can_insert_a_packet_into_existing_root(tmp_path):
 
     p1 = Packet(root, src, "data")
     p1.end()
-    time.sleep(0.01)  # windows time resolution not good enough
+
     p2 = Packet(root, src, "data")
     p2.end()
 
     r = root_open(root)
-    assert r.index.unpacked() == [p1.id, p2.id]
+    assert r.index.unpacked() == sorted([p1.id, p2.id])
 
 
 def test_can_add_custom_metadata(tmp_path):
