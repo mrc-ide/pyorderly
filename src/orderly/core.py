@@ -128,8 +128,11 @@ def _copy_shared_resources(root: Path, packet: Path, files: Dict[str, str]):
             raise Exception(msg)
         elif src.is_dir():
             shutil.copytree(src, dst, dirs_exist_ok=True)
+            # TODO: R uses / even on Windows, hence the posix_joinpath.
+            # We should decide if we want to follow that behaviour, and be
+            # consistent throughout
             copied = {
-                os.path.join(here, f): os.path.join(there, f)
+                util.posix_joinpath(here, f): util.posix_joinpath(there, f)
                 for f in util.all_normal_files(src)
             }
             result.update(copied)
