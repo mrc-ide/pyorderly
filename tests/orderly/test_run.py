@@ -326,32 +326,32 @@ def test_can_use_shared_resources(tmp_path):
 
 def test_can_use_shared_resources_directory(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
-    helpers.copy_examples("shared-dir", root)
+    helpers.copy_examples("shared_dir", root)
     helpers.copy_shared_resources("data", root)
 
-    id = orderly_run("shared-dir", root=tmp_path)
+    id = orderly_run("shared_dir", root=tmp_path)
     meta = root.index.metadata(id)
 
     assert {el.path for el in meta.files} == {
         "orderly.py",
         "result.txt",
-        "shared-data/numbers.txt",
-        "shared-data/weights.txt",
+        "shared_data/numbers.txt",
+        "shared_data/weights.txt",
     }
     assert meta.custom == {
         "orderly": {
             "role": unordered(
                 [
                     {"path": "orderly.py", "role": "orderly"},
-                    {"path": "shared-data/weights.txt", "role": "shared"},
-                    {"path": "shared-data/numbers.txt", "role": "shared"},
+                    {"path": "shared_data/weights.txt", "role": "shared"},
+                    {"path": "shared_data/numbers.txt", "role": "shared"},
                 ]
             ),
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
             "shared": {
-                "shared-data/numbers.txt": "data/numbers.txt",
-                "shared-data/weights.txt": "data/weights.txt",
+                "shared_data/numbers.txt": "data/numbers.txt",
+                "shared_data/weights.txt": "data/weights.txt",
             },
         }
     }

@@ -2,11 +2,11 @@ from operator import mul
 
 import orderly
 
-orderly.shared_resource({"shared-data": "data"})
+orderly.shared_resource({"shared_data": "data"})
 
-with open("shared-data/numbers.txt") as f:
+with open("shared_data/numbers.txt") as f:
     numbers = [float(x) for x in f.readlines()]
-with open("shared-data/weights.txt") as f:
+with open("shared_data/weights.txt") as f:
     weights = [float(x) for x in f.readlines()]
 
 result = sum(map(mul, numbers, weights))
