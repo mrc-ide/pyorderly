@@ -6,6 +6,7 @@ import pytest
 from outpack.util import (
     all_normal_files,
     assert_file_exists,
+    assert_relative_path,
     expand_dirs,
     find_file_descend,
     format_list,
@@ -64,6 +65,17 @@ def test_can_test_for_files_existing(tmp_path):
         assert_file_exists("x", workdir=tmp_path)
 
 
+def test_can_test_for_relative_path():
+    assert_relative_path("foo.txt", "file")
+    assert_relative_path("dir/foo.txt", "file")
+    assert_relative_path("../foo.txt", "file")
+
+    with pytest.raises(
+        Exception, match="Expected file path '/foo.txt' to be a relative path"
+    ):
+        assert_relative_path("/foo.txt", "file")
+
+
 def test_all_normal_files_recurses(tmp_path):
     helpers.touch_files(
         tmp_path / "foo.txt",
@@ -71,6 +83,7 @@ def test_all_normal_files_recurses(tmp_path):
         tmp_path / "a" / "b" / "baz.txt",
         tmp_path / "a" / "b" / "c" / "quux.txt",
     )
+
     expected = {
         "foo.txt",
         os.path.join("a", "bar.txt"),

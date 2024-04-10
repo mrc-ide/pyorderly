@@ -54,6 +54,76 @@ def test_resource_requires_file_exists_with_packet(tmp_path):
     assert active.resources == res
 
 
+def test_shared_resource_can_copy_single_name(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_shared_resources("numbers.txt", root)
+
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+    with transient_working_directory(src):
+        res = orderly.shared_resource("numbers.txt")
+
+    assert (src / "numbers.txt").exists()
+    assert res == {"numbers.txt": "numbers.txt"}
+
+
+def test_shared_resource_can_copy_multiple_names(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_shared_resources(["numbers.txt", "data"], root)
+
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+    with transient_working_directory(src):
+        res = orderly.shared_resource(["numbers.txt", "data"])
+
+    assert (src / "numbers.txt").exists()
+    assert (src / "data" / "weights.txt").exists()
+    assert (src / "data" / "numbers.txt").exists()
+    assert res == {
+        "numbers.txt": "numbers.txt",
+        "data/numbers.txt": "data/numbers.txt",
+        "data/weights.txt": "data/weights.txt",
+    }
+
+
+def test_shared_resource_can_rename_files_when_copying(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_shared_resources(["numbers.txt", "data"], root)
+
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+    with transient_working_directory(src):
+        res = orderly.shared_resource(
+            {
+                "foo.txt": "numbers.txt",
+                "bar.txt": "data/weights.txt",
+            }
+        )
+
+    assert (src / "foo.txt").exists()
+    assert (src / "bar.txt").exists()
+
+    assert not (src / "numbers.txt").exists()
+    assert not (src / "data").exists()
+
+    assert res == {
+        "foo.txt": "numbers.txt",
+        "bar.txt": "data/weights.txt",
+    }
+
+
+def test_shared_resource_requires_relative_paths(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_shared_resources(["numbers.txt"], root)
+
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+
+    with transient_working_directory(src):
+        with pytest.raises(Exception, match="to be a relative path"):
+            orderly.shared_resource(str(tmp_path / "shared" / "numbers.txt"))
+
+
 def test_artefact_is_allowed_without_packet(tmp_path):
     helpers.create_temporary_root(tmp_path)
     src = tmp_path / "src" / "x"

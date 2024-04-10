@@ -7,6 +7,7 @@ from orderly.run import (
     _validate_src_directory,
     orderly_run,
 )
+from pytest_unordered import unordered
 
 from .. import helpers
 
@@ -38,6 +39,7 @@ def test_can_run_simple_example(tmp_path):
             "role": [{"path": "data.py", "role": "orderly"}],
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -116,6 +118,7 @@ def test_can_run_example_with_resource(tmp_path):
             ],
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -224,6 +227,7 @@ def test_can_run_example_with_artefact(tmp_path):
             "role": [{"path": "artefact.py", "role": "orderly"}],
             "artefacts": [{"name": "Random numbers", "files": ["result.txt"]}],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -290,6 +294,67 @@ def test_can_run_with_parameters(tmp_path):
     assert result == "a: 1\nb: 2\n"
     meta = root.index.metadata(id)
     assert meta.parameters == {"a": 1, "b": 2}
+
+
+def test_can_use_shared_resources(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("shared", root)
+    helpers.copy_shared_resources("numbers.txt", root)
+
+    id = orderly_run("shared", root=tmp_path)
+    meta = root.index.metadata(id)
+
+    assert {el.path for el in meta.files} == {
+        "orderly.py",
+        "result.txt",
+        "shared_data.txt",
+    }
+    assert meta.custom == {
+        "orderly": {
+            "role": [
+                {"path": "orderly.py", "role": "orderly"},
+                {"path": "shared_data.txt", "role": "shared"},
+            ],
+            "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
+            "shared": {
+                "shared_data.txt": "numbers.txt",
+            },
+        }
+    }
+
+
+def test_can_use_shared_resources_directory(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("shared-dir", root)
+    helpers.copy_shared_resources("data", root)
+
+    id = orderly_run("shared-dir", root=tmp_path)
+    meta = root.index.metadata(id)
+
+    assert {el.path for el in meta.files} == {
+        "orderly.py",
+        "result.txt",
+        "shared-data/numbers.txt",
+        "shared-data/weights.txt",
+    }
+    assert meta.custom == {
+        "orderly": {
+            "role": unordered(
+                [
+                    {"path": "orderly.py", "role": "orderly"},
+                    {"path": "shared-data/weights.txt", "role": "shared"},
+                    {"path": "shared-data/numbers.txt", "role": "shared"},
+                ]
+            ),
+            "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
+            "shared": {
+                "shared-data/numbers.txt": "data/numbers.txt",
+                "shared-data/weights.txt": "data/weights.txt",
+            },
+        }
+    }
 
 
 def test_can_validate_parameters():

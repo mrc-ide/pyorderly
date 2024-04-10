@@ -49,6 +49,7 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest_mock",
+  "pytest-unordered",
   "sphinx",
   "sphinx-rtd-theme",
   "myst-parser",

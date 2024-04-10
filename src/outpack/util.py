@@ -6,7 +6,7 @@ import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
 from pathlib import Path
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 
 def find_file_descend(filename, path):
@@ -82,6 +82,12 @@ def assert_file_exists(path, *, workdir=None, name="File"):
         raise Exception(msg)
 
 
+def assert_relative_path(path: str, name: str):
+    if os.path.isabs(path):
+        msg = f"Expected {name} path '{path}' to be a relative path"
+        raise Exception(msg)
+
+
 def expand_dirs(paths, *, workdir=None):
     if len(paths) == 0:
         return []
@@ -102,13 +108,28 @@ def match_value(arg, choices, name):
         raise Exception(msg)
 
 
-def relative_path_array(files, name):
+def relative_path_array(files: Union[str, List[str]], name: str) -> List[str]:
     if not isinstance(files, list):
         files = [files]
+
     for f in files:
-        if os.path.isabs(f):
-            msg = f"Expected {name} path '{f}' to be a relative path"
-            raise Exception(msg)
+        assert_relative_path(f, name)
+
+    return files
+
+
+def relative_path_mapping(
+    files: Union[str, List[str], Dict[str, str]], name: str
+) -> Dict[str, str]:
+    if isinstance(files, str):
+        files = {files: files}
+    elif isinstance(files, list):
+        files = {f: f for f in files}
+
+    for k, v in files.items():
+        assert_relative_path(k, name)
+        assert_relative_path(v, name)
+
     return files
 
 
