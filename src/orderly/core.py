@@ -76,7 +76,7 @@ def resource(files):
     return files_expanded
 
 
-def shared_resource(files: str | List[str] | Dict[str, str]):
+def shared_resource(files: Union[str, List[str], Dict[str, str]]):
     """Copy shared resources into a packet directory.
 
     You can use this to share common resources (data or code) between multiple
