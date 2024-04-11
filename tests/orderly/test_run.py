@@ -325,6 +325,12 @@ def test_can_use_shared_resources(tmp_path):
 
 
 def test_can_use_shared_resources_directory(tmp_path):
+    # TODO(mrc-5241): This test uses os.path.join to form nested paths, which
+    # on windows will use a backslash as the path separator. This matches the
+    # implementation, but we probably want to revisit this at some point, and
+    # normalize all paths in the metadata to use posix-style forward slashes.
+    from os.path import join
+
     root = helpers.create_temporary_root(tmp_path)
     helpers.copy_examples("shared_dir", root)
     helpers.copy_shared_resources("data", root)
@@ -335,23 +341,29 @@ def test_can_use_shared_resources_directory(tmp_path):
     assert {el.path for el in meta.files} == {
         "orderly.py",
         "result.txt",
-        "shared_data/numbers.txt",
-        "shared_data/weights.txt",
+        join("shared_data", "numbers.txt"),
+        join("shared_data", "weights.txt"),
     }
     assert meta.custom == {
         "orderly": {
             "role": unordered(
                 [
                     {"path": "orderly.py", "role": "orderly"},
-                    {"path": "shared_data/weights.txt", "role": "shared"},
-                    {"path": "shared_data/numbers.txt", "role": "shared"},
+                    {
+                        "path": join("shared_data", "weights.txt"),
+                        "role": "shared",
+                    },
+                    {
+                        "path": join("shared_data", "numbers.txt"),
+                        "role": "shared",
+                    },
                 ]
             ),
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
             "shared": {
-                "shared_data/numbers.txt": "data/numbers.txt",
-                "shared_data/weights.txt": "data/weights.txt",
+                join("shared_data", "numbers.txt"): join("data", "numbers.txt"),
+                join("shared_data", "weights.txt"): join("data", "weights.txt"),
             },
         }
     }

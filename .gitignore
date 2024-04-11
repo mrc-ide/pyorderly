@@ -6,3 +6,4 @@ example/draft/
 .idea
 /dist
 docs/_build
+.mypy_cache

@@ -5,7 +5,7 @@ import tempfile
 import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 
@@ -165,6 +165,7 @@ def partition(pred, iterable):
     t1, t2 = tee(iterable)
     return list(filter(pred, t1)), list(filterfalse(pred, t2))
 
+
 @contextmanager
 def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
     # On Windows, a NamedTemporaryFile with `delete=True` cannot be reopened,
@@ -183,6 +184,3 @@ def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
             os.unlink(f.name)
         except OSError:
             pass
-
-def posix_joinpath(base: str, *segments: str) -> str:
-    return str(PurePosixPath(base).joinpath(*segments))
