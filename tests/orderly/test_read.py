@@ -54,13 +54,13 @@ def test_prevent_multiple_calls_to_parameters():
         _read_py(ast.parse(code))
 
 
-def test_can_read_orderly_py_with_no_parameters():
-    path = Path("tests/orderly/examples/data/orderly.py")
+def test_can_read_report_with_no_parameters():
+    path = Path("tests/orderly/examples/data/data.py")
     assert orderly_read(path) == {"parameters": {}}
 
 
-def test_can_read_orderly_py_with_parameters():
-    path = Path("tests/orderly/examples/parameters/orderly.py")
+def test_can_read_report_with_parameters():
+    path = Path("tests/orderly/examples/parameters/parameters.py")
     assert orderly_read(path) == {"parameters": {"a": 1, "b": None}}
 
 
