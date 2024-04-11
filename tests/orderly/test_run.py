@@ -249,10 +249,8 @@ def test_can_validate_parameters():
 @pytest.mark.parametrize("method", multiprocessing.get_all_start_methods())
 def test_can_run_multiprocessing(tmp_path, method):
     root = helpers.create_temporary_root(tmp_path)
-    helpers.copy_examples("multiprocessing", root)
-    id = orderly_run(
-        "multiprocessing", root=root, parameters={"method": method}
-    )
+    helpers.copy_examples("mp", root)
+    id = orderly_run("mp", root=root, parameters={"method": method})
 
     meta = root_open(tmp_path).index.metadata(id)
     assert meta.custom["orderly"]["artefacts"] == [
