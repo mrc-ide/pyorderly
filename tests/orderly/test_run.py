@@ -305,14 +305,14 @@ def test_can_use_shared_resources(tmp_path):
     meta = root.index.metadata(id)
 
     assert {el.path for el in meta.files} == {
-        "orderly.py",
+        "shared.py",
         "result.txt",
         "shared_data.txt",
     }
     assert meta.custom == {
         "orderly": {
             "role": [
-                {"path": "orderly.py", "role": "orderly"},
+                {"path": "shared.py", "role": "orderly"},
                 {"path": "shared_data.txt", "role": "shared"},
             ],
             "artefacts": [],
@@ -339,7 +339,7 @@ def test_can_use_shared_resources_directory(tmp_path):
     meta = root.index.metadata(id)
 
     assert {el.path for el in meta.files} == {
-        "orderly.py",
+        "shared_dir.py",
         "result.txt",
         join("shared_data", "numbers.txt"),
         join("shared_data", "weights.txt"),
@@ -348,7 +348,7 @@ def test_can_use_shared_resources_directory(tmp_path):
         "orderly": {
             "role": unordered(
                 [
-                    {"path": "orderly.py", "role": "orderly"},
+                    {"path": "shared_dir.py", "role": "orderly"},
                     {
                         "path": join("shared_data", "weights.txt"),
                         "role": "shared",
