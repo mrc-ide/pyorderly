@@ -203,6 +203,9 @@ exclude_lines = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.mypy]
+allow_redefinition = true
+
 # https://github.com/libgit2/pygit2/issues/709
 [[tool.mypy.overrides]]
 module = "pygit2"
