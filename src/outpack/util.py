@@ -46,7 +46,9 @@ def run_script(wd, path, init_globals):
     with transient_working_directory(wd):
         # other ways to do this include importlib, subprocess and
         # multiprocess
-        runpy.run_path(path, init_globals=init_globals)
+        runpy.run_path(
+            str(wd / path), init_globals=init_globals, run_name="__main__"
+        )
 
 
 @contextmanager

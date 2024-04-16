@@ -34,7 +34,7 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
 
 
 def create_random_packet(root, name="data", *, parameters=None, packet_id=None):
-    d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+    d = [f"{random.random()}\n" for _ in range(10)]
 
     with create_packet(
         root, name=name, parameters=parameters, packet_id=packet_id
@@ -55,7 +55,7 @@ def create_random_packet_chain(root, length, base=None):
             if base is not None:
                 p.use_dependency(base, {"input.txt": "data.txt"})
 
-            d = [f"{random.random()}\n" for _ in range(10)]  # noqa: S311
+            d = [f"{random.random()}\n" for _ in range(10)]
             with open(p.path / "data.txt", "w") as f:
                 f.writelines(d)
 
@@ -111,8 +111,7 @@ def create_metadata_depends(id: str, depends: Optional[List[str]] = None):
 
 def random_characters(n):
     return "".join(
-        random.choice(string.ascii_letters + string.digits)  # noqa: S311
-        for _ in range(n)
+        random.choice(string.ascii_letters + string.digits) for _ in range(n)
     )
 
 
