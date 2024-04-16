@@ -156,7 +156,9 @@ ignore = [
   # Ignore shadowing
   "A001", "A002", "A003",
   # Allow print until we find the alternative to R's cli
-  "T201"
+  "T201",
+  # Allow use of non-cryptographic `random` module.
+  "S311"
 ]
 unfixable = [
   # Don't touch unused imports

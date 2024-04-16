@@ -15,7 +15,7 @@ if __name__ == "__main__":
     orderly.artefact("Squared numbers", "result.txt")
 
     mp = multiprocessing.get_context(method)  # type: ignore
-    data = [random.random() for _ in range(10)]  # noqa: S311
+    data = [random.random() for _ in range(10)]
 
     with mp.Pool(5) as p:
         result = p.map(square, data)

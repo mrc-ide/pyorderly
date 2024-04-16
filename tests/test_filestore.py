@@ -9,7 +9,7 @@ from outpack.hash import Hash, hash_file
 
 
 def randstr(n):
-    return "".join([str(random.randint(0, 9)) for _ in range(n)])  #  noqa: S311
+    return "".join([str(random.randint(0, 9)) for _ in range(n)])
 
 
 def test_can_create_store(tmp_path):
