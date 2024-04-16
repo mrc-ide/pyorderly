@@ -68,12 +68,21 @@ def test_can_test_for_files_existing(tmp_path):
 def test_can_test_for_relative_path():
     assert_relative_path("foo.txt", "file")
     assert_relative_path("dir/foo.txt", "file")
-    assert_relative_path("../foo.txt", "file")
 
     with pytest.raises(
         Exception, match="Expected file path '/foo.txt' to be a relative path"
     ):
         assert_relative_path("/foo.txt", "file")
+
+    with pytest.raises(
+        Exception, match="Path '../foo.txt' must not contain '..' component"
+    ):
+        assert_relative_path("../foo.txt", "file")
+
+    with pytest.raises(
+        Exception, match="Path 'aa/../foo.txt' must not contain '..' component"
+    ):
+        assert_relative_path("aa/../foo.txt", "file")
 
 
 def test_all_normal_files_recurses(tmp_path):

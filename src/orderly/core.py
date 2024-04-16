@@ -76,7 +76,9 @@ def resource(files):
     return files_expanded
 
 
-def shared_resource(files: Union[str, List[str], Dict[str, str]]):
+def shared_resource(
+    files: Union[str, List[str], Dict[str, str]]
+) -> Dict[str, str]:
     """Copy shared resources into a packet directory.
 
     You can use this to share common resources (data or code) between multiple
@@ -112,7 +114,9 @@ def shared_resource(files: Union[str, List[str], Dict[str, str]]):
     return result
 
 
-def _copy_shared_resources(root: Path, packet: Path, files: Dict[str, str]):
+def _copy_shared_resources(
+    root: Path, packet: Path, files: Dict[str, str]
+) -> Dict[str, str]:
     shared_path = root / "shared"
     if not shared_path.exists():
         msg = "The shared resources directory 'shared' does not exist at orderly's root"

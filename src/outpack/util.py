@@ -83,8 +83,12 @@ def assert_file_exists(path, *, workdir=None, name="File"):
 
 
 def assert_relative_path(path: str, name: str):
-    if os.path.isabs(path):
+    path = Path(path)
+    if path.is_absolute():
         msg = f"Expected {name} path '{path}' to be a relative path"
+        raise Exception(msg)
+    if ".." in path.parts:
+        msg = f"Path '{path}' must not contain '..' component"
         raise Exception(msg)
 
 
