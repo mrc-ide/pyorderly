@@ -12,7 +12,7 @@ Classes
 
 .. autoapisummary::
 
-   orderly.read.ParametersCall
+   orderly.read.Visitor
 
 
 
@@ -25,15 +25,13 @@ Functions
 
 
 
-.. py:class:: ParametersCall
-
-
-   .. py:attribute:: value
-      :type: Any
-
-      
-
-
 .. py:function:: orderly_read(path)
+
+
+.. py:class:: Visitor
+
+
+   .. py:method:: read_body(stmts)
+
 
 
