@@ -220,3 +220,35 @@ def test_can_use_dependency_without_packet(tmp_path):
     assert len(result.files) == 1
     assert result.files["input.txt"].path == "result.txt"
     assert src.joinpath("input.txt").exists()
+
+
+def test_can_use_parameters(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+
+    p = Packet(root, src, "tmp", parameters={"x": 1, "y": "foo"})
+    with ActiveOrderlyContext(p, src):
+        with transient_working_directory(src):
+            params = orderly.parameters(x=None, y=None)
+            assert params == {"x": 1, "y": "foo"}
+
+
+def test_can_use_parameters_without_packet(tmp_path):
+    helpers.create_temporary_root(tmp_path)
+    src = tmp_path / "src" / "x"
+    src.mkdir(parents=True)
+
+    with transient_working_directory(src):
+        p = orderly.parameters(x=1, y="foo")
+        assert p == {"x": 1, "y": "foo"}
+
+        with pytest.raises(
+            Exception, match="No value was specified for parameter x."
+        ):
+            orderly.parameters(x=None, y="foo")
+
+        with pytest.raises(
+            Exception, match="No value was specified for parameters x, y."
+        ):
+            orderly.parameters(x=None, y=None)

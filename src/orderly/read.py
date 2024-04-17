@@ -30,17 +30,21 @@ class Visitor:
             self._read_stmt(stmt)
 
     def _read_stmt(self, stmt):
-        if (name := _match_orderly_call(stmt)) is not None:
-            if name == "parameters":
-                self._read_parameters(stmt.value)
-
+        if isinstance(stmt, (ast.Expr, ast.Assign)):
+            self._read_expr(stmt.value)
         elif _match_name_check(stmt) == "__main__":
             self.read_body(stmt.body)
+
+    def _read_expr(self, expr):
+        name = _match_orderly_call(expr)
+        if name == "parameters":
+            self._read_parameters(expr)
 
     def _read_parameters(self, call):
         if call.args:
             msg = "All arguments to 'parameters()' must be named"
             raise Exception(msg)
+
         data = {}
         for kw in call.keywords:
             nm = kw.arg
@@ -54,7 +58,7 @@ class Visitor:
             if not _is_valid_parameter_value(value):
                 msg = f"Invalid value for argument '{nm}' to 'parameters()'"
                 raise Exception(msg)
-            data[nm] = kw.value.value
+            data[nm] = value.value
 
         if self.parameters is not None:
             msg = f"Duplicate call to 'parameters()' on line {call.lineno}"
@@ -90,11 +94,7 @@ def _match_name_check(stmt):
         return None
 
 
-def _match_orderly_call(stmt):
-    if not isinstance(stmt, ast.Expr):
-        return None
-
-    expr = stmt.value
+def _match_orderly_call(expr):
     if not isinstance(expr, ast.Call):
         return None
 

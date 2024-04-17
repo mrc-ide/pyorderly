@@ -14,6 +14,11 @@ def test_read_simple_trivial_parameters():
     assert ab == {"parameters": {"a": None, "b": 1}}
 
 
+def test_read_parameters_assignment():
+    ab = _read_py("params = orderly.parameters(a=None, b=1)")
+    assert ab == {"parameters": {"a": None, "b": 1}}
+
+
 def test_skip_over_uninteresting_code():
     code = """
 def foo():

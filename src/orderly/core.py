@@ -10,6 +10,7 @@ from orderly.current import get_active_context
 from outpack import util
 from outpack.copy_files import copy_files
 from outpack.search import search_unique
+from outpack.util import pl
 
 
 @dataclass_json()
@@ -31,7 +32,7 @@ class Description:
         return Description(None, None, None)
 
 
-def parameters(**kwargs):  # noqa: ARG001
+def parameters(**kwargs):
     """Declare parameters used in a report.
 
     Parameters
@@ -42,9 +43,21 @@ def parameters(**kwargs):  # noqa: ARG001
 
     Returns
     -------
-    Nothing, this function has no effect at all!
+    The parameters that were passed to the report. If running outside of an
+    orderly context, this returns kwargs unmodified.
     """
-    pass
+    ctx = get_active_context()
+    if ctx.is_active:
+        # We don't need to apply defaults from kwargs as the packet runner
+        # already did so.
+        return ctx.parameters
+    else:
+        missing = [k for k, v in kwargs.items() if v is None]
+        if missing:
+            msg = f"No value was specified for {pl(missing, 'parameter')} {', '.join(missing)}."
+            raise Exception(msg)
+
+        return kwargs
 
 
 def resource(files):
