@@ -1,4 +1,4 @@
-import sys
+import os
 
 import orderly
 import pytest
@@ -18,47 +18,33 @@ def test_resource_requires_that_files_exist_with_no_packet(tmp_path):
     with transient_working_directory(src):
         with pytest.raises(Exception, match="File does not exist:"):
             orderly.resource("a")
-    with open(src / "a", "w"):
-        pass
+
+    (src / "a").touch()
     with transient_working_directory(src):
         res = orderly.resource("a")
     assert res == ["a"]
 
 
 def test_resource_requires_relative_paths(tmp_path):
-    with transient_working_directory(tmp_path):
-        with pytest.raises(Exception, match="File does not exist:"):
-            orderly.resource("a")
-    with open(tmp_path / "a", "w"):
-        pass
+    (tmp_path / "a").touch()
     with pytest.raises(Exception, match="to be a relative path"):
         orderly.resource(str(tmp_path / "a"))
 
 
 def test_resource_expands_lists_with_no_packet(tmp_path):
     helpers.create_temporary_root(tmp_path)
-    src = tmp_path / "src" / "x"
-    src.mkdir(parents=True)
-    sub = src / "a"
-    sub.mkdir()
-    with open(sub / "x", "w"):
-        pass
-    with open(sub / "y", "w"):
-        pass
+    src = tmp_path / "src" / "report"
+    helpers.touch_files(src / "a" / "x", src / "a" / "y")
 
     with transient_working_directory(src):
         res = orderly.resource("a")
-    expected = {"windows": ["a\\x", "a\\y"], "unix": ["a/x", "a/y"]}
-    platform = "windows" if sys.platform.startswith("win") else "unix"
-    assert sorted(res) == expected[platform]
+    assert set(res) == {os.path.join("a", "x"), os.path.join("a", "y")}
 
 
 def test_resource_requires_file_exists_with_packet(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
     src = tmp_path / "src" / "x"
-    src.mkdir(parents=True)
-    with open(src / "a", "w"):
-        pass
+    helpers.touch_files(src / "a")
 
     p = Packet(root, src, "tmp")
     with ActiveOrderlyContext(p, src) as active:

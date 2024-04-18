@@ -6,6 +6,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List, Optional
 
+from orderly.run import orderly_run
+
 from outpack.init import outpack_init
 from outpack.metadata import MetadataCore, PacketDepends
 from outpack.packet import Packet
@@ -129,3 +131,31 @@ def rep(x, each):
         ret.extend([item] * times)
 
     return ret
+
+
+def touch_files(*files):
+    """
+    Create empty files at the given paths.
+
+    If necessary, parent directories are created for each file.
+    """
+    for f in files:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.touch()
+
+
+def write_file(path, text):
+    """
+    Write text to a path.
+
+    If necessary, parent directories are created for each file.
+    """
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(text)
+
+
+def run_snippet(name, code, root, **kwargs):
+    """Run a snippet of Python code as an Orderly report."""
+    write_file(root.path / "src" / name / f"{name}.py", code)
+    return orderly_run(name, root=root, **kwargs)
