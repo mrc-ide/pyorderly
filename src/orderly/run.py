@@ -8,7 +8,7 @@ from orderly.read import orderly_read
 from outpack.ids import outpack_id
 from outpack.packet import Packet
 from outpack.root import root_open
-from outpack.util import run_script
+from outpack.util import all_normal_files, run_script
 
 
 def orderly_run(name, *, parameters=None, root=None, locate=True):
@@ -54,7 +54,7 @@ def _validate_src_directory(name, root) -> Tuple[Path, str]:
     entrypoint = f"{name}.py"
 
     if not path.joinpath(entrypoint).exists():
-        msg = f"Did not find orderly report '{name}"
+        msg = f"Did not find orderly report '{name}'"
         if path.is_dir():
             detail = f"The path 'src/{name}' exists but does not contain '{entrypoint}'"
         elif path.exists():
@@ -97,14 +97,10 @@ def _validate_parameters(given, defaults):
 
 
 def _copy_resources_implicit(src, dest):
-    info = {}
-    for p in src.iterdir():
-        p_rel = p.relative_to(src)
-        p_dest = dest.joinpath(p_rel)
+    for p in all_normal_files(src):
+        p_dest = dest / p
         p_dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(p, p_dest)
-        info[p_rel] = p.stat()
-    return info
+        shutil.copy2(src / p, p_dest)
 
 
 def _orderly_cleanup_success(packet, entrypoint, orderly):

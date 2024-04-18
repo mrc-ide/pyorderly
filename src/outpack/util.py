@@ -34,12 +34,17 @@ def num_to_time(x):
 
 # Recursively find all normal files below 'path', returning them
 # relative to that path.
+#
+# This excludes any files contained in a `__pycache__` directory.
 def all_normal_files(path):
-    return [
-        str(p.relative_to(path))
-        for p in Path(path).rglob("*")
-        if not p.is_dir()
-    ]
+    result = []
+    for root, dirs, files in os.walk(path):
+        base = Path(root).relative_to(path)
+        result.extend(str(base.joinpath(f)) for f in files)
+
+        if "__pycache__" in dirs:
+            dirs.remove("__pycache__")
+    return result
 
 
 def run_script(wd, path, init_globals):

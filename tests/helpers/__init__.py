@@ -1,6 +1,9 @@
+import pickle
 import random
 import shutil
 import string
+import tempfile
+import textwrap
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -156,6 +159,30 @@ def write_file(path, text):
 
 
 def run_snippet(name, code, root, **kwargs):
-    """Run a snippet of Python code as an Orderly report."""
-    write_file(root.path / "src" / name / f"{name}.py", code)
-    return orderly_run(name, root=root, **kwargs)
+    """
+    Run a snippet of Python code as an Orderly report.
+
+    The snippet is wrapped in a function and may use return statements. The
+    snippet's return value is returned by this function, alongside the packet
+    ID.
+    """
+    # The obvious way of returning the snippet's result would be to write it as
+    # an artefact of the packet. This is visible in the packet's metadata and
+    # would cause noise in the expectations of tests using this function.
+    #
+    # We work around that by returning the value out-of-band, in a temporary
+    # file outside of the report's directory. That way it is completely
+    # transparent to the caller
+    with tempfile.NamedTemporaryFile() as output:
+        wrapped = f"""
+def body():
+{textwrap.indent(code, "    ")}
+
+import pickle
+with open({output.name!r}, "wb") as f:
+    pickle.dump(body(), f)
+"""
+        write_file(root.path / "src" / name / f"{name}.py", wrapped)
+        id = orderly_run(name, root=root, **kwargs)
+        result = pickle.load(output)  # noqa: S301
+        return id, result
