@@ -80,6 +80,22 @@ def test_all_normal_files_recurses(tmp_path):
     assert set(all_normal_files(tmp_path)) == expected
 
 
+def test_all_normal_files_excludes_pycache(tmp_path):
+    helpers.touch_files(
+        tmp_path / "a.txt",
+        tmp_path / "__pycache__" / "b.txt",
+        tmp_path / "__pycache__" / "a" / "c.txt",
+        tmp_path / "a" / "d.txt",
+        tmp_path / "a" / "__pycache__" / "e.txt",
+    )
+
+    expected = {
+        "a.txt",
+        os.path.join("a", "d.txt"),
+    }
+    assert set(all_normal_files(tmp_path)) == expected
+
+
 def test_can_expand_paths(tmp_path):
     helpers.touch_files(tmp_path / "a" / "x", tmp_path / "a" / "y")
     (tmp_path / "b").mkdir()

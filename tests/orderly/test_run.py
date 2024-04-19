@@ -1,4 +1,5 @@
 import multiprocessing
+import os
 
 import pytest
 from orderly.run import (
@@ -119,6 +120,55 @@ def test_can_run_example_with_resource(tmp_path):
     }
     assert meta.custom == custom
     assert meta.git is None
+
+
+def test_can_use_implicit_resource_directory(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+
+    report = tmp_path / "src" / "report"
+    helpers.write_file(report / "data" / "numbers.txt", "1\n2\n3\n")
+
+    code = """
+with open("data/numbers.txt") as f:
+    return str(sum(map(int, f.readlines())))
+"""
+    id, result = helpers.run_snippet("report", code, root)
+    assert int(result) == 6
+
+    meta = root.index.metadata(id)
+    assert {f.path for f in meta.files} == {
+        "report.py",
+        os.path.join("data", "numbers.txt"),
+    }
+    assert meta.custom["orderly"]["role"] == [
+        {"path": "report.py", "role": "orderly"},
+    ]
+
+
+def test_can_use_explicit_resource_directory(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+
+    report = tmp_path / "src" / "report"
+    helpers.write_file(report / "data" / "numbers.txt", "1\n2\n3\n")
+
+    code = """
+import orderly
+orderly.resource("data")
+with open("data/numbers.txt") as f:
+    return str(sum(map(int, f.readlines())))
+"""
+    id, result = helpers.run_snippet("report", code, root)
+    assert int(result) == 6
+
+    meta = root.index.metadata(id)
+    assert {f.path for f in meta.files} == {
+        "report.py",
+        os.path.join("data", "numbers.txt"),
+    }
+    assert meta.custom["orderly"]["role"] == [
+        {"path": "report.py", "role": "orderly"},
+        {"path": os.path.join("data", "numbers.txt"), "role": "resource"},
+    ]
 
 
 def test_error_if_script_is_modified(tmp_path):
@@ -274,3 +324,50 @@ def test_can_run_multiprocessing(tmp_path, method):
     assert meta.custom["orderly"]["artefacts"] == [
         {"name": "Squared numbers", "files": ["result.txt"]}
     ]
+
+
+def test_pycache_is_not_copied_from_source(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.touch_files(
+        tmp_path / "src" / "report" / "foo.txt",
+        tmp_path / "src" / "report" / "data" / "bar.txt",
+        tmp_path / "src" / "report" / "__pycache__" / "baz.txt",
+    )
+
+    code = """
+import glob
+return glob.glob("**/*", recursive=True)
+"""
+    id, files = helpers.run_snippet("report", code, root)
+
+    assert set(files) == {
+        "report.py",
+        "foo.txt",
+        "data",
+        os.path.join("data", "bar.txt"),
+    }
+
+
+def test_packet_files_excludes_pycache(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    code = """
+import os
+os.mkdir("data")
+os.mkdir("__pycache__")
+with open("foo.txt", "w"): pass
+with open("data/bar.txt", "w"): pass
+with open("__pycache__/baz.txt", "w"): pass
+"""
+
+    id, _ = helpers.run_snippet("report", code, root)
+
+    meta = root.index.metadata(id)
+    assert {f.path for f in meta.files} == {
+        "report.py",
+        "foo.txt",
+        os.path.join("data", "bar.txt"),
+    }
+
+    packet = tmp_path / "archive" / "report" / id
+    assert (packet / "data").exists()
+    assert not (packet / "__pycache__").exists()
