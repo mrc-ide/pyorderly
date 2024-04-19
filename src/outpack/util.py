@@ -1,10 +1,12 @@
 import datetime
 import os
 import runpy
+import tempfile
 import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
 from pathlib import Path
+from typing import Optional
 
 
 def find_file_descend(filename, path):
@@ -141,3 +143,23 @@ def partition(pred, iterable):
     # partition(is_odd, range(10)) --> 1 3 5 7 9 and 0 2 4 6 8
     t1, t2 = tee(iterable)
     return list(filter(pred, t1)), list(filterfalse(pred, t2))
+
+
+@contextmanager
+def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
+    # On Windows, a NamedTemporaryFile with `delete=True` cannot be reopened,
+    # which makes its name pretty useless. On Python 3.12, a new
+    # delete_on_close flag is solves this issue, but we can't depend on that
+    # yet. This block mimicks that feature.
+    #
+    # https://bugs.python.org/issue14243
+    # https://github.com/mrc-ide/outpack-py/pull/33#discussion_r1500522877
+    f = tempfile.NamedTemporaryFile(mode=mode, dir=dir, delete=False)
+    try:
+        yield f
+    finally:
+        f.close()
+        try:
+            os.unlink(f.name)
+        except OSError:
+            pass

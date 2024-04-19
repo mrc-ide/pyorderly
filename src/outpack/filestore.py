@@ -2,11 +2,11 @@ import os
 import os.path
 import shutil
 import stat
-import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 
 from outpack.hash import Hash, hash_parse, hash_validate_file
+from outpack.util import openable_temporary_file
 
 
 class FileStore:
@@ -85,16 +85,11 @@ class FileStore:
 
     @contextmanager
     def tmp(self):
-        # On a newer version of tempfile we could use `delete_on_close = False`
-        # see
-        # https://github.com/mrc-ide/outpack-py/pull/33#discussion_r1500522877
         path = self._path / "tmp"
         path.mkdir(exist_ok=True)
-        f = tempfile.NamedTemporaryFile(dir=path, delete=False)
-        try:
+
+        with openable_temporary_file(dir=path) as f:
+            # Close the file (but don't delete it). We are only interested in
+            # using the path.
+            f.close()
             yield f.name
-        finally:
-            try:
-                os.unlink(f.name)
-            except OSError:
-                pass

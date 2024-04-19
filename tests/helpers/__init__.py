@@ -2,7 +2,6 @@ import pickle
 import random
 import shutil
 import string
-import tempfile
 import textwrap
 from contextlib import contextmanager
 from pathlib import Path
@@ -16,6 +15,7 @@ from outpack.metadata import MetadataCore, PacketDepends
 from outpack.packet import Packet
 from outpack.root import root_open
 from outpack.schema import outpack_schema_version
+from outpack.util import openable_temporary_file
 
 
 @contextmanager
@@ -173,7 +173,7 @@ def run_snippet(name, code, root, **kwargs):
     # We work around that by returning the value out-of-band, in a temporary
     # file outside of the report's directory. That way it is completely
     # transparent to the caller
-    with tempfile.NamedTemporaryFile() as output:
+    with openable_temporary_file() as output:
         wrapped = f"""
 def body():
 {textwrap.indent(code, "    ")}
