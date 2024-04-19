@@ -28,6 +28,7 @@ Functions
    outpack.util.format_list
    outpack.util.pl
    outpack.util.partition
+   outpack.util.openable_temporary_file
 
 
 
@@ -80,5 +81,8 @@ Functions
    This is slightly modified version of partition from itertools
    recipes https://docs.python.org/dev/library/itertools.html#itertools-recipes
    If *pred* is slow, consider wrapping it with functools.lru_cache().
+
+
+.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
 
 
