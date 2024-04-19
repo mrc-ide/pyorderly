@@ -84,9 +84,21 @@ def assert_file_exists(path, *, workdir=None, name="File"):
 
 def assert_relative_path(path: str, name: str):
     path = Path(path)
-    if path.is_absolute():
+
+    # On Windows, this is not equivalent to path.is_absolute().
+    # There are paths which are neither absolute nor relative, but somewhere
+    # between the two. These are paths such as `C:foo` or `\foo`. The former has
+    # a drive but no root, and the latter has a root but no drive. We want to
+    # exclude both scenarios. On POSIX, drive will always be empty and this is
+    # equivalent to calling `is_absolute()`.
+    #
+    # See https://github.com/python/cpython/issues/44626 for some discussion.
+    # Unfortunately, while the issue was closed, the `is_relative` function
+    # mentioned was never added.
+    if path.drive or path.root:
         msg = f"Expected {name} path '{path}' to be a relative path"
         raise Exception(msg)
+
     if ".." in path.parts:
         msg = f"Path '{path}' must not contain '..' component"
         raise Exception(msg)
