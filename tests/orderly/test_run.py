@@ -1,5 +1,4 @@
 import multiprocessing
-import shutil
 
 import pytest
 from orderly.run import (
@@ -8,10 +7,6 @@ from orderly.run import (
     orderly_run,
 )
 
-from outpack.init import outpack_init
-from outpack.metadata import read_metadata_core
-from outpack.root import root_open
-
 from .. import helpers
 
 
@@ -19,18 +14,18 @@ from .. import helpers
 ## unfortunately pytest makes that totally unobvious how we do it, but
 ## we'll get there. For now inline the code as we use it.
 def test_can_run_simple_example(tmp_path):
-    path = outpack_init(tmp_path)
-    path_src = path / "src" / "data"
-    path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile("tests/orderly/examples/data/data.py", path_src / "data.py")
-    res = orderly_run("data", root=path)
-    path_res = path / "archive" / "data" / res
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("data", root)
+
+    id = orderly_run("data", root=root)
+    path_res = tmp_path / "archive" / "data" / id
     assert path_res.exists()
-    assert not (path / "draft" / "data" / res).exists()
+    assert not (tmp_path / "draft" / "data" / id).exists()
+
     # TODO: need a nicer way of doing this, one that would be part of
     # the public API.
-    meta = root_open(tmp_path).index.metadata(res)
-    assert meta.id == res
+    meta = root.index.metadata(id)
+    assert meta.id == id
     assert meta.name == "data"
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
@@ -49,15 +44,16 @@ def test_can_run_simple_example(tmp_path):
 
 
 def test_failed_reports_are_not_saved(tmp_path):
-    path = outpack_init(tmp_path)
-    path_src = path / "src" / "data"
-    path_src.mkdir(parents=True, exist_ok=True)
-    with open(path_src / "data.py", "w") as f:
-        f.write("raise Exception('Some error')")
-    with pytest.raises(Exception, match="Running orderly report failed!"):
-        orderly_run("data", root=path)
+    root = helpers.create_temporary_root(tmp_path)
+
+    with pytest.raises(Exception, match="Running orderly report failed!") as e:
+        code = "raise Exception('Some error')"
+        helpers.run_snippet("data", code, root)
+
+    assert str(e.value.__cause__) == "Some error"
+
     assert not (tmp_path / "archive" / "data").exists()
-    assert len(root_open(tmp_path).index.unpacked()) == 0
+    assert len(root.index.unpacked()) == 0
 
     assert (tmp_path / "draft" / "data").exists()
     contents = list((tmp_path / "draft" / "data").iterdir())
@@ -66,42 +62,41 @@ def test_failed_reports_are_not_saved(tmp_path):
 
 
 def test_validate_report_src_directory(tmp_path):
-    path = outpack_init(tmp_path)
-    root = root_open(path)
-    path_src = path / "src"
+    root = helpers.create_temporary_root(tmp_path)
+    path_src = tmp_path / "src"
     path_src.mkdir()
 
     x = path_src / "x"
     with pytest.raises(Exception, match="The path '.+/x' does not exist"):
         _validate_src_directory("x", root)
+
     x.mkdir()
     with pytest.raises(
         Exception,
         match="The path '.+/x' exists but does not contain 'x.py'",
     ):
         _validate_src_directory("x", root)
+
     y = path_src / "y"
-    with open(y, "w"):
-        pass
+    y.touch()
     with pytest.raises(
         Exception, match="The path '.+/y' exists but is not a directory"
     ):
         _validate_src_directory("y", root)
+
     # Finally, the happy path
-    with open(x / "x.py", "w"):
-        pass
+    (x / "x.py").touch()
     assert _validate_src_directory("x", root) == (x, "x.py")
 
 
 def test_can_run_example_with_resource(tmp_path):
-    path = outpack_init(tmp_path)
-    path_src = path / "src" / "resource"
-    path_src.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree("tests/orderly/examples/resource", path_src)
-    res = orderly_run("resource", root=path)
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("resource", root)
 
-    meta = root_open(tmp_path).index.metadata(res)
-    assert meta.id == res
+    id = orderly_run("resource", root=root)
+
+    meta = root.index.metadata(id)
+    assert meta.id == id
     assert meta.name == "resource"
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
@@ -126,21 +121,48 @@ def test_can_run_example_with_resource(tmp_path):
     assert meta.git is None
 
 
+def test_error_if_script_is_modified(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    code = """
+with open("report.py", "w") as f:
+    f.write("new text")
+"""
+
+    with pytest.raises(
+        Exception, match="File was changed after being added: report.py"
+    ):
+        helpers.run_snippet("report", code, root)
+
+
+def test_error_if_resource_is_modified(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    code = """
+import orderly
+orderly.resource("data.txt")
+with open("data.txt", "w") as f:
+    f.write("new data")
+"""
+
+    helpers.write_file(tmp_path / "src" / "report" / "data.txt", "old data")
+
+    with pytest.raises(
+        Exception, match="File was changed after being added: data.txt"
+    ):
+        helpers.run_snippet("report", code, root)
+
+
 def test_can_run_example_with_artefact(tmp_path):
-    path = outpack_init(tmp_path)
-    path_src = path / "src" / "artefact"
-    path_src.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(
-        "tests/orderly/examples/artefact/artefact.py", path_src / "artefact.py"
-    )
-    res = orderly_run("artefact", root=path)
-    path_res = path / "archive" / "artefact" / res
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("artefact", root)
+
+    id = orderly_run("artefact", root=root)
+    path_res = tmp_path / "archive" / "artefact" / id
     assert path_res.exists()
-    assert not (path / "draft" / "artefact" / res).exists()
+    assert not (tmp_path / "draft" / "artefact" / id).exists()
     # TODO: need a nicer way of doing this, one that would be part of
     # the public API.
-    meta = root_open(tmp_path).index.metadata(res)
-    assert meta.id == res
+    meta = root.index.metadata(id)
+    assert meta.id == id
     assert meta.name == "artefact"
     assert meta.parameters == {}
     assert list(meta.time.keys()) == ["start", "end"]
@@ -159,31 +181,27 @@ def test_can_run_example_with_artefact(tmp_path):
 
 
 def test_can_error_if_artefacts_not_produced(tmp_path):
-    path = outpack_init(tmp_path)
-    path_src = path / "src" / "resource"
-    path_src.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree("tests/orderly/examples/resource", path_src)
-    orderly_run("resource", root=path)
-    with open(path_src / "resource.py", "a") as f:
-        f.write("orderly.artefact('something', 'a')\n")
+    root = helpers.create_temporary_root(tmp_path)
+
+    code = """
+import orderly
+orderly.artefact("something", "a")
+"""
     with pytest.raises(
         Exception, match="Script did not produce the expected artefacts: 'a'"
     ):
-        orderly_run("resource", root=path)
-    assert (tmp_path / "draft" / "resource").exists()
-    contents = list((tmp_path / "draft" / "resource").iterdir())
-    assert len(contents) == 1
-    assert contents[0].joinpath("outpack.json").exists()
-    meta = read_metadata_core(contents[0].joinpath("outpack.json"))
-    assert meta.name == "resource"
-    assert meta.custom == {}
-    with open(path_src / "resource.py", "a") as f:
-        f.write("orderly.artefact('something else', ['c', 'b'])\n")
+        helpers.run_snippet("report", code, root)
+
+    code = """
+import orderly
+orderly.artefact("something", "a")
+orderly.artefact("something", ["c", "b"])
+"""
     with pytest.raises(
         Exception,
         match="Script did not produce the expected artefacts: 'a', 'b', 'c'",
     ):
-        orderly_run("resource", root=path)
+        helpers.run_snippet("report", code, root)
 
 
 def test_can_run_with_description(tmp_path):
@@ -191,7 +209,7 @@ def test_can_run_with_description(tmp_path):
     helpers.copy_examples("description", root)
 
     id = orderly_run("description", root=tmp_path)
-    meta = root_open(tmp_path).index.metadata(id)
+    meta = root.index.metadata(id)
     assert meta.custom["orderly"]["description"] == {
         "display": "Some report",
         "long": None,
@@ -252,7 +270,7 @@ def test_can_run_multiprocessing(tmp_path, method):
     helpers.copy_examples("mp", root)
     id = orderly_run("mp", root=root, parameters={"method": method})
 
-    meta = root_open(tmp_path).index.metadata(id)
+    meta = root.index.metadata(id)
     assert meta.custom["orderly"]["artefacts"] == [
         {"name": "Squared numbers", "files": ["result.txt"]}
     ]

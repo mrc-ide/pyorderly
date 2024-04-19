@@ -1,9 +1,10 @@
 import datetime
-import sys
+import os
 
 import pytest
 
 from outpack.util import (
+    all_normal_files,
     assert_file_exists,
     expand_dirs,
     find_file_descend,
@@ -17,6 +18,8 @@ from outpack.util import (
     run_script,
     time_to_num,
 )
+
+from . import helpers
 
 
 def test_find_descend(tmp_path):
@@ -61,33 +64,40 @@ def test_can_test_for_files_existing(tmp_path):
         assert_file_exists("x", workdir=tmp_path)
 
 
-def test_can_expand_paths(tmp_path):
-    sub_a = tmp_path / "a"
-    sub_a.mkdir()
-    sub_b = tmp_path / "b"
-    sub_b.mkdir()
-    with open(sub_a / "x", "w"):
-        pass
-    with open(sub_a / "y", "w"):
-        pass
-    expected_ax_ay = {"windows": {"a\\x", "a\\y"}, "unix": {"a/x", "a/y"}}
-    platform = "windows" if sys.platform.startswith("win") else "unix"
-    assert expand_dirs([], workdir=tmp_path) == []
-    assert set(expand_dirs(["a"], workdir=tmp_path)) == expected_ax_ay[platform]
-    assert (
-        set(expand_dirs(["a", "b"], workdir=tmp_path))
-        == expected_ax_ay[platform]
+def test_all_normal_files_recurses(tmp_path):
+    helpers.touch_files(
+        tmp_path / "foo.txt",
+        tmp_path / "a" / "bar.txt",
+        tmp_path / "a" / "b" / "baz.txt",
+        tmp_path / "a" / "b" / "c" / "quux.txt",
     )
-    with open(sub_b / "x", "w"):
-        pass
-    expected_ax_ay_bx = {
-        "windows": {"a\\x", "a\\y", "b\\x"},
-        "unix": {"a/x", "a/y", "b/x"},
+    expected = {
+        "foo.txt",
+        os.path.join("a", "bar.txt"),
+        os.path.join("a", "b", "baz.txt"),
+        os.path.join("a", "b", "c", "quux.txt"),
     }
-    assert (
-        set(expand_dirs(["a", "b"], workdir=tmp_path))
-        == expected_ax_ay_bx[platform]
-    )
+    assert set(all_normal_files(tmp_path)) == expected
+
+
+def test_can_expand_paths(tmp_path):
+    helpers.touch_files(tmp_path / "a" / "x", tmp_path / "a" / "y")
+    (tmp_path / "b").mkdir()
+
+    expected_ax_ay = {os.path.join("a", "x"), os.path.join("a", "y")}
+
+    assert expand_dirs([], workdir=tmp_path) == []
+    assert set(expand_dirs(["a"], workdir=tmp_path)) == expected_ax_ay
+    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == expected_ax_ay
+
+    helpers.touch_files(tmp_path / "b" / "x")
+
+    expected_ax_ay_bx = {
+        os.path.join("a", "x"),
+        os.path.join("a", "y"),
+        os.path.join("b", "x"),
+    }
+    assert set(expand_dirs(["a", "b"], workdir=tmp_path)) == expected_ax_ay_bx
 
 
 def test_match_value():
