@@ -70,32 +70,32 @@ def test_can_test_for_relative_path():
     assert_relative_path("foo.txt", "file")
     assert_relative_path("dir/foo.txt", "file")
 
-    msg = "Expected file path '/foo.txt' to be a relative path"
-    with pytest.raises(Exception, match=re.escape(msg)):
+    pattern = r"Expected file path '[/\\]foo.txt' to be a relative path"
+    with pytest.raises(Exception, match=pattern):
         assert_relative_path("/foo.txt", "file")
 
-    msg = "Path '../foo.txt' must not contain '..' component"
-    with pytest.raises(Exception, match=re.escape(msg)):
+    pattern = r"Path '..[/\\]foo.txt' must not contain '..' component"
+    with pytest.raises(Exception, match=pattern):
         assert_relative_path("../foo.txt", "file")
 
-    msg = "Path 'aa/../foo.txt' must not contain '..' component"
-    with pytest.raises(Exception, match=re.escape(msg)):
+    pattern = r"Path 'aa[/\\]..[/\\]foo.txt' must not contain '..' component"
+    with pytest.raises(Exception, match=pattern):
         assert_relative_path("aa/../foo.txt", "file")
 
 
 @pytest.mark.skipif(os.name != "nt", reason="Windows-specific test")
 def test_can_test_for_relative_path_windows():
-    msg = "Expected file path 'C:\\aa\\foo.txt' to be a relative path"
+    msg = r"Expected file path 'C:\aa\foo.txt' to be a relative path"
     with pytest.raises(Exception, match=re.escape(msg)):
-        assert_relative_path("C:\\aa\\foo.txt", "file")
+        assert_relative_path(r"C:\aa\foo.txt", "file")
 
-    msg = "Expected file path 'C:foo.txt' to be a relative path"
+    msg = r"Expected file path 'C:foo.txt' to be a relative path"
     with pytest.raises(Exception, match=re.escape(msg)):
-        assert_relative_path("C:foo.txt", "file")
+        assert_relative_path(r"C:foo.txt", "file")
 
-    msg = "Expected file path '\\aa\\foo.txt' to be a relative path"
+    msg = r"Expected file path '\aa\foo.txt' to be a relative path"
     with pytest.raises(Exception, match=re.escape(msg)):
-        assert_relative_path("\\aa\\foo.txt", "file")
+        assert_relative_path(r"\aa\foo.txt", "file")
 
 
 def test_all_normal_files_recurses(tmp_path):
