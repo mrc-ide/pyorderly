@@ -122,13 +122,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.resource" title="orderly.core.resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code></a>(files)</p></td>
 <td><p>Declare that a file, or group of files, are an orderly resource.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.artefact" title="orderly.core.artefact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artefact</span></code></a>(name, files)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.shared_resource" title="orderly.core.shared_resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shared_resource</span></code></a>(→ Dict[str, str])</p></td>
+<td><p>Copy shared resources into a packet directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.artefact" title="orderly.core.artefact"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artefact</span></code></a>(name, files)</p></td>
 <td><p>Declare an artefact.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.description" title="orderly.core.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a>(*[, display, long, custom])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.description" title="orderly.core.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a>(*[, display, long, custom])</p></td>
 <td><p>Describe the current report.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.dependency" title="orderly.core.dependency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependency</span></code></a>(name, query, files)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.dependency" title="orderly.core.dependency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dependency</span></code></a>(name, query, files)</p></td>
 <td><p>Declare a dependency on another packet.</p></td>
 </tr>
 </tbody>
@@ -209,6 +212,35 @@ modify them with ‘orderly.run’.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="orderly.core.shared_resource">
+<span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">shared_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orderly.core.shared_resource" title="Link to this definition"></a></dt>
+<dd><p>Copy shared resources into a packet directory.</p>
+<p>You can use this to share common resources (data or code) between multiple
+packets. Additional metadata will be added to keep track of where the files
+came from. Using this function requires the shared resources directory
+<cite>shared/</cite> exists at the orderly root; an error will be
+raised if this is not configured when we attempt to fetch files.</p>
+<section id="id3">
+<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>files: str | [str] | dict[str, str]</dt><dd><p>The shared resources to copy. If a dictionary is provided, the keys will
+be the destination file while the value is the filename within the
+shared resource directory.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A dictionary of files that were copied. If a directory was copied, this
+includes all of its individual contents. Do not rely on the ordering
+where directory expansion was performed, as it may be platform
+dependent.</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="orderly.core.artefact">
 <span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">artefact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.core.artefact" title="Link to this definition"></a></dt>
 <dd><p>Declare an artefact.</p>
@@ -221,8 +253,8 @@ a resource by ‘orderly.resource’</p>
 produce the things you need it do.</p>
 <p>(3) Within the final metadata, your artefacts will have additional
 metadata; the description that you provide and a grouping.</p>
-<section id="id3">
-<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<section id="id5">
+<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>description<span class="classifier">str</span></dt><dd><p>The name of the artefact</p>
 </dd>
@@ -231,8 +263,8 @@ are relative paths.</p>
 </dd>
 </dl>
 </section>
-<section id="id4">
-<h4>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<section id="id6">
+<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
@@ -241,8 +273,8 @@ are relative paths.</p>
 <dt class="sig sig-object py" id="orderly.core.description">
 <span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">long</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.core.description" title="Link to this definition"></a></dt>
 <dd><p>Describe the current report.</p>
-<section id="id5">
-<h4>Parameters<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<section id="id7">
+<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>display<span class="classifier">str</span></dt><dd><p>A friendly name for the report; this will be displayed in some
 locations of the web interfaces, packit.</p>
@@ -254,8 +286,8 @@ and string, number or boolean values.</p>
 </dd>
 </dl>
 </section>
-<section id="id6">
-<h4>Returns<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<section id="id8">
+<h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
 </section>
 </dd></dl>
@@ -264,8 +296,8 @@ and string, number or boolean values.</p>
 <dt class="sig sig-object py" id="orderly.core.dependency">
 <span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">dependency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.core.dependency" title="Link to this definition"></a></dt>
 <dd><p>Declare a dependency on another packet.</p>
-<section id="id7">
-<h4>Parameters<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<section id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>name: str | None</dt><dd><p>The name of the packet to depend on, or None</p>
 </dd>
@@ -276,8 +308,8 @@ and string, number or boolean values.</p>
 </dd>
 </dl>
 </section>
-<section id="id8">
-<h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<section id="id10">
+<h4>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
 <p>Data on the resolved dependency; this is an <cite>orderly.helpers.Plan</cite> object,
 which contains elements <cite>id</cite>, <cite>name</cite> and <cite>files</cite></p>
 </section>

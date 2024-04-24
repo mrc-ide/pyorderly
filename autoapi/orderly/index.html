@@ -131,6 +131,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#orderly.resource" title="orderly.resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code></a>(files)</p></td>
 <td><p>Declare that a file, or group of files, are an orderly resource.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.shared_resource" title="orderly.shared_resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shared_resource</span></code></a>(→ Dict[str, str])</p></td>
+<td><p>Copy shared resources into a packet directory.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py function">
@@ -240,6 +243,35 @@ modify them with ‘orderly.run’.</p>
 <section id="id8">
 <h4>Returns<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
 <p>Nothing, this is called for its side effects within a running packet</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orderly.shared_resource">
+<span class="sig-prename descclassname"><span class="pre">orderly.</span></span><span class="sig-name descname"><span class="pre">shared_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orderly.shared_resource" title="Link to this definition"></a></dt>
+<dd><p>Copy shared resources into a packet directory.</p>
+<p>You can use this to share common resources (data or code) between multiple
+packets. Additional metadata will be added to keep track of where the files
+came from. Using this function requires the shared resources directory
+<cite>shared/</cite> exists at the orderly root; an error will be
+raised if this is not configured when we attempt to fetch files.</p>
+<section id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>files: str | [str] | dict[str, str]</dt><dd><p>The shared resources to copy. If a dictionary is provided, the keys will
+be the destination file while the value is the filename within the
+shared resource directory.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h4>Returns<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A dictionary of files that were copied. If a directory was copied, this
+includes all of its individual contents. Do not rely on the ordering
+where directory expansion was performed, as it may be platform
+dependent.</p>
+</div></blockquote>
 </section>
 </dd></dl>
 

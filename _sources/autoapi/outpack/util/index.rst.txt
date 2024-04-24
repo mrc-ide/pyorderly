@@ -21,9 +21,11 @@ Functions
    outpack.util.run_script
    outpack.util.transient_working_directory
    outpack.util.assert_file_exists
+   outpack.util.assert_relative_path
    outpack.util.expand_dirs
    outpack.util.match_value
    outpack.util.relative_path_array
+   outpack.util.relative_path_mapping
    outpack.util.read_string
    outpack.util.format_list
    outpack.util.pl
@@ -56,13 +58,19 @@ Functions
 .. py:function:: assert_file_exists(path, *, workdir=None, name='File')
 
 
+.. py:function:: assert_relative_path(path: str, name: str)
+
+
 .. py:function:: expand_dirs(paths, *, workdir=None)
 
 
 .. py:function:: match_value(arg, choices, name)
 
 
-.. py:function:: relative_path_array(files, name)
+.. py:function:: relative_path_array(files: Union[str, List[str]], name: str) -> List[str]
+
+
+.. py:function:: relative_path_mapping(files: Union[str, List[str], Dict[str, str]], name: str) -> Dict[str, str]
 
 
 .. py:function:: read_string(path)
