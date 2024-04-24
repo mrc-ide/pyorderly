@@ -68,11 +68,15 @@ def resource(files):
     ctx = get_active_context()
     src = ctx.path if ctx.is_active else None
     files_expanded = util.expand_dirs(files, workdir=src)
+
     if ctx.is_active:
+        files_expanded_posix = util.as_posix_path(files_expanded)
+
         # TODO: If strict mode, copy expanded files into the working dir
-        for f in files_expanded:
+        for f in files_expanded_posix:
             ctx.packet.mark_file_immutable(f)
-        ctx.orderly.resources += files_expanded
+        ctx.orderly.resources += files_expanded_posix
+
     return files_expanded
 
 
@@ -107,9 +111,10 @@ def shared_resource(
     result = _copy_shared_resources(ctx.root.path, ctx.path, files)
 
     if ctx.is_active:
-        for f in result.keys():
+        result_posix = util.as_posix_path(result)
+        for f in result_posix.keys():
             ctx.packet.mark_file_immutable(f)
-        ctx.orderly.shared_resources.update(result)
+        ctx.orderly.shared_resources.update(result_posix)
 
     return result
 
