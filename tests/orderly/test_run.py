@@ -7,6 +7,7 @@ from orderly.run import (
     _validate_src_directory,
     orderly_run,
 )
+from pytest_unordered import unordered
 
 from .. import helpers
 
@@ -38,6 +39,7 @@ def test_can_run_simple_example(tmp_path):
             "role": [{"path": "data.py", "role": "orderly"}],
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -116,6 +118,7 @@ def test_can_run_example_with_resource(tmp_path):
             ],
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -224,6 +227,7 @@ def test_can_run_example_with_artefact(tmp_path):
             "role": [{"path": "artefact.py", "role": "orderly"}],
             "artefacts": [{"name": "Random numbers", "files": ["result.txt"]}],
             "description": {"display": None, "long": None, "custom": None},
+            "shared": {},
         }
     }
     assert meta.custom == custom
@@ -290,6 +294,79 @@ def test_can_run_with_parameters(tmp_path):
     assert result == "a: 1\nb: 2\n"
     meta = root.index.metadata(id)
     assert meta.parameters == {"a": 1, "b": 2}
+
+
+def test_can_use_shared_resources(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("shared", root)
+    helpers.copy_shared_resources("numbers.txt", root)
+
+    id = orderly_run("shared", root=tmp_path)
+    meta = root.index.metadata(id)
+
+    assert {el.path for el in meta.files} == {
+        "shared.py",
+        "result.txt",
+        "shared_data.txt",
+    }
+    assert meta.custom == {
+        "orderly": {
+            "role": [
+                {"path": "shared.py", "role": "orderly"},
+                {"path": "shared_data.txt", "role": "shared"},
+            ],
+            "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
+            "shared": {
+                "shared_data.txt": "numbers.txt",
+            },
+        }
+    }
+
+
+def test_can_use_shared_resources_directory(tmp_path):
+    # TODO(mrc-5241): This test uses os.path.join to form nested paths, which
+    # on windows will use a backslash as the path separator. This matches the
+    # implementation, but we probably want to revisit this at some point, and
+    # normalize all paths in the metadata to use posix-style forward slashes.
+    from os.path import join
+
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples("shared_dir", root)
+    helpers.copy_shared_resources("data", root)
+
+    id = orderly_run("shared_dir", root=tmp_path)
+    meta = root.index.metadata(id)
+
+    assert {el.path for el in meta.files} == {
+        "shared_dir.py",
+        "result.txt",
+        join("shared_data", "numbers.txt"),
+        join("shared_data", "weights.txt"),
+    }
+    assert meta.custom == {
+        "orderly": {
+            "role": unordered(
+                [
+                    {"path": "shared_dir.py", "role": "orderly"},
+                    {
+                        "path": join("shared_data", "weights.txt"),
+                        "role": "shared",
+                    },
+                    {
+                        "path": join("shared_data", "numbers.txt"),
+                        "role": "shared",
+                    },
+                ]
+            ),
+            "artefacts": [],
+            "description": {"display": None, "long": None, "custom": None},
+            "shared": {
+                join("shared_data", "numbers.txt"): join("data", "numbers.txt"),
+                join("shared_data", "weights.txt"): join("data", "weights.txt"),
+            },
+        }
+    }
 
 
 def test_can_validate_parameters():

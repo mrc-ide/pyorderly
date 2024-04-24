@@ -1,4 +1,7 @@
+import os.path
+import shutil
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List, Union
 
 from dataclasses_json import dataclass_json
@@ -71,6 +74,74 @@ def resource(files):
             ctx.packet.mark_file_immutable(f)
         ctx.orderly.resources += files_expanded
     return files_expanded
+
+
+def shared_resource(
+    files: Union[str, List[str], Dict[str, str]]
+) -> Dict[str, str]:
+    """Copy shared resources into a packet directory.
+
+    You can use this to share common resources (data or code) between multiple
+    packets. Additional metadata will be added to keep track of where the files
+    came from. Using this function requires the shared resources directory
+    `shared/` exists at the orderly root; an error will be
+    raised if this is not configured when we attempt to fetch files.
+
+    Parameters
+    ----------
+    files: str | [str] | dict[str, str]
+        The shared resources to copy. If a dictionary is provided, the keys will
+        be the destination file while the value is the filename within the
+        shared resource directory.
+
+    Returns
+    -------
+        A dictionary of files that were copied. If a directory was copied, this
+        includes all of its individual contents. Do not rely on the ordering
+        where directory expansion was performed, as it may be platform
+        dependent.
+    """
+    ctx = get_active_context()
+
+    files = util.relative_path_mapping(files, "shared resource")
+    result = _copy_shared_resources(ctx.root.path, ctx.path, files)
+
+    if ctx.is_active:
+        for f in result.keys():
+            ctx.packet.mark_file_immutable(f)
+        ctx.orderly.shared_resources.update(result)
+
+    return result
+
+
+def _copy_shared_resources(
+    root: Path, packet: Path, files: Dict[str, str]
+) -> Dict[str, str]:
+    shared_path = root / "shared"
+    if not shared_path.exists():
+        msg = "The shared resources directory 'shared' does not exist at orderly's root"
+        raise Exception(msg)
+
+    result = {}
+    for here, there in files.items():
+        src = shared_path / there
+        dst = packet / here
+
+        if not src.exists():
+            msg = f"Shared resource file '{there}' does not exist. Looked within directory '{shared_path}'"
+            raise Exception(msg)
+        elif src.is_dir():
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+            copied = {
+                os.path.join(here, f): os.path.join(there, f)
+                for f in util.all_normal_files(src)
+            }
+            result.update(copied)
+        else:
+            shutil.copyfile(src, dst)
+            result[here] = there
+
+    return result
 
 
 def artefact(name, files):

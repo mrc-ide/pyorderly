@@ -123,11 +123,14 @@ def _custom_metadata(entrypoint, orderly):
     role = [{"path": entrypoint, "role": "orderly"}]
     for p in orderly.resources:
         role.append({"path": p, "role": "resource"})
+    for p in orderly.shared_resources:
+        role.append({"path": p, "role": "shared"})
 
     return {
         "role": role,
         "artefacts": orderly.artefacts,
         "description": orderly.description or Description.empty(),
+        "shared": orderly.shared_resources,
     }
 
 

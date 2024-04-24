@@ -47,6 +47,8 @@ jobs:
           hatch run cov-ci
       - name: Lint
         run: |
+          # https://github.com/python/mypy/issues/10863
+          mkdir -p .mypy_cache
           hatch run lint:all
       - name: Test install
         run: |

@@ -93,6 +93,21 @@ def copy_examples(names, root):
         shutil.copytree(Path("tests/orderly/examples") / nm, path_src)
 
 
+def copy_shared_resources(names, root):
+    shared_path = root.path / "shared"
+    shared_path.mkdir(exist_ok=True)
+
+    if isinstance(names, str):
+        names = [names]
+    for nm in names:
+        src = Path("tests/orderly/shared/") / nm
+        dst = shared_path / nm
+        if src.is_dir():
+            shutil.copytree(src, dst)
+        else:
+            shutil.copyfile(src, dst)
+
+
 def create_metadata_depends(id: str, depends: Optional[List[str]] = None):
     if depends is None:
         depends = []

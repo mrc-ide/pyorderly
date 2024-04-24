@@ -1,11 +1,13 @@
 import datetime
 import os
+import re
 
 import pytest
 
 from outpack.util import (
     all_normal_files,
     assert_file_exists,
+    assert_relative_path,
     expand_dirs,
     find_file_descend,
     format_list,
@@ -64,6 +66,38 @@ def test_can_test_for_files_existing(tmp_path):
         assert_file_exists("x", workdir=tmp_path)
 
 
+def test_can_test_for_relative_path():
+    assert_relative_path("foo.txt", "file")
+    assert_relative_path("dir/foo.txt", "file")
+
+    pattern = r"Expected file path '[/\\]foo.txt' to be a relative path"
+    with pytest.raises(Exception, match=pattern):
+        assert_relative_path("/foo.txt", "file")
+
+    pattern = r"Path '..[/\\]foo.txt' must not contain '..' component"
+    with pytest.raises(Exception, match=pattern):
+        assert_relative_path("../foo.txt", "file")
+
+    pattern = r"Path 'aa[/\\]..[/\\]foo.txt' must not contain '..' component"
+    with pytest.raises(Exception, match=pattern):
+        assert_relative_path("aa/../foo.txt", "file")
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows-specific test")
+def test_can_test_for_relative_path_windows():
+    msg = r"Expected file path 'C:\aa\foo.txt' to be a relative path"
+    with pytest.raises(Exception, match=re.escape(msg)):
+        assert_relative_path(r"C:\aa\foo.txt", "file")
+
+    msg = r"Expected file path 'C:foo.txt' to be a relative path"
+    with pytest.raises(Exception, match=re.escape(msg)):
+        assert_relative_path(r"C:foo.txt", "file")
+
+    msg = r"Expected file path '\aa\foo.txt' to be a relative path"
+    with pytest.raises(Exception, match=re.escape(msg)):
+        assert_relative_path(r"\aa\foo.txt", "file")
+
+
 def test_all_normal_files_recurses(tmp_path):
     helpers.touch_files(
         tmp_path / "foo.txt",
@@ -71,6 +105,7 @@ def test_all_normal_files_recurses(tmp_path):
         tmp_path / "a" / "b" / "baz.txt",
         tmp_path / "a" / "b" / "c" / "quux.txt",
     )
+
     expected = {
         "foo.txt",
         os.path.join("a", "bar.txt"),

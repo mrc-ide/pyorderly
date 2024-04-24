@@ -10,6 +10,7 @@ from outpack.root import OutpackRoot, root_open
 class OrderlyCustomMetadata:
     def __init__(self):
         self.resources = []
+        self.shared_resources = {}
         self.artefacts = []
         self.description = None
 
