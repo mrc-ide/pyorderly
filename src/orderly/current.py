@@ -5,6 +5,7 @@ from typing import Optional
 
 from outpack.packet import Packet
 from outpack.root import OutpackRoot, root_open
+from outpack.search_options import SearchOptions
 
 
 class OrderlyCustomMetadata:
@@ -35,9 +36,11 @@ class OrderlyContext:
     id: Optional[str]
     # Special orderly custom metadata
     orderly: OrderlyCustomMetadata
+    # Options used when searching for dependencies
+    search_options: Optional[SearchOptions]
 
     @staticmethod
-    def from_packet(packet, path_src):
+    def from_packet(packet, path_src, search_options=None):
         return OrderlyContext(
             is_active=True,
             packet=packet,
@@ -48,6 +51,7 @@ class OrderlyContext:
             name=packet.name,
             id=packet.id,
             orderly=OrderlyCustomMetadata(),
+            search_options=search_options,
         )
 
     @staticmethod
@@ -63,6 +67,8 @@ class OrderlyContext:
             name=path.name,
             id=None,
             orderly=OrderlyCustomMetadata(),
+            # TODO: expose a way of configuring this
+            search_options=None,
         )
 
 
@@ -70,8 +76,8 @@ class ActiveOrderlyContext:
     _context = None
     _our_context = None
 
-    def __init__(self, packet, path_src):
-        self._our_context = OrderlyContext.from_packet(packet, path_src)
+    def __init__(self, *args, **kwargs):
+        self._our_context = OrderlyContext.from_packet(*args, **kwargs)
 
     def __enter__(self):
         ActiveOrderlyContext._context = self._our_context

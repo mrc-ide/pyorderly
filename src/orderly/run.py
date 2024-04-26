@@ -11,7 +11,9 @@ from outpack.root import root_open
 from outpack.util import all_normal_files, run_script
 
 
-def orderly_run(name, *, parameters=None, root=None, locate=True):
+def orderly_run(
+    name, *, parameters=None, search_options=None, root=None, locate=True
+):
     root = root_open(root, locate=locate)
 
     path_src, entrypoint = _validate_src_directory(name, root)
@@ -29,7 +31,7 @@ def orderly_run(name, *, parameters=None, root=None, locate=True):
         root, path_dest, name, id=packet_id, locate=False, parameters=envir
     )
     try:
-        with ActiveOrderlyContext(packet, path_src) as orderly:
+        with ActiveOrderlyContext(packet, path_src, search_options) as orderly:
             packet.mark_file_immutable(entrypoint)
             run_script(path_dest, entrypoint, envir)
     except Exception as error:

@@ -3,6 +3,7 @@ import os.path
 import shutil
 import stat
 from contextlib import contextmanager
+from errno import ENOENT
 from pathlib import Path
 
 from outpack.hash import Hash, hash_parse, hash_validate_file
@@ -22,7 +23,7 @@ class FileStore:
         src = self.filename(hash)
         if not os.path.exists(src):
             msg = f"Hash '{hash}' not found in store"
-            raise Exception(msg)
+            raise FileNotFoundError(ENOENT, msg)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         if not overwrite and os.path.exists(dst):
             msg = f"Failed to copy '{src}' to '{dst}', file already exists"

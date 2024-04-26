@@ -1,9 +1,10 @@
 import collections
 import shutil
+from pathlib import PurePath
 
 from outpack.config import Location, update_config
 from outpack.location_path import OutpackLocationPath
-from outpack.root import root_open
+from outpack.root import OutpackRoot, root_open
 from outpack.static import (
     LOCATION_LOCAL,
     LOCATION_ORPHAN,
@@ -36,6 +37,15 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
     config = root.config
     config.location[name] = loc
     update_config(config, root.path)
+
+
+def outpack_location_add_path(name, path, root=None, *, locate=True):
+    if isinstance(path, OutpackRoot):
+        path = str(path.path)
+    elif isinstance(path, PurePath):
+        path = str(path)
+
+    outpack_location_add(name, "path", {"path": path}, root=root, locate=locate)
 
 
 def outpack_location_remove(name, root=None, *, locate=True):

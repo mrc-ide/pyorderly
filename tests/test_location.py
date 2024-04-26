@@ -3,12 +3,13 @@ import pytest
 from outpack.location import (
     location_resolve_valid,
     outpack_location_add,
+    outpack_location_add_path,
     outpack_location_list,
     outpack_location_remove,
     outpack_location_rename,
 )
 
-from .helpers import create_temporary_root
+from .helpers import create_temporary_root, create_temporary_roots
 
 
 def test_no_locations_except_local_by_default(tmp_path):
@@ -18,19 +19,13 @@ def test_no_locations_except_local_by_default(tmp_path):
 
 
 def test_can_add_location(tmp_path):
-    root = {}
-    for name in ["a", "b", "c"]:
-        root[name] = create_temporary_root(tmp_path / name)
+    root = create_temporary_roots(tmp_path, ["a", "b", "c"])
 
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("b", root["b"], root=root["a"])
     locations = outpack_location_list(root["a"])
     assert set(locations) == {"local", "b"}
 
-    outpack_location_add(
-        "c", "path", {"path": str(root["c"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("c", root["c"], root=root["a"])
     locations = outpack_location_list(root["a"])
     assert set(locations) == {"local", "b", "c"}
 
@@ -40,24 +35,16 @@ def test_cant_add_location_with_reserved_name(tmp_path):
     upstream = create_temporary_root(tmp_path)
 
     with pytest.raises(Exception) as e:
-        outpack_location_add(
-            "local", "path", {"path": str(upstream.path)}, root=root
-        )
+        outpack_location_add_path("local", upstream, root=root)
     assert e.match("Cannot add a location with reserved name 'local'")
 
 
 def test_cant_add_location_with_existing_name(tmp_path):
-    root = {}
-    for name in ["a", "b", "c"]:
-        root[name] = create_temporary_root(tmp_path / name)
+    root = create_temporary_roots(tmp_path, ["a", "b", "c"])
 
-    outpack_location_add(
-        "upstream", "path", {"path": str(root["b"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("upstream", root["b"], root=root["a"])
     with pytest.raises(Exception) as e:
-        outpack_location_add(
-            "upstream", "path", {"path": str(root["c"].path)}, root=root["a"]
-        )
+        outpack_location_add_path("upstream", root["c"], root=root["a"])
     assert e.match("A location with name 'upstream' already exists")
     locations = outpack_location_list(root=root["a"])
     assert set(locations) == {"local", "upstream"}
@@ -70,25 +57,21 @@ def test_locations_must_be_paths(tmp_path):
 
     other = tmp_path / "other"
     with pytest.raises(Exception) as e:
-        outpack_location_add("other", "path", {"path": str(other)}, root=root)
+        outpack_location_add_path("other", other, root=root)
 
     assert e.match("Expected 'path' to be an existing directory")
 
     other.mkdir()
     with pytest.raises(Exception) as e:
-        outpack_location_add("other", "path", {"path": str(other)}, root=root)
+        outpack_location_add_path("other", other, root=root)
 
     assert e.match("Did not find existing outpack root in .*")
 
 
 def test_can_rename_a_location(tmp_path):
-    root = {}
-    for name in ["a", "b", "c"]:
-        root[name] = create_temporary_root(tmp_path / name)
+    root = create_temporary_roots(tmp_path, ["a", "b", "c"])
 
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("b", root["b"], root=root["a"])
 
     locations = outpack_location_list(root=root["a"])
     assert set(locations) == {"local", "b"}
@@ -100,16 +83,10 @@ def test_can_rename_a_location(tmp_path):
 
 
 def test_cant_rename_a_location_using_existent_name(tmp_path):
-    root = {}
-    for name in ["a", "b", "c"]:
-        root[name] = create_temporary_root(tmp_path / name)
+    root = create_temporary_roots(tmp_path, ["a", "b", "c"])
 
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["a"]
-    )
-    outpack_location_add(
-        "c", "path", {"path": str(root["c"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("b", root["b"], root=root["a"])
+    outpack_location_add_path("c", root["c"], root=root["a"])
 
     with pytest.raises(Exception) as e:
         outpack_location_rename("b", "c", root["a"])
@@ -142,16 +119,10 @@ def test_cant_rename_default_locations(tmp_path):
 
 
 def test_can_remove_a_location(tmp_path):
-    root = {}
-    for name in ["a", "b", "c"]:
-        root[name] = create_temporary_root(tmp_path / name)
+    root = create_temporary_roots(tmp_path, ["a", "b", "c"])
 
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["a"]
-    )
-    outpack_location_add(
-        "c", "path", {"path": str(root["c"].path)}, root=root["a"]
-    )
+    outpack_location_add_path("b", root["b"], root=root["a"])
+    outpack_location_add_path("c", root["c"], root=root["a"])
 
     locations = outpack_location_list(root=root["a"])
     assert set(locations) == {"local", "b", "c"}
@@ -213,13 +184,9 @@ def test_cant_add_wip_location_type(tmp_path):
 
 
 def test_can_resolve_locations(tmp_path):
-    root = {}
-    for name in ["dst", "a", "b", "c", "d"]:
-        root[name] = create_temporary_root(tmp_path / name)
-        if not name == "dst":
-            outpack_location_add(
-                name, "path", {"path": str(root[name].path)}, root=root["dst"]
-            )
+    root = create_temporary_roots(tmp_path, ["dst", "a", "b", "c", "d"])
+    for name in ["a", "b", "c", "d"]:
+        outpack_location_add_path(name, root[name], root=root["dst"])
 
     locations = location_resolve_valid(
         None,

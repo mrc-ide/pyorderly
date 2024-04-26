@@ -2,16 +2,16 @@ import shutil
 import time
 from pathlib import Path
 
+from outpack.copy_files import copy_files
 from outpack.hash import hash_file, hash_parse, hash_string, hash_validate_file
-from outpack.helpers import copy_files
 from outpack.ids import outpack_id, validate_outpack_id
+from outpack.location_pull import outpack_location_pull_packet
 from outpack.metadata import (
     MetadataCore,
     PacketDepends,
     PacketFile,
-    PacketLocation,
 )
-from outpack.root import root_open
+from outpack.root import mark_known, root_open
 from outpack.schema import outpack_schema_version, validate
 from outpack.search import as_query, search_unique
 from outpack.tools import git_info
@@ -49,7 +49,20 @@ class Packet:
         id = search_unique(
             query, options=search_options, root=self.root, this=self.parameters
         )
-        result = copy_files(id, files, self.path, root=self.root)
+
+        # We only need the whole packet if `require_complete_tree` is True.
+        # In other cases, `copy_files` can download individual files.
+        needs_pull = self.root.config.core.require_complete_tree and (
+            id not in self.root.index.unpacked()
+        )
+        if needs_pull:
+            outpack_location_pull_packet(
+                id, options=search_options, root=self.root
+            )
+
+        result = copy_files(
+            id, files, self.path, options=search_options, root=self.root
+        )
         for f in result.files.keys():
             self.mark_file_immutable(f)
 
@@ -144,12 +157,3 @@ def _check_immutable_files(files, immutable):
         if hash_parse(found[p]) != h:
             msg = f"File was changed after being added: {p}"
             raise Exception(msg)
-
-
-def mark_known(root, packet_id, location, hash, time):
-    dat = PacketLocation(packet_id, time, str(hash))
-    validate(dat.to_dict(), "outpack/location.json")
-    dest = root.path / ".outpack" / "location" / location / packet_id
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with open(dest, "w") as f:
-        f.write(dat.to_json(separators=(",", ":")))

@@ -11,21 +11,24 @@ from outpack.hash import hash_file
 from outpack.ids import outpack_id
 from outpack.location import (
     location_resolve_valid,
-    outpack_location_add,
+    outpack_location_add_path,
     outpack_location_list,
 )
 from outpack.location_pull import (
     PullPlanInfo,
     _find_all_dependencies,
-    _location_build_pull_plan,
+    location_build_pull_plan,
+    location_pull_files,
     outpack_location_pull_metadata,
     outpack_location_pull_packet,
 )
 from outpack.packet import Packet
+from outpack.search_options import SearchOptions
 from outpack.util import read_string
 
 from .helpers import (
     create_metadata_depends,
+    create_packet,
     create_random_packet,
     create_random_packet_chain,
     create_temporary_root,
@@ -44,12 +47,7 @@ def test_can_pull_metadata_from_a_file_base_location(tmp_path):
         tmp_path / "downstream", use_file_store=True
     )
 
-    outpack_location_add(
-        "upstream",
-        "path",
-        {"path": str(root_upstream.path)},
-        root=root_downstream,
-    )
+    outpack_location_add_path("upstream", root_upstream, root=root_downstream)
     assert outpack_location_list(root_downstream) == ["local", "upstream"]
 
     outpack_location_pull_metadata("upstream", root=root_downstream)
@@ -72,12 +70,7 @@ def test_can_pull_empty_metadata(tmp_path):
         tmp_path / "downstream", use_file_store=True
     )
 
-    outpack_location_add(
-        "upstream",
-        "path",
-        {"path": str(root_upstream.path)},
-        root=root_downstream,
-    )
+    outpack_location_add_path("upstream", root_upstream, root=root_downstream)
     outpack_location_pull_metadata("upstream", root=root_downstream)
 
     index = root_downstream.index.data
@@ -85,14 +78,13 @@ def test_can_pull_empty_metadata(tmp_path):
 
 
 def test_can_pull_metadata_from_subset_of_locations(tmp_path):
-    root = {"a": create_temporary_root(tmp_path / "a", use_file_store=True)}
+    root = create_temporary_roots(
+        tmp_path, ["a", "x", "y", "z"], use_file_store=True
+    )
 
     location_names = ["x", "y", "z"]
     for name in location_names:
-        root[name] = create_temporary_root(tmp_path / name, use_file_store=True)
-        outpack_location_add(
-            name, "path", {"path": str(root[name].path)}, root=root["a"]
-        )
+        outpack_location_add_path(name, root[name], root=root["a"])
 
     assert outpack_location_list(root["a"]) == ["local", "x", "y", "z"]
 
@@ -155,7 +147,7 @@ def test_noop_to_pull_metadata_from_no_locations(tmp_path):
 def test_handle_metadata_where_hash_does_not_match_reported(tmp_path):
     here = create_temporary_root(tmp_path / "here")
     there = create_temporary_root(tmp_path / "there")
-    outpack_location_add("server", "path", {"path": str(there.path)}, root=here)
+    outpack_location_add_path("server", there, root=here)
     packet_id = create_random_packet(there)
 
     path_metadata = there.path / ".outpack" / "metadata" / packet_id
@@ -185,12 +177,8 @@ def test_handle_metadata_where_two_locations_differ_in_hash_for_same_id(
     create_random_packet(root["a"], packet_id=packet_id)
     create_random_packet(root["b"], packet_id=packet_id)
 
-    outpack_location_add(
-        "a", "path", {"path": str(root["a"].path)}, root=root["us"]
-    )
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["us"]
-    )
+    outpack_location_add_path("a", root["a"], root=root["us"])
+    outpack_location_add_path("b", root["b"], root=root["us"])
 
     outpack_location_pull_metadata(location="a", root=root["us"])
 
@@ -214,18 +202,10 @@ def test_can_pull_metadata_through_chain_of_locations(tmp_path):
     # knowing directly about an earlier location
     # > a -> b -> c -> d
     # >       `-------/
-    outpack_location_add(
-        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
-    )
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["c"]
-    )
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["d"]
-    )
-    outpack_location_add(
-        "c", "path", {"path": str(root["c"].path)}, root=root["d"]
-    )
+    outpack_location_add_path("a", root["a"], root=root["b"])
+    outpack_location_add_path("b", root["b"], root=root["c"])
+    outpack_location_add_path("b", root["b"], root=root["d"])
+    outpack_location_add_path("c", root["c"], root=root["d"])
 
     # Create a packet and make sure it's in both b and c
     create_random_packet(root["a"])
@@ -337,12 +317,11 @@ def test_can_find_multiple_dependencies_at_once():
 
 
 def test_can_pull_packet_from_location_into_another_file_store(tmp_path):
-    root = create_temporary_roots(tmp_path, use_file_store=True)
+    root = create_temporary_roots(
+        tmp_path, add_location=True, use_file_store=True
+    )
 
     id = create_random_packet(root["src"])
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(id, root=root["dst"])
 
@@ -358,13 +337,10 @@ def test_can_pull_packet_from_location_into_another_file_store(tmp_path):
 
 def test_can_pull_packet_from_location_file_store_only(tmp_path):
     root = create_temporary_roots(
-        tmp_path, use_file_store=True, path_archive=None
+        tmp_path, add_location=True, use_file_store=True, path_archive=None
     )
 
     id = create_random_packet(root["src"])
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(id, root=root["dst"])
 
@@ -379,12 +355,11 @@ def test_can_pull_packet_from_location_file_store_only(tmp_path):
 
 
 def test_can_pull_packet_from_one_location_to_another_archive(tmp_path):
-    root = create_temporary_roots(tmp_path, use_file_store=False)
+    root = create_temporary_roots(
+        tmp_path, add_location=True, use_file_store=False
+    )
 
     id = create_random_packet(root["src"])
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(id, root=root["dst"])
 
@@ -396,7 +371,9 @@ def test_can_pull_packet_from_one_location_to_another_archive(tmp_path):
 
 
 def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
-    root = create_temporary_roots(tmp_path, use_file_store=False)
+    root = create_temporary_roots(
+        tmp_path, add_location=True, use_file_store=False
+    )
 
     tmp_dir = tmp_path / "new_dir"
     os.mkdir(tmp_dir)
@@ -410,9 +387,6 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
         p.end()
         ids[i] = p.id
 
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
 
     ## When I corrupt the file in the first ID by truncating it:
@@ -439,12 +413,9 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
 
 
 def test_do_not_unpack_packet_twice(tmp_path):
-    root = create_temporary_roots(tmp_path)
+    root = create_temporary_roots(tmp_path, add_location=True)
 
     id = create_random_packet(root["src"])
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
 
     assert outpack_location_pull_packet(id, root=root["dst"]) == [id]
@@ -452,11 +423,8 @@ def test_do_not_unpack_packet_twice(tmp_path):
 
 
 def test_sensible_error_if_packet_not_known(tmp_path):
-    root = create_temporary_roots(tmp_path)
+    root = create_temporary_roots(tmp_path, add_location=True)
     id = create_random_packet(root["src"])
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
 
     with pytest.raises(Exception) as e:
         outpack_location_pull_packet(id, root=root["dst"])
@@ -474,15 +442,11 @@ def test_error_if_dependent_packet_not_known(tmp_path):
     )
 
     ids = create_random_packet_chain(root["a"], 5)
-    outpack_location_add(
-        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
-    )
+    outpack_location_add_path("a", root["a"], root=root["b"])
     outpack_location_pull_metadata(root=root["b"])
     outpack_location_pull_packet(ids["e"], root=root["b"])
 
-    outpack_location_add(
-        "b", "path", {"path": str(root["b"].path)}, root=root["c"]
-    )
+    outpack_location_add_path("b", root["b"], root=root["c"])
     outpack_location_pull_metadata(root=root["c"])
 
     with pytest.raises(Exception) as e:
@@ -496,12 +460,9 @@ def test_error_if_dependent_packet_not_known(tmp_path):
 
 
 def test_can_pull_a_tree_recursively(tmp_path):
-    root = create_temporary_roots(tmp_path)
+    root = create_temporary_roots(tmp_path, add_location=True)
     ids = create_random_packet_chain(root["src"], 3)
 
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root["dst"]
-    )
     outpack_location_pull_metadata(root=root["dst"])
     pulled_packets = outpack_location_pull_packet(
         ids["c"], recursive=True, root=root["dst"]
@@ -523,25 +484,17 @@ def test_can_filter_locations(tmp_path):
     root = create_temporary_roots(tmp_path, location_names, use_file_store=True)
     for name in location_names:
         if name != "dst":
-            outpack_location_add(
-                name, "path", {"path": str(root[name].path)}, root=root["dst"]
-            )
+            outpack_location_add_path(name, root[name], root=root["dst"])
 
     ids_a = [create_random_packet(root["a"]) for _ in range(3)]
-    outpack_location_add(
-        "a", "path", {"path": str(root["a"].path)}, root=root["b"]
-    )
+    outpack_location_add_path("a", root["a"], root=root["b"])
     outpack_location_pull_metadata(root=root["b"])
     outpack_location_pull_packet(ids_a, root=root["b"])
 
     ids_b = ids_a + [create_random_packet(root["b"]) for _ in range(3)]
     ids_c = [create_random_packet(root["c"]) for _ in range(3)]
-    outpack_location_add(
-        "a", "path", {"path": str(root["a"].path)}, root=root["d"]
-    )
-    outpack_location_add(
-        "c", "path", {"path": str(root["c"].path)}, root=root["d"]
-    )
+    outpack_location_add_path("a", root["a"], root=root["d"])
+    outpack_location_add_path("c", root["c"], root=root["d"])
     outpack_location_pull_metadata(root=root["d"])
     outpack_location_pull_packet(ids_a, root=root["d"])
     outpack_location_pull_packet(ids_c, root=root["d"])
@@ -551,51 +504,89 @@ def test_can_filter_locations(tmp_path):
 
     ids = list(set(ids_a + ids_b + ids_c + ids_d))
 
-    def locs(location_names):
-        return location_resolve_valid(
-            location_names,
-            root["dst"],
-            include_local=False,
-            include_orphan=False,
-            allow_no_locations=False,
-        )
-
-    plan = _location_build_pull_plan(ids, None, None, root=root["dst"])
+    plan = location_build_pull_plan(
+        ids, None, recursive=False, root=root["dst"]
+    )
     locations = [file.location for file in plan.files]
     assert locations == rep(["a", "b", "c", "d"], 3)
 
     # Invert order, prefer "d"
-    plan = _location_build_pull_plan(
-        ids, locs(["d", "c", "b", "a"]), None, root=root["dst"]
+    plan = location_build_pull_plan(
+        ids, ["d", "c", "b", "a"], recursive=False, root=root["dst"]
     )
     locations = [file.location for file in plan.files]
     assert locations == rep(["d", "b"], [9, 3])
 
     # Drop redundant locations
-    plan = _location_build_pull_plan(
-        ids, locs(["b", "d"]), None, root=root["dst"]
+    plan = location_build_pull_plan(
+        ids, ["b", "d"], recursive=False, root=root["dst"]
     )
     locations = [file.location for file in plan.files]
     assert locations == rep(["b", "d"], 6)
 
     # Corner cases
-    plan = _location_build_pull_plan([ids_a[0]], None, None, root=root["dst"])
+    plan = location_build_pull_plan(
+        [ids_a[0]], None, recursive=False, root=root["dst"]
+    )
     locations = [file.location for file in plan.files]
     assert locations == ["a"]
 
-    plan = _location_build_pull_plan([], None, None, root=root["dst"])
+    plan = location_build_pull_plan([], None, recursive=False, root=root["dst"])
     assert plan.files == []
     assert plan.packets == {}
     assert plan.info == PullPlanInfo(0, 0, 0)
 
     # Failure to find packets
     with pytest.raises(Exception) as e:
-        _location_build_pull_plan(ids, ["a", "b", "c"], None, root=root["dst"])
+        location_build_pull_plan(
+            ids, ["a", "b", "c"], recursive=False, root=root["dst"]
+        )
     assert "Looked in locations 'a', 'b', 'c'" in e.value.args[0]
     assert (
         "Do you need to run 'outpack_location_pull_metadata()'?"
         in e.value.args[0]
     )
+
+
+def test_can_filter_files(tmp_path):
+    root = create_temporary_roots(tmp_path, add_location=True)
+
+    with create_packet(root["src"], "data") as p:
+        p.path.joinpath("a.txt").write_text("my data a")
+        p.path.joinpath("b.txt").write_text("my data b")
+
+    meta = root["src"].index.metadata(p.id)
+    a_hash = next(f.hash for f in meta.files if f.path == "a.txt")
+    b_hash = next(f.hash for f in meta.files if f.path == "b.txt")
+
+    outpack_location_pull_metadata(root=root["dst"])
+
+    plan = location_build_pull_plan(
+        [p.id],
+        None,
+        recursive=False,
+        files={p.id: []},
+        root=root["dst"],
+    )
+    assert len(plan.files) == 0
+
+    with location_pull_files(plan.files, root["dst"]) as store:
+        assert not store.exists(a_hash)
+        assert not store.exists(b_hash)
+
+    plan = location_build_pull_plan(
+        [p.id],
+        None,
+        recursive=False,
+        files={p.id: [a_hash]},
+        root=root["dst"],
+    )
+    assert len(plan.files) == 1
+    assert plan.files[0].path == "a.txt"
+
+    with location_pull_files(plan.files, root["dst"]) as store:
+        assert store.exists(a_hash)
+        assert not store.exists(b_hash)
 
 
 def test_nonrecursive_pulls_are_prevented_by_configuration(tmp_path):
@@ -622,9 +613,7 @@ def test_if_recursive_pulls_are_required_pulls_are_default_recursive(tmp_path):
     ids = create_random_packet_chain(root["src"], 3)
 
     for r in [root["shallow"], root["deep"]]:
-        outpack_location_add(
-            "src", "path", {"path": str(root["src"].path)}, root=r
-        )
+        outpack_location_add_path("src", root["src"], root=r)
         outpack_location_pull_metadata(root=r)
 
     outpack_location_pull_packet(ids["c"], recursive=None, root=root["shallow"])
@@ -634,30 +623,23 @@ def test_if_recursive_pulls_are_required_pulls_are_default_recursive(tmp_path):
     assert root["deep"].index.unpacked() == sorted(ids.values())
 
 
-## TODO: Uncomment when wired up with searching
-# def test_can_pull_packets_as_result_of_query(tmp_path):
-#     TODO
-# def test_pull_packet_errors_if_allow_remote_is_false(tmp_path):
-#     root = create_temporary_roots(tmp_path)
-#     id = create_random_packet(root["src"])
-#
-#     outpack_location_add("src", "path",
-#                          {"path": str(root["src"].path)},
-#                          root=root["dst"])
-#     outpack_location_pull_metadata(root=root["dst"])
-#
-#     with pytest.raises(Exception):
-#         outpack_location_pull_packet(None, options={"allow_remote" = False}, root=root["dst"])
-#     assert e.match("If specifying 'options', 'allow_remote' must be True")
+def test_pull_packet_errors_if_allow_remote_is_false(tmp_path):
+    root = create_temporary_roots(tmp_path, add_location=True)
+    id = create_random_packet(root["src"])
+
+    outpack_location_pull_metadata(root=root["dst"])
+
+    with pytest.raises(Exception, match="'allow_remote' must be True"):
+        options = SearchOptions(allow_remote=False)
+        outpack_location_pull_packet(id, options=options, root=root["dst"])
 
 
 def test_skip_files_in_file_store(tmp_path):
-    root = create_temporary_roots(tmp_path, use_file_store=True)
+    root = create_temporary_roots(
+        tmp_path, add_location=True, use_file_store=True
+    )
 
     ids = create_random_packet_chain(root["src"], 3)
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
 
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(ids["a"], root=root["dst"])
@@ -673,12 +655,11 @@ def test_skip_files_in_file_store(tmp_path):
 
 
 def test_skip_files_already_on_disk(tmp_path):
-    root = create_temporary_roots(tmp_path, use_file_store=False)
+    root = create_temporary_roots(
+        tmp_path, add_location=True, use_file_store=False
+    )
 
     ids = create_random_packet_chain(root["src"], 3)
-    outpack_location_add(
-        "src", "path", {"path": str(root["src"].path)}, root=root["dst"]
-    )
 
     outpack_location_pull_metadata(root=root["dst"])
     outpack_location_pull_packet(ids["a"], root=root["dst"])
