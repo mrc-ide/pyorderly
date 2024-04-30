@@ -132,11 +132,11 @@ def outpack_location_pull_packet(
         ids = [ids]
 
     if options is None:
-        options = SearchOptions(allow_remote=True)
+        actual_options = SearchOptions(allow_remote=True)
     else:
-        options = SearchOptions.create(options)
+        actual_options = SearchOptions.create(options)
 
-    if not options.allow_remote:
+    if not actual_options.allow_remote:
         msg = "'allow_remote' must be True"
         raise Exception(msg)
 
@@ -150,7 +150,7 @@ non-recursive pull, as this might leave an incomplete tree"""
         raise Exception(msg)
 
     plan = location_build_pull_plan(
-        ids, options.location, recursive=recursive, root=root
+        ids, actual_options.location, recursive=recursive, root=root
     )
 
     ## Warn people of extra pulls and skips
@@ -464,7 +464,7 @@ def _location_build_pull_plan_location(
 def _location_build_pull_plan_files(
     packet_ids: Set[str],
     locations: List[str],
-    files: Dict[str, str],
+    files: Dict[str, List[str]],
     root: OutpackRoot,
 ) -> List[PacketFileWithLocation]:
     metadata = root.index.all_metadata()
