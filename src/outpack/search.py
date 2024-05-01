@@ -1,10 +1,12 @@
 import os
 from dataclasses import dataclass
+from itertools import chain
 from typing import Any, Dict, Optional, Set, Union
 
 import outpack_query_parser as parser
 
 from outpack.ids import is_outpack_id
+from outpack.location_pull import outpack_location_pull_metadata
 from outpack.metadata import MetadataCore, Parameters
 from outpack.root import OutpackRoot, root_open
 from outpack.search_options import SearchOptions
@@ -58,11 +60,19 @@ class QueryIndex:
 
     def __init__(self, root, options):
         self.root = root
-        if options.allow_remote:
-            msg = "Can't use 'allow_remote' in search yet"
-            raise NotImplementedError(msg)
 
-        ids = root.index.unpacked()
+        locations = root.index.all_locations()
+        ids = set(
+            chain.from_iterable(
+                loc.keys()
+                for name, loc in locations.items()
+                if (options.location is None) or (name in options.location)
+            )
+        )
+
+        if not options.allow_remote:
+            ids.intersection_update(root.index.unpacked())
+
         self.index = {i: root.index.metadata(i) for i in ids}
         self.options = options
 
@@ -93,6 +103,10 @@ def search(
 
     root = root_open(root)
     query = as_query(query)
+
+    if options.pull_metadata:
+        outpack_location_pull_metadata(location=options.location, root=root)
+
     env = QueryEnv(root, options, this)
 
     return eval_query(query.node, env)

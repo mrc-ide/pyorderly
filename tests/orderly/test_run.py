@@ -9,6 +9,11 @@ from orderly.run import (
 )
 from pytest_unordered import unordered
 
+from outpack.location import outpack_location_add_path
+from outpack.location_pull import outpack_location_pull_metadata
+from outpack.metadata import PacketDepends, PacketDependsPath
+from outpack.search_options import SearchOptions
+
 from .. import helpers
 
 
@@ -49,11 +54,9 @@ def test_can_run_simple_example(tmp_path):
 def test_failed_reports_are_not_saved(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
 
-    with pytest.raises(Exception, match="Running orderly report failed!") as e:
+    with helpers.report_raises("Some error"):
         code = "raise Exception('Some error')"
         helpers.run_snippet("data", code, root)
-
-    assert str(e.value.__cause__) == "Some error"
 
     assert not (tmp_path / "archive" / "data").exists()
     assert len(root.index.unpacked()) == 0
@@ -448,3 +451,59 @@ with open("__pycache__/baz.txt", "w"): pass
     packet = tmp_path / "archive" / "report" / id
     assert (packet / "data").exists()
     assert not (packet / "__pycache__").exists()
+
+
+def test_run_can_fetch_files_from_location(tmp_path):
+    root = helpers.create_temporary_roots(tmp_path, add_location=True)
+
+    helpers.copy_examples(["data"], root["src"])
+    helpers.copy_examples(["depends"], root["dst"])
+
+    id1 = orderly_run("data", root=root["src"])
+
+    outpack_location_pull_metadata(root=root["dst"])
+
+    with helpers.report_raises("Failed to find packet for query"):
+        orderly_run("depends", root=root["dst"])
+
+    id2 = orderly_run(
+        "depends",
+        root=root["dst"],
+        search_options=SearchOptions(allow_remote=True),
+    )
+    meta = root["dst"].index.metadata(id2)
+    assert meta.depends == [
+        PacketDepends(
+            packet=id1,
+            query="latest",
+            files=[PacketDependsPath(here="input.txt", there="result.txt")],
+        )
+    ]
+
+    assert root["dst"].index.unpacked() == [id2]
+
+
+def test_run_pulls_packet_only_if_require_complete_tree(tmp_path):
+    root = {
+        "src": helpers.create_temporary_root(tmp_path / "src"),
+        "dst1": helpers.create_temporary_root(tmp_path / "dst1"),
+        "dst2": helpers.create_temporary_root(
+            tmp_path / "dst2", require_complete_tree=True
+        ),
+    }
+
+    outpack_location_add_path("src", root["src"], root=root["dst1"])
+    outpack_location_add_path("src", root["src"], root=root["dst2"])
+
+    helpers.copy_examples(["data"], root["src"])
+    helpers.copy_examples(["depends"], root["dst1"])
+    helpers.copy_examples(["depends"], root["dst2"])
+
+    options = SearchOptions(allow_remote=True, pull_metadata=True)
+
+    id1 = orderly_run("data", root=root["src"])
+    id2 = orderly_run("depends", root=root["dst1"], search_options=options)
+    id3 = orderly_run("depends", root=root["dst2"], search_options=options)
+
+    assert root["dst1"].index.unpacked() == [id2]
+    assert root["dst2"].index.unpacked() == [id1, id3]

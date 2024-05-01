@@ -1,5 +1,6 @@
 import os
 import shutil
+from errno import ENOENT
 from pathlib import Path
 from typing import Optional, Union
 
@@ -7,6 +8,8 @@ from outpack.config import read_config
 from outpack.filestore import FileStore
 from outpack.hash import hash_file, hash_parse
 from outpack.index import Index
+from outpack.metadata import PacketLocation
+from outpack.schema import validate
 from outpack.util import find_file_descend
 
 
@@ -26,7 +29,11 @@ class OutpackRoot:
         dest = Path(dest)
         here_full = dest / here
         if self.config.core.use_file_store:
-            self.files.get(hash, here_full, overwrite=False)
+            try:
+                self.files.get(hash, here_full, overwrite=False)
+            except FileNotFoundError as e:
+                e.filename = there
+                raise
         else:
             # consider starting from the case most likely to contain
             # this hash, since we already know that it's 'id' unless
@@ -35,7 +42,7 @@ class OutpackRoot:
             src = find_file_by_hash(self, hash)
             if not src:
                 msg = f"File not found in archive, or corrupt: {there}"
-                raise Exception(msg)
+                raise FileNotFoundError(ENOENT, msg, there)
             here_full.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, here_full)
         return here
@@ -83,3 +90,12 @@ def find_file_by_hash(root, hash):
                     )
                     print(msg)
     return None
+
+
+def mark_known(root, packet_id, location, hash, time):
+    dat = PacketLocation(packet_id, time, str(hash))
+    validate(dat.to_dict(), "outpack/location.json")
+    dest = root.path / ".outpack" / "location" / location / packet_id
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with open(dest, "w") as f:
+        f.write(dat.to_json(separators=(",", ":")))

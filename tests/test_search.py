@@ -2,10 +2,16 @@ from pathlib import Path
 
 import pytest
 
+from outpack.location import outpack_location_add_path
+from outpack.location_pull import outpack_location_pull_metadata
 from outpack.search import Query, search, search_unique
 from outpack.search_options import SearchOptions
 
-from .helpers import create_random_packet, create_temporary_root
+from .helpers import (
+    create_random_packet,
+    create_temporary_root,
+    create_temporary_roots,
+)
 
 
 def test_can_do_simple_search(tmp_path):
@@ -218,9 +224,52 @@ def test_search_environment_not_supported(tmp_path):
         search("name == environment:x", root=root)
 
 
-def test_can_not_pass_remote_options(tmp_path):
-    root = create_temporary_root(tmp_path)
+def test_search_returns_remote_packets(tmp_path):
+    root = create_temporary_roots(tmp_path, add_location=True)
+    id = create_random_packet(root["src"])
+    outpack_location_pull_metadata(root=root["dst"])
 
-    with pytest.raises(NotImplementedError, match="Can't use 'allow_remote'"):
-        options = SearchOptions(allow_remote=True)
-        search("latest", root=root, options=options)
+    def do_search(**kwargs):
+        options = SearchOptions(**kwargs)
+        return search("name == 'data'", root=root["dst"], options=options)
+
+    assert do_search() == set()
+    assert do_search(allow_remote=True) == {id}
+
+
+def test_search_can_pull_automatically(tmp_path):
+    root = create_temporary_roots(tmp_path, add_location=True)
+    id = create_random_packet(root["src"])
+
+    def do_search(**kwargs):
+        options = SearchOptions(**kwargs)
+        return search("name == 'data'", root=root["dst"], options=options)
+
+    assert do_search(allow_remote=True) == set()
+    assert do_search(allow_remote=True, pull_metadata=True) == {id}
+
+    # At this point the packet has been pulled as is available even without the
+    # flag.
+    assert do_search(allow_remote=True) == {id}
+
+
+def test_search_can_filter_by_location(tmp_path):
+    root = create_temporary_roots(tmp_path, names=["x", "y", "dst"])
+    remote_id = create_random_packet(root["x"])
+    local_id = create_random_packet(root["dst"])
+
+    outpack_location_add_path("x", root["x"], root=root["dst"])
+    outpack_location_add_path("y", root["y"], root=root["dst"])
+    outpack_location_pull_metadata(root=root["dst"])
+
+    def do_search(**kwargs):
+        options = SearchOptions(**kwargs)
+        return search("name == 'data'", root=root["dst"], options=options)
+
+    assert do_search(allow_remote=True, location=["local"]) == {local_id}
+    assert do_search(allow_remote=True, location=["x"]) == {remote_id}
+    assert do_search(allow_remote=True, location=["y"]) == set()
+    assert do_search(allow_remote=True, location=["x", "local"]) == {
+        local_id,
+        remote_id,
+    }

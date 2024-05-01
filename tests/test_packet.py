@@ -254,7 +254,8 @@ def test_can_depend_on_a_packet(tmp_path):
         result = p.use_dependency(query, {"here.txt": "data.txt"})
         assert result.id == id
         assert result.name == "data"
-        assert result.files == {"here.txt": "data.txt"}
+        assert len(result.files) == 1
+        assert result.files["here.txt"].path == "data.txt"
 
     meta = root.index.metadata(p.id)
     assert len(meta.depends) == 1

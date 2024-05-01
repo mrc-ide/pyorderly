@@ -15,8 +15,7 @@ from outpack.metadata import (
     PacketFileWithLocation,
     PacketLocation,
 )
-from outpack.packet import mark_known
-from outpack.root import OutpackRoot, find_file_by_hash, root_open
+from outpack.root import OutpackRoot, find_file_by_hash, mark_known, root_open
 from outpack.search_options import SearchOptions
 from outpack.static import LOCATION_LOCAL
 from outpack.util import format_list, partition, pl
@@ -122,16 +121,37 @@ def _mark_all_known(driver, root, location_name):
 def outpack_location_pull_packet(
     ids: Union[str, List[str]],
     *,
-    options=None,
-    recursive=None,
-    root=None,
-    locate=True,
+    options: Optional[SearchOptions] = None,
+    recursive: Optional[bool] = None,
+    root: Union[str, OutpackRoot, None] = None,
+    locate: bool = True,
 ):
     root = root_open(root, locate=locate)
-    options = SearchOptions(options)
+
     if isinstance(ids, str):
         ids = [ids]
-    plan = _location_build_pull_plan(ids, options.location, recursive, root)
+
+    if options is None:
+        actual_options = SearchOptions(allow_remote=True)
+    else:
+        actual_options = SearchOptions.create(options)
+
+    if not actual_options.allow_remote:
+        msg = "'allow_remote' must be True"
+        raise Exception(msg)
+
+    if recursive is None:
+        recursive = root.config.core.require_complete_tree
+
+    if root.config.core.require_complete_tree and not recursive:
+        msg = """'recursive' must be True (or None) with your configuration
+Because 'core.require_complete_tree' is true, we can't do a \
+non-recursive pull, as this might leave an incomplete tree"""
+        raise Exception(msg)
+
+    plan = location_build_pull_plan(
+        ids, actual_options.location, recursive=recursive, root=root
+    )
 
     ## Warn people of extra pulls and skips
     if plan.info.n_extra > 0:
@@ -147,7 +167,7 @@ def outpack_location_pull_packet(
             f"unpacked"
         )
 
-    with _location_pull_files(plan.files, root) as store:
+    with location_pull_files(plan.files, root) as store:
         use_archive = root.config.core.path_archive is not None
         n_packets = len(plan.packets)
         time_start = time.time()
@@ -189,7 +209,7 @@ def outpack_location_pull_packet(
 # (e.g., users having edited files that we rely on, or editing them
 # after we hash them the first time).
 @contextmanager
-def _location_pull_files(
+def location_pull_files(
     files: List[PacketFileWithLocation], root: OutpackRoot
 ) -> Generator[FileStore, None, None]:
     store = root.files
@@ -304,17 +324,49 @@ class PullPlanPackets:
     fetch: Set[str]
 
 
-def _location_build_pull_plan(
+def location_build_pull_plan(
     packet_ids: List[str],
     locations: Optional[List[str]],
-    recursive: Optional[bool],
+    *,
+    files: Optional[Dict[str, List[str]]] = None,
+    recursive: bool,
     root: OutpackRoot,
 ) -> LocationPullPlan:
+    """
+    Create a plan to pull packets from one or more locations.
+
+    Parameters
+    ----------
+    packet_ids :
+        A list of packet IDs to pull.
+
+    locations :
+        A list of location names from which to pull packets. If None, all
+        configured locations will be considered.
+
+    files :
+        A filter restricting, for each packet, which file hashes to pull. This
+        allows a subset of a packet's files to pulled. If None, or if a packet
+        ID is mising from the dictionary, the entire packet is pulled.
+
+    recursive :
+        If True, all transitive dependencies of the requested packets will be
+        pulled as well.
+
+    root :
+        The root object used to determine the location configuration and which
+        files are missing and need pulling.
+    """
+    if files is None:
+        files = {}
+
     packets = _location_build_pull_plan_packets(
         packet_ids, root, recursive=recursive
     )
     locations = _location_build_pull_plan_location(packets, locations, root)
-    files = _location_build_pull_plan_files(packets.fetch, locations, root)
+    files_location = _location_build_pull_plan_files(
+        packets.fetch, locations, files, root
+    )
     fetch = _location_build_packet_locations(packets.fetch, locations, root)
 
     info = PullPlanInfo(
@@ -323,21 +375,13 @@ def _location_build_pull_plan(
         n_total=len(packets.full),
     )
 
-    return LocationPullPlan(packets=fetch, files=files, info=info)
+    return LocationPullPlan(packets=fetch, files=files_location, info=info)
 
 
 def _location_build_pull_plan_packets(
     packet_ids: List[str], root: OutpackRoot, *, recursive: Optional[bool]
 ) -> PullPlanPackets:
     requested = packet_ids
-    if recursive is None:
-        recursive = root.config.core.require_complete_tree
-    if root.config.core.require_complete_tree and not recursive:
-        msg = """'recursive' must be True (or None) with your configuration
-Because 'core.require_complete_tree' is true, we can't do a \
-non-recursive pull, as this might leave an incomplete tree"""
-        raise Exception(msg)
-
     index = root.index
     if recursive:
         full = _find_all_dependencies(packet_ids, index.all_metadata())
@@ -418,18 +462,12 @@ def _location_build_pull_plan_location(
 
 
 def _location_build_pull_plan_files(
-    packet_ids: Set[str], locations: List[str], root: OutpackRoot
+    packet_ids: Set[str],
+    locations: List[str],
+    files: Dict[str, List[str]],
+    root: OutpackRoot,
 ) -> List[PacketFileWithLocation]:
     metadata = root.index.all_metadata()
-    file_hashes = {
-        file.hash
-        for packet_id in packet_ids
-        for file in metadata[packet_id].files
-    }
-    n_files = len(file_hashes)
-
-    if n_files == 0:
-        return []
 
     # Find first location within the set which contains each packet
     # We've already checked earlier that the file is in at least 1
@@ -441,6 +479,8 @@ def _location_build_pull_plan_files(
         packets_in_location = location_packets.intersection(packet_ids)
         for packet_id in packets_in_location:
             for file in metadata[packet_id].files:
+                if packet_id in files and file.hash not in files[packet_id]:
+                    continue
                 file_with_location = PacketFileWithLocation.from_packet_file(
                     file, location_name
                 )

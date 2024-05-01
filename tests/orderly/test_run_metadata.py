@@ -185,10 +185,12 @@ def test_can_use_dependency(tmp_path):
     with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             files = {"input.txt": "result.txt"}
-            res = orderly.dependency(None, "latest", files)
-    assert res.id == id1
-    assert res.name == "data"
-    assert res.files == files
+            result = orderly.dependency(None, "latest", files)
+
+    assert result.id == id1
+    assert result.name == "data"
+    assert len(result.files) == 1
+    assert result.files["input.txt"].path == "result.txt"
     assert src.joinpath("input.txt").exists()
 
 
@@ -211,8 +213,10 @@ def test_can_use_dependency_without_packet(tmp_path):
     src = tmp_path / "src" / "depends"
     with transient_working_directory(src):
         files = {"input.txt": "result.txt"}
-        res = orderly.dependency(None, "latest", files)
-    assert res.id == id1
-    assert res.name == "data"
-    assert res.files == files
+        result = orderly.dependency(None, "latest", files)
+
+    assert result.id == id1
+    assert result.name == "data"
+    assert len(result.files) == 1
+    assert result.files["input.txt"].path == "result.txt"
     assert src.joinpath("input.txt").exists()

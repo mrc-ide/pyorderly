@@ -8,9 +8,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List, Optional
 
+import pytest
 from orderly.run import orderly_run
 
 from outpack.init import outpack_init
+from outpack.location import outpack_location_add_path
 from outpack.metadata import MetadataCore, PacketDepends
 from outpack.packet import Packet
 from outpack.root import root_open
@@ -31,9 +33,9 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
         p = Packet(root, src, name, id=packet_id, parameters=parameters)
         try:
             yield p
-        except BaseException as e:
-            print("Error in packet creation: ", e)
+        except BaseException:
             p.end(insert=False)
+            raise
         else:
             p.end(insert=True)
 
@@ -75,12 +77,19 @@ def create_temporary_root(path, **kwargs):
     return root_open(path, locate=False)
 
 
-def create_temporary_roots(path, location_names=None, **kwargs):
-    if location_names is None:
-        location_names = ["src", "dst"]
+def create_temporary_roots(
+    path, names=("src", "dst"), *, add_location=False, **kwargs
+):
     root = {}
-    for name in location_names:
+    for name in names:
         root[name] = create_temporary_root(path / name, **kwargs)
+
+    if add_location:
+        for i in range(len(names) - 1):
+            outpack_location_add_path(
+                names[i], root[names[0]], root=root[names[i + 1]]
+            )
+
     return root
 
 
@@ -201,3 +210,11 @@ with open({output.name!r}, "wb") as f:
         id = orderly_run(name, root=root, **kwargs)
         result = pickle.load(output)  # noqa: S301
         return id, result
+
+
+@contextmanager
+def report_raises(match):
+    with pytest.raises(Exception, match="Running orderly report failed!") as e:
+        yield
+    excinfo = pytest.ExceptionInfo.from_exception(e.value.__cause__)
+    excinfo.match(match)
