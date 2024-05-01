@@ -80,7 +80,12 @@ Functions
 
       
 
-   .. py:method:: from_packet(packet, path_src)
+   .. py:attribute:: search_options
+      :type: Optional[outpack.search_options.SearchOptions]
+
+      
+
+   .. py:method:: from_packet(packet, path_src, search_options=None)
       :staticmethod:
 
 
@@ -89,7 +94,7 @@ Functions
 
 
 
-.. py:class:: ActiveOrderlyContext(packet, path_src)
+.. py:class:: ActiveOrderlyContext(*args, **kwargs)
 
 
    .. py:method:: __enter__()

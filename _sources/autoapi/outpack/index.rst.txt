@@ -21,9 +21,9 @@ Submodules
 
    __about__/index.rst
    config/index.rst
+   copy_files/index.rst
    filestore/index.rst
    hash/index.rst
-   helpers/index.rst
    ids/index.rst
    index/index.rst
    init/index.rst

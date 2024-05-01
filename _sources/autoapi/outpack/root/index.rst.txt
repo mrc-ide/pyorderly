@@ -23,6 +23,7 @@ Functions
 
    outpack.root.root_open
    outpack.root.find_file_by_hash
+   outpack.root.mark_known
 
 
 
@@ -42,5 +43,8 @@ Functions
 
 
 .. py:function:: find_file_by_hash(root, hash)
+
+
+.. py:function:: mark_known(root, packet_id, location, hash, time)
 
 

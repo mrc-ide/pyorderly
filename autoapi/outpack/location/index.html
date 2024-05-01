@@ -58,9 +58,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../__about__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.__about__</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../config/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../copy_files/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.copy_files</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../filestore/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.filestore</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../hash/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.hash</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../helpers/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.helpers</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ids/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.ids</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../index/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../init/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.init</span></code></a></li>
@@ -124,13 +124,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#outpack.location.outpack_location_add" title="outpack.location.outpack_location_add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_add</span></code></a>(name, type, args[, root, locate])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location.outpack_location_remove" title="outpack.location.outpack_location_remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_remove</span></code></a>(name[, root, locate])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location.outpack_location_add_path" title="outpack.location.outpack_location_add_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_add_path</span></code></a>(name, path[, root, locate])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location.outpack_location_rename" title="outpack.location.outpack_location_rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_rename</span></code></a>(old, new[, root, locate])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location.outpack_location_remove" title="outpack.location.outpack_location_remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_remove</span></code></a>(name[, root, locate])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location.location_resolve_valid" title="outpack.location.location_resolve_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">location_resolve_valid</span></code></a>(location, root, *, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location.outpack_location_rename" title="outpack.location.outpack_location_rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_rename</span></code></a>(old, new[, root, locate])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location.location_resolve_valid" title="outpack.location.location_resolve_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">location_resolve_valid</span></code></a>(location, root, *, ...)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -143,6 +146,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.location.outpack_location_add">
 <span class="sig-prename descclassname"><span class="pre">outpack.location.</span></span><span class="sig-name descname"><span class="pre">outpack_location_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location.outpack_location_add" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="outpack.location.outpack_location_add_path">
+<span class="sig-prename descclassname"><span class="pre">outpack.location.</span></span><span class="sig-name descname"><span class="pre">outpack_location_add_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location.outpack_location_add_path" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

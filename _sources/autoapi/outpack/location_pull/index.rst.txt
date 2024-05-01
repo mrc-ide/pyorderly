@@ -25,13 +25,18 @@ Functions
 
    outpack.location_pull.outpack_location_pull_metadata
    outpack.location_pull.outpack_location_pull_packet
+   outpack.location_pull.location_pull_files
+   outpack.location_pull.location_build_pull_plan
 
 
 
 .. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
 
 
-.. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options=None, recursive=None, root=None, locate=True)
+.. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options: Optional[outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, outpack.root.OutpackRoot, None] = None, locate: bool = True)
+
+
+.. py:function:: location_pull_files(files: List[outpack.metadata.PacketFileWithLocation], root: outpack.root.OutpackRoot) -> Generator[outpack.filestore.FileStore, None, None]
 
 
 .. py:class:: PullPlanInfo
@@ -94,5 +99,32 @@ Functions
       :type: Set[str]
 
       
+
+
+.. py:function:: location_build_pull_plan(packet_ids: List[str], locations: Optional[List[str]], *, files: Optional[Dict[str, List[str]]] = None, recursive: bool, root: outpack.root.OutpackRoot) -> LocationPullPlan
+
+   Create a plan to pull packets from one or more locations.
+
+   Parameters
+   ----------
+   packet_ids :
+       A list of packet IDs to pull.
+
+   locations :
+       A list of location names from which to pull packets. If None, all
+       configured locations will be considered.
+
+   files :
+       A filter restricting, for each packet, which file hashes to pull. This
+       allows a subset of a packet's files to pulled. If None, or if a packet
+       ID is mising from the dictionary, the entire packet is pulled.
+
+   recursive :
+       If True, all transitive dependencies of the requested packets will be
+       pulled as well.
+
+   root :
+       The root object used to determine the location configuration and which
+       files are missing and need pulling.
 
 

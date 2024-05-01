@@ -16,14 +16,6 @@ Classes
 
 
 
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   outpack.packet.mark_known
-
-
 
 .. py:class:: Packet(root, path, name, *, parameters=None, id=None, locate=True)
 
@@ -39,8 +31,5 @@ Functions
 
    .. py:method:: end(*, insert=True)
 
-
-
-.. py:function:: mark_known(root, packet_id, location, hash, time)
 
 

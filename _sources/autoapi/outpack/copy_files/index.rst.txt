@@ -1,0 +1,53 @@
+:py:mod:`outpack.copy_files`
+============================
+
+.. py:module:: outpack.copy_files
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.copy_files.Plan
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.copy_files.copy_files
+   outpack.copy_files.copy_files_from_remote
+
+
+
+.. py:class:: Plan
+
+
+   .. py:attribute:: id
+      :type: str
+
+      
+
+   .. py:attribute:: name
+      :type: str
+
+      
+
+   .. py:attribute:: files
+      :type: Dict[str, outpack.metadata.PacketFile]
+
+      
+
+
+.. py:function:: copy_files(id: str, files: Dict[str, str], dest: pathlib.Path, options: outpack.search_options.SearchOptions, root: outpack.root.OutpackRoot) -> Plan
+
+
+.. py:function:: copy_files_from_remote(id: str, files: Dict[str, outpack.metadata.PacketFile], dest: pathlib.Path, options: outpack.search_options.SearchOptions, root: outpack.root.OutpackRoot)
+
+

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>outpack.tools &mdash; outpack-py 0.0.1 documentation</title>
+  <title>outpack.copy_files &mdash; outpack-py 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -25,8 +25,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="outpack.util" href="../util/index.html" />
-    <link rel="prev" title="outpack.static" href="../static/index.html" /> 
+    <link rel="next" title="outpack.filestore" href="../filestore/index.html" />
+    <link rel="prev" title="outpack.config" href="../config/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -58,7 +58,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../__about__/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.__about__</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../config/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.config</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../copy_files/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.copy_files</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.copy_files</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../filestore/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.filestore</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../hash/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.hash</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ids/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.ids</span></code></a></li>
@@ -73,7 +73,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../search/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_options</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../static/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.static</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.util</span></code></a></li>
 </ul>
 </li>
@@ -100,9 +100,9 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
           <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
-      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.copy_files</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/autoapi/outpack/tools/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/autoapi/outpack/copy_files/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -110,15 +110,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-outpack.tools">
-<span id="outpack-tools"></span><h1><a class="reference internal" href="#module-outpack.tools" title="outpack.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.tools</span></code></a><a class="headerlink" href="#module-outpack.tools" title="Link to this heading"></a></h1>
+  <section id="module-outpack.copy_files">
+<span id="outpack-copy-files"></span><h1><a class="reference internal" href="#module-outpack.copy_files" title="outpack.copy_files"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.copy_files</span></code></a><a class="headerlink" href="#module-outpack.copy_files" title="Link to this heading"></a></h1>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <section id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.tools.GitInfo" title="outpack.tools.GitInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GitInfo</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.copy_files.Plan" title="outpack.copy_files.Plan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plan</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -128,34 +128,42 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.tools.git_info" title="outpack.tools.git_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">git_info</span></code></a>(path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.copy_files.copy_files" title="outpack.copy_files.copy_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_files</span></code></a>(→ Plan)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.copy_files.copy_files_from_remote" title="outpack.copy_files.copy_files_from_remote"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_files_from_remote</span></code></a>(id, files, dest, options, root)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
-<dt class="sig sig-object py" id="outpack.tools.GitInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.tools.</span></span><span class="sig-name descname"><span class="pre">GitInfo</span></span><a class="headerlink" href="#outpack.tools.GitInfo" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.copy_files.Plan">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.copy_files.</span></span><span class="sig-name descname"><span class="pre">Plan</span></span><a class="headerlink" href="#outpack.copy_files.Plan" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
-<dt class="sig sig-object py" id="outpack.tools.GitInfo.sha">
-<span class="sig-name descname"><span class="pre">sha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.tools.GitInfo.sha" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.copy_files.Plan.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.copy_files.Plan.id" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="outpack.tools.GitInfo.branch">
-<span class="sig-name descname"><span class="pre">branch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.tools.GitInfo.branch" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.copy_files.Plan.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#outpack.copy_files.Plan.name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="outpack.tools.GitInfo.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.tools.GitInfo.url" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.copy_files.Plan.files">
+<span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">outpack.metadata.PacketFile</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#outpack.copy_files.Plan.files" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="outpack.tools.git_info">
-<span class="sig-prename descclassname"><span class="pre">outpack.tools.</span></span><span class="sig-name descname"><span class="pre">git_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.tools.git_info" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.copy_files.copy_files">
+<span class="sig-prename descclassname"><span class="pre">outpack.copy_files.</span></span><span class="sig-name descname"><span class="pre">copy_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../search_options/index.html#outpack.search_options.SearchOptions" title="outpack.search_options.SearchOptions"><span class="pre">outpack.search_options.SearchOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../root/index.html#outpack.root.OutpackRoot" title="outpack.root.OutpackRoot"><span class="pre">outpack.root.OutpackRoot</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#outpack.copy_files.Plan" title="outpack.copy_files.Plan"><span class="pre">Plan</span></a></span></span><a class="headerlink" href="#outpack.copy_files.copy_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="outpack.copy_files.copy_files_from_remote">
+<span class="sig-prename descclassname"><span class="pre">outpack.copy_files.</span></span><span class="sig-name descname"><span class="pre">copy_files_from_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">outpack.metadata.PacketFile</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../search_options/index.html#outpack.search_options.SearchOptions" title="outpack.search_options.SearchOptions"><span class="pre">outpack.search_options.SearchOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../root/index.html#outpack.root.OutpackRoot" title="outpack.root.OutpackRoot"><span class="pre">outpack.root.OutpackRoot</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.copy_files.copy_files_from_remote" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -166,8 +174,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../static/index.html" class="btn btn-neutral float-left" title="outpack.static" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../util/index.html" class="btn btn-neutral float-right" title="outpack.util" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../config/index.html" class="btn btn-neutral float-left" title="outpack.config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../filestore/index.html" class="btn btn-neutral float-right" title="outpack.filestore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
