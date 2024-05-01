@@ -345,9 +345,9 @@ def location_build_pull_plan(
         configured locations will be considered.
 
     files :
-        A filter restricting, for each packet, which files to pull. This allows
-        a subset of a packet's files to pulled. If None, or if a packet ID is
-        mising from the dictionary, the entire packet is pulled.
+        A filter restricting, for each packet, which file hashes to pull. This
+        allows a subset of a packet's files to pulled. If None, or if a packet
+        ID is mising from the dictionary, the entire packet is pulled.
 
     recursive :
         If True, all transitive dependencies of the requested packets will be
