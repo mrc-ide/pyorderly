@@ -15,7 +15,7 @@ from outpack.root import mark_known, root_open
 from outpack.schema import outpack_schema_version, validate
 from outpack.search import as_query, search_unique
 from outpack.tools import git_info
-from outpack.util import all_normal_files
+from outpack.util import all_normal_files, as_posix_path
 
 
 # TODO: most of these fields should be private.
@@ -91,7 +91,7 @@ class Packet:
         self.time["end"] = time.time()
         hash_algorithm = self.root.config.core.hash_algorithm
         self.files = [
-            PacketFile.from_file(self.path, f, hash_algorithm)
+            PacketFile.from_file(self.path, as_posix_path(f), hash_algorithm)
             for f in all_normal_files(self.path)
         ]
         _check_immutable_files(self.files, self.immutable)

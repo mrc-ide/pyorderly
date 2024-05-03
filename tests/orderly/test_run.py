@@ -144,7 +144,7 @@ with open("data/numbers.txt") as f:
     meta = root.index.metadata(id)
     assert {f.path for f in meta.files} == {
         "report.py",
-        os.path.join("data", "numbers.txt"),
+        "data/numbers.txt",
     }
     assert meta.custom["orderly"]["role"] == [
         {"path": "report.py", "role": "orderly"},
@@ -169,11 +169,11 @@ with open("data/numbers.txt") as f:
     meta = root.index.metadata(id)
     assert {f.path for f in meta.files} == {
         "report.py",
-        os.path.join("data", "numbers.txt"),
+        "data/numbers.txt",
     }
     assert meta.custom["orderly"]["role"] == [
         {"path": "report.py", "role": "orderly"},
-        {"path": os.path.join("data", "numbers.txt"), "role": "resource"},
+        {"path": "data/numbers.txt", "role": "resource"},
     ]
 
 
@@ -328,12 +328,6 @@ def test_can_use_shared_resources(tmp_path):
 
 
 def test_can_use_shared_resources_directory(tmp_path):
-    # TODO(mrc-5241): This test uses os.path.join to form nested paths, which
-    # on windows will use a backslash as the path separator. This matches the
-    # implementation, but we probably want to revisit this at some point, and
-    # normalize all paths in the metadata to use posix-style forward slashes.
-    from os.path import join
-
     root = helpers.create_temporary_root(tmp_path)
     helpers.copy_examples("shared_dir", root)
     helpers.copy_shared_resources("data", root)
@@ -344,8 +338,8 @@ def test_can_use_shared_resources_directory(tmp_path):
     assert {el.path for el in meta.files} == {
         "shared_dir.py",
         "result.txt",
-        join("shared_data", "numbers.txt"),
-        join("shared_data", "weights.txt"),
+        "shared_data/numbers.txt",
+        "shared_data/weights.txt",
     }
     assert meta.custom == {
         "orderly": {
@@ -353,11 +347,11 @@ def test_can_use_shared_resources_directory(tmp_path):
                 [
                     {"path": "shared_dir.py", "role": "orderly"},
                     {
-                        "path": join("shared_data", "weights.txt"),
+                        "path": "shared_data/weights.txt",
                         "role": "shared",
                     },
                     {
-                        "path": join("shared_data", "numbers.txt"),
+                        "path": "shared_data/numbers.txt",
                         "role": "shared",
                     },
                 ]
@@ -365,8 +359,8 @@ def test_can_use_shared_resources_directory(tmp_path):
             "artefacts": [],
             "description": {"display": None, "long": None, "custom": None},
             "shared": {
-                join("shared_data", "numbers.txt"): join("data", "numbers.txt"),
-                join("shared_data", "weights.txt"): join("data", "weights.txt"),
+                "shared_data/numbers.txt": "data/numbers.txt",
+                "shared_data/weights.txt": "data/weights.txt",
             },
         }
     }
@@ -478,9 +472,8 @@ with open("__pycache__/baz.txt", "w"): pass
     assert {f.path for f in meta.files} == {
         "report.py",
         "foo.txt",
-        os.path.join("data", "bar.txt"),
+        "data/bar.txt",
     }
-
     packet = tmp_path / "archive" / "report" / id
     assert (packet / "data").exists()
     assert not (packet / "__pycache__").exists()

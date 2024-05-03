@@ -4,8 +4,8 @@ import tempfile
 import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
-from pathlib import Path
-from typing import Dict, List, Optional, Union
+from pathlib import Path, PurePath
+from typing import Dict, List, Optional, Union, overload
 
 
 def find_file_descend(filename, path):
@@ -190,3 +190,30 @@ def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
             os.unlink(f.name)
         except OSError:
             pass
+
+
+@overload
+def as_posix_path(paths: str) -> str: ...
+
+
+@overload
+def as_posix_path(paths: List[str]) -> List[str]: ...
+
+
+@overload
+def as_posix_path(paths: Dict[str, str]) -> Dict[str, str]: ...
+
+
+def as_posix_path(paths):
+    """
+    Convert a native path into a posix path.
+
+    This is used when exporting paths into packet metadata, ensuring the
+    produced packets are portable across platforms.
+    """
+    if isinstance(paths, dict):
+        return {as_posix_path(k): as_posix_path(v) for (k, v) in paths.items()}
+    elif isinstance(paths, list):
+        return [as_posix_path(v) for v in paths]
+    else:
+        return PurePath(paths).as_posix()

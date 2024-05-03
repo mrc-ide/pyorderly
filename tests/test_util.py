@@ -6,6 +6,7 @@ import pytest
 
 from outpack.util import (
     all_normal_files,
+    as_posix_path,
     assert_file_exists,
     assert_relative_path,
     expand_dirs,
@@ -213,3 +214,22 @@ def test_openable_temporary_file():
 
         assert f1.read() == "Hello"
     assert not os.path.exists(f1.name)
+
+
+def test_as_posix_path():
+    from os.path import join
+
+    input = join("foo", "bar", "baz")
+    assert as_posix_path(input) == "foo/bar/baz"
+
+    input = [join("hello", "world"), join("foo", "bar", "baz")]
+    assert as_posix_path(input) == ["hello/world", "foo/bar/baz"]
+
+    input = {
+        join("here", "aaa"): join("there", "bbb"),
+        join("foo", "bar"): join("baz", "qux"),
+    }
+    assert as_posix_path(input) == {
+        "here/aaa": "there/bbb",
+        "foo/bar": "baz/qux",
+    }
