@@ -1,0 +1,54 @@
+:py:mod:`outpack.sandbox`
+=========================
+
+.. py:module:: outpack.sandbox
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.sandbox.run_in_sandbox
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.sandbox.result
+
+
+.. py:function:: run_in_sandbox(target, args=(), cwd=None, syspath=None)
+
+   Run a function as a separate process.
+
+   The function, its arguments and return value must be picklable.
+
+   Parameters
+   ----------
+   target:
+       The function to run in the subprocess. This function must be accessible
+       by name from the top level of a module in order to be pickled.
+   args:
+       The arguments to be passed to the function
+   cwd:
+       The working directory in which the subprocess runs. If None, it inherits
+       the current process' working directory.
+   syspath:
+       A list of paths to be added to the child process' Python search path.
+       This is used when the target function's module is not globally
+       available.
+
+
+.. py:data:: result
+   :value: (True,)
+
+   
+

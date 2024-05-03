@@ -18,7 +18,6 @@ Functions
    outpack.util.time_to_num
    outpack.util.num_to_time
    outpack.util.all_normal_files
-   outpack.util.run_script
    outpack.util.transient_working_directory
    outpack.util.assert_file_exists
    outpack.util.assert_relative_path
@@ -47,9 +46,6 @@ Functions
 
 
 .. py:function:: all_normal_files(path)
-
-
-.. py:function:: run_script(wd, path, init_globals)
 
 
 .. py:function:: transient_working_directory(path)

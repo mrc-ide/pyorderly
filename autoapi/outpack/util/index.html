@@ -70,6 +70,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../metadata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../packet/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.packet</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sandbox/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.sandbox</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_options</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../static/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.static</span></code></a></li>
@@ -133,43 +134,40 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.all_normal_files" title="outpack.util.all_normal_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_normal_files</span></code></a>(path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.run_script" title="outpack.util.run_script"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_script</span></code></a>(wd, path, init_globals)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.transient_working_directory" title="outpack.util.transient_working_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transient_working_directory</span></code></a>(path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.transient_working_directory" title="outpack.util.transient_working_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transient_working_directory</span></code></a>(path)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.assert_file_exists" title="outpack.util.assert_file_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_file_exists</span></code></a>(path, *[, workdir, name])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.assert_file_exists" title="outpack.util.assert_file_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_file_exists</span></code></a>(path, *[, workdir, name])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.assert_relative_path" title="outpack.util.assert_relative_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_relative_path</span></code></a>(path, name)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.assert_relative_path" title="outpack.util.assert_relative_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assert_relative_path</span></code></a>(path, name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.expand_dirs" title="outpack.util.expand_dirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dirs</span></code></a>(paths, *[, workdir])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.expand_dirs" title="outpack.util.expand_dirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_dirs</span></code></a>(paths, *[, workdir])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.match_value" title="outpack.util.match_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_value</span></code></a>(arg, choices, name)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.match_value" title="outpack.util.match_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_value</span></code></a>(arg, choices, name)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.relative_path_array" title="outpack.util.relative_path_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path_array</span></code></a>(→ List[str])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.relative_path_array" title="outpack.util.relative_path_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path_array</span></code></a>(→ List[str])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.relative_path_mapping" title="outpack.util.relative_path_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path_mapping</span></code></a>(→ Dict[str, str])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.relative_path_mapping" title="outpack.util.relative_path_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_path_mapping</span></code></a>(→ Dict[str, str])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.read_string" title="outpack.util.read_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_string</span></code></a>(path)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.read_string" title="outpack.util.read_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_string</span></code></a>(path)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.format_list" title="outpack.util.format_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_list</span></code></a>(x)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.format_list" title="outpack.util.format_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_list</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.pl" title="outpack.util.pl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pl</span></code></a>(x, singular[, plural])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.pl" title="outpack.util.pl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pl</span></code></a>(x, singular[, plural])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.partition" title="outpack.util.partition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition</span></code></a>(pred, iterable)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.partition" title="outpack.util.partition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition</span></code></a>(pred, iterable)</p></td>
 <td><p>Partition entries into false entries and true entries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.util.openable_temporary_file" title="outpack.util.openable_temporary_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">openable_temporary_file</span></code></a>(*[, mode, dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.util.openable_temporary_file" title="outpack.util.openable_temporary_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">openable_temporary_file</span></code></a>(*[, mode, dir])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -197,11 +195,6 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.util.all_normal_files">
 <span class="sig-prename descclassname"><span class="pre">outpack.util.</span></span><span class="sig-name descname"><span class="pre">all_normal_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.util.all_normal_files" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="outpack.util.run_script">
-<span class="sig-prename descclassname"><span class="pre">outpack.util.</span></span><span class="sig-name descname"><span class="pre">run_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_globals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.util.run_script" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

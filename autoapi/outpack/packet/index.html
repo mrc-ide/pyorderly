@@ -70,6 +70,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../metadata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.packet</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sandbox/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.sandbox</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../search_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.search_options</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../static/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.static</span></code></a></li>
@@ -123,6 +124,16 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.packet.insert_packet" title="outpack.packet.insert_packet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert_packet</span></code></a>(root, path, meta)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py class">
 <dt class="sig sig-object py" id="outpack.packet.Packet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">Packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet" title="Link to this definition"></a></dt>
@@ -143,10 +154,15 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="outpack.packet.Packet.end">
-<span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet.end" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">succesful</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.Packet.end" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="outpack.packet.insert_packet">
+<span class="sig-prename descclassname"><span class="pre">outpack.packet.</span></span><span class="sig-name descname"><span class="pre">insert_packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.packet.insert_packet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 </section>

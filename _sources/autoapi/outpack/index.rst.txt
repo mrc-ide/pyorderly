@@ -33,6 +33,7 @@ Submodules
    metadata/index.rst
    packet/index.rst
    root/index.rst
+   sandbox/index.rst
    search/index.rst
    search_options/index.rst
    static/index.rst

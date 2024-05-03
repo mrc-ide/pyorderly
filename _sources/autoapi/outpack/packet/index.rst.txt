@@ -16,6 +16,14 @@ Classes
 
 
 
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.packet.insert_packet
+
+
 
 .. py:class:: Packet(root, path, name, *, parameters=None, id=None, locate=True)
 
@@ -29,7 +37,10 @@ Classes
    .. py:method:: add_custom_metadata(key, value)
 
 
-   .. py:method:: end(*, insert=True)
+   .. py:method:: end(*, succesful=True)
 
+
+
+.. py:function:: insert_packet(root, path, meta)
 
 
