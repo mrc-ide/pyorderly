@@ -10,15 +10,10 @@ from .helpers import create_packet, create_random_packet, create_temporary_root
 
 def test_can_add_simple_packet(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
 
-    src.mkdir(parents=True, exist_ok=True)
-    with src.joinpath("a").open("w") as f:
-        f.write("hello")
-
-    p = Packet(root, src, "data")
-    p.end()
+    with create_packet(root, "data") as p:
+        p.path.joinpath("a").write_text("hello")
 
     assert isinstance(p.id, str)
     assert p.name == "data"
@@ -37,17 +32,13 @@ def test_can_add_simple_packet(tmp_path):
 
 def test_can_add_packet_to_store(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root, use_file_store=True, path_archive=None)
 
-    src.mkdir(parents=True, exist_ok=True)
-    with src.joinpath("a").open("w") as f:
-        f.write("hello")
-    with src.joinpath("b").open("w") as f:
-        f.write("goodbye")
-
-    p = Packet(root, src, "data")
-    p.end()
+    with create_packet(root, "data") as p:
+        with p.path.joinpath("a").open("w") as f:
+            f.write("hello")
+        with p.path.joinpath("b").open("w") as f:
+            f.write("goodbye")
 
     assert len(p.files) == 2
 
@@ -63,6 +54,7 @@ def test_cant_end_packet_twice(tmp_path):
     src = tmp_path / "src"
     outpack_init(root, use_file_store=True, path_archive=None)
     src.mkdir(parents=True, exist_ok=True)
+
     p = Packet(root, src, "data")
     p.end()
     with pytest.raises(Exception, match="Packet '.+' already ended"):
@@ -75,31 +67,22 @@ def test_can_cancel_packet(tmp_path):
     outpack_init(root)
 
     src.mkdir(parents=True, exist_ok=True)
-    with src.joinpath("a").open("w") as f:
-        f.write("hello")
 
     p = Packet(root, src, "data")
-    p.end(insert=False)
+    p.end(succesful=False)
 
-    r = root_open(root)
-    assert len(r.index.unpacked()) == 0
-    assert src.joinpath("outpack.json").exists()
+    assert p.path.joinpath("outpack.json").exists()
 
 
 def test_can_insert_a_packet_into_existing_root(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
 
-    src.mkdir(parents=True, exist_ok=True)
-    with src.joinpath("a").open("w") as f:
-        f.write("hello")
+    with create_packet(root, "data") as p1:
+        p1.path.joinpath("b").write_text("hello")
 
-    p1 = Packet(root, src, "data")
-    p1.end()
-
-    p2 = Packet(root, src, "data")
-    p2.end()
+    with create_packet(root, "data") as p2:
+        p2.path.joinpath("w").write_text("hello")
 
     r = root_open(root)
     assert r.index.unpacked() == sorted([p1.id, p2.id])
@@ -107,48 +90,46 @@ def test_can_insert_a_packet_into_existing_root(tmp_path):
 
 def test_can_add_custom_metadata(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
-    src.mkdir(parents=True, exist_ok=True)
-    p = Packet(root, src, "data")
     d = {"a": 1, "b": 2}
-    assert list(p.custom.keys()) == []
-    p.add_custom_metadata("key", d)
-    assert list(p.custom.keys()) == ["key"]
-    assert p.custom["key"] == d
-    p.end()
+
+    with create_packet(root, "data") as p:
+        assert list(p.custom.keys()) == []
+
+        p.add_custom_metadata("key", d)
+        assert list(p.custom.keys()) == ["key"]
+        assert p.custom["key"] == d
+
     r = root_open(root)
-    assert p.metadata.custom == {"key": d}
-    assert r.index.metadata(p.id) == p.metadata
+    assert r.index.metadata(p.id).custom["key"] == d
 
 
 def test_error_raised_if_same_custom_data_readded(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
-    src.mkdir(parents=True, exist_ok=True)
-    p = Packet(root, src, "data")
-    d = {"a": 1, "b": 2}
-    p.add_custom_metadata("myapp", d)
-    s = "metadata for 'myapp' has already been added for this packet"
-    with pytest.raises(Exception, match=s):
+
+    with create_packet(root, "data") as p:
+        d = {"a": 1, "b": 2}
         p.add_custom_metadata("myapp", d)
+
+        s = "metadata for 'myapp' has already been added for this packet"
+        with pytest.raises(Exception, match=s):
+            p.add_custom_metadata("myapp", d)
 
 
 def test_can_mark_files_as_immutable(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
-    src.mkdir(parents=True, exist_ok=True)
-    p1 = Packet(root, src, "data")
-    with open(src / "data.csv", "w") as f:
-        f.write("a,b\n1,2\n3,4\n")
-    p1.mark_file_immutable("data.csv")
-    p1.end()
+
+    with create_packet(root, "data") as p:
+        with open(p.path / "data.csv", "w") as f:
+            f.write("a,b\n1,2\n3,4\n")
+        p.mark_file_immutable("data.csv")
+
     r = root_open(root)
-    assert r.index.unpacked() == [p1.id]
-    assert len(p1.metadata.files) == 1
-    assert p1.metadata.files[0].path == "data.csv"
+    assert r.index.unpacked() == [p.id]
+    assert len(p.metadata.files) == 1
+    assert p.metadata.files[0].path == "data.csv"
 
 
 def test_can_validate_immutable_files_on_end(tmp_path):
@@ -164,22 +145,18 @@ def test_can_validate_immutable_files_on_end(tmp_path):
     assert len(p.metadata.files) == 1
 
 
-def test_can_detect_deletion_of_immutable_file(tmp_path):
+def test_can_detect_changes_to_immutable_files(tmp_path):
     root = tmp_path / "root"
-    src = tmp_path / "src"
     outpack_init(root)
-    src.mkdir(parents=True, exist_ok=True)
-    p1 = Packet(root, src, "data")
-    with open(src / "data.csv", "w") as f:
-        f.write("a,b\n1,2\n3,4\n")
-    p1.mark_file_immutable("data.csv")
-    with open(src / "data.csv", "w") as f:
-        f.write("a,b\n1,2\n3,4\n5,6\n")
+
     with pytest.raises(
         Exception,
         match="File was changed after being added: data.csv",
     ):
-        p1.end()
+        with create_packet(root, "data") as p:
+            p.path.joinpath("data.csv").write_text("a,b\n1,2\n3,4\n")
+            p.mark_file_immutable("data.csv")
+            p.path.joinpath("data.csv").write_text("a,b\n1,2\n3,4\n5,6\n")
 
 
 def test_readding_files_rehashes_them(tmp_path):

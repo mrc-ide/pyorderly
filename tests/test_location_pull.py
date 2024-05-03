@@ -22,7 +22,6 @@ from outpack.location_pull import (
     outpack_location_pull_metadata,
     outpack_location_pull_packet,
 )
-from outpack.packet import Packet
 from outpack.search_options import SearchOptions
 from outpack.util import read_string
 
@@ -375,17 +374,12 @@ def test_detect_and_avoid_modified_files_in_source_repository(tmp_path):
         tmp_path, add_location=True, use_file_store=False
     )
 
-    tmp_dir = tmp_path / "new_dir"
-    os.mkdir(tmp_dir)
-    with open(tmp_dir / "a.txt", "w") as f:
-        f.writelines("my data a")
-    with open(tmp_dir / "b.txt", "w") as f:
-        f.writelines("my data b")
-    ids = [None] * 2
-    for i in range(len(ids)):
-        p = Packet(root["src"], tmp_dir, "data")
-        p.end()
-        ids[i] = p.id
+    ids = []
+    for _ in range(2):
+        with create_packet(root["src"], "data") as p:
+            (p.path / "a.txt").write_text("my data a")
+            (p.path / "b.txt").write_text("my data b")
+        ids.append(p.id)
 
     outpack_location_pull_metadata(root=root["dst"])
 

@@ -14,10 +14,10 @@ from outpack.util import (
     iso_time_str,
     match_value,
     num_to_time,
+    openable_temporary_file,
     partition,
     pl,
     read_string,
-    run_script,
     time_to_num,
 )
 
@@ -170,17 +170,6 @@ def test_read_string(tmp_path):
     assert read_string(path) == "  this is my first  line\t  this is the second"
 
 
-def test_can_inject_data_into_run(tmp_path):
-    lines = ["with open('result.txt', 'w') as f:\n  f.write(str(a))\n"]
-    path = tmp_path / "script.py"
-    with open(path, "w") as f:
-        f.writelines(lines)
-    run_script(tmp_path, "script.py", {"a": "hello"})
-    assert tmp_path.joinpath("result.txt").exists()
-    with open(tmp_path.joinpath("result.txt")) as f:
-        assert f.read() == "hello"
-
-
 def test_can_format_list():
     assert format_list(["one", "two"]) == "'one', 'two'"
     assert format_list(["one"]) == "'one'"
@@ -207,3 +196,20 @@ def test_can_partition():
     true_list, false_list = partition(lambda x: "z" in x, test_list)
     assert true_list == []
     assert false_list == test_list
+
+
+def test_openable_temporary_file():
+    with openable_temporary_file(mode="w") as f1:
+        f1.write("Hello")
+        f1.close()
+
+        with open(f1.name) as f2:
+            assert f2.read() == "Hello"
+    assert not os.path.exists(f1.name)
+
+    with openable_temporary_file(mode="r") as f1:
+        with open(f1.name, "w") as f2:
+            f2.write("Hello")
+
+        assert f1.read() == "Hello"
+    assert not os.path.exists(f1.name)

@@ -30,7 +30,8 @@ dependencies = [
   "jsonschema",
   "pygit2",
   "outpack-query-parser",
-  "humanize"
+  "humanize",
+  "tblib"
 ]
 
 [project.urls]
@@ -213,4 +214,8 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "outpack_query_parser"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tblib"
 ignore_missing_imports = true

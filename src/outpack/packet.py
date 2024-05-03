@@ -84,7 +84,7 @@ class Packet:
             raise Exception(msg)
         self.custom[key] = value
 
-    def end(self, *, insert=True):
+    def end(self, *, succesful=True):
         if self.metadata:
             msg = f"Packet '{id}' already ended"
             raise Exception(msg)
@@ -96,11 +96,14 @@ class Packet:
         ]
         _check_immutable_files(self.files, self.immutable)
         self.metadata = self._build_metadata()
+
         validate(self.metadata.to_dict(), "outpack/metadata.json")
-        if insert:
-            _insert(self.root, self.path, self.metadata)
-        else:
-            _cancel(self.root, self.path, self.metadata)
+        if not succesful:
+            self.path.joinpath("outpack.json").write_text(
+                self.metadata.to_json()
+            )
+
+        return self.metadata
 
     def _build_metadata(self):
         return MetadataCore(
@@ -116,7 +119,7 @@ class Packet:
         )
 
 
-def _insert(root, path, meta):
+def insert_packet(root, path, meta):
     # check that we have not already inserted this packet; in R we
     # look to see if it's unpacked but actually the issue is if it is
     # present as metadata at all.
@@ -139,11 +142,6 @@ def _insert(root, path, meta):
         f.write(json)
 
     mark_known(root, meta.id, "local", hash_meta, time.time())
-
-
-def _cancel(_root, path, meta):
-    with path.joinpath("outpack.json").open("w") as f:
-        f.write(meta.to_json())
 
 
 def _check_immutable_files(files, immutable):

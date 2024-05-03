@@ -1,14 +1,17 @@
+import runpy
 import shutil
 from pathlib import Path
 from typing import Tuple
 
 from orderly.core import Description
-from orderly.current import ActiveOrderlyContext
+from orderly.current import ActiveOrderlyContext, OrderlyCustomMetadata
 from orderly.read import orderly_read
 from outpack.ids import outpack_id
-from outpack.packet import Packet
+from outpack.metadata import MetadataCore
+from outpack.packet import Packet, insert_packet
 from outpack.root import root_open
-from outpack.util import all_normal_files, run_script
+from outpack.sandbox import run_in_sandbox
+from outpack.util import all_normal_files
 
 
 def orderly_run(
@@ -19,7 +22,7 @@ def orderly_run(
     path_src, entrypoint = _validate_src_directory(name, root)
 
     dat = orderly_read(path_src / entrypoint)
-    envir = _validate_parameters(parameters, dat["parameters"])
+    parameters = _validate_parameters(parameters, dat["parameters"])
 
     packet_id = outpack_id()
     path_dest = root.path / "draft" / name / packet_id
@@ -27,15 +30,73 @@ def orderly_run(
 
     _copy_resources_implicit(path_src, path_dest)
 
-    packet = Packet(
-        root, path_dest, name, id=packet_id, locate=False, parameters=envir
+    metadata = run_in_sandbox(
+        _packet_builder,
+        args=(
+            root.path,
+            packet_id,
+            name,
+            path_dest,
+            path_src,
+            entrypoint,
+            parameters,
+            search_options,
+        ),
+        cwd=path_dest,
     )
+
+    insert_packet(root, path_dest, metadata)
+
+    # This is intentionally not in a `try-finally` block. If creating the
+    # packet fails and an exception was raised, we want to keep the packet in
+    # the drafts directory for the user to examine.
+    shutil.rmtree(path_dest)
+
+    return packet_id
+
+
+def _packet_builder(
+    root, id, name, path, path_src, entrypoint, parameters, search_options
+) -> MetadataCore:
+    root = root_open(root, locate=False)
+    packet = Packet(
+        root,
+        path,
+        name,
+        id=id,
+        locate=False,
+        parameters=parameters,
+    )
+
+    packet.mark_file_immutable(entrypoint)
+
+    try:
+        orderly = _run_report_script(
+            packet, path, path_src, entrypoint, parameters, search_options
+        )
+        _check_artefacts(orderly, path)
+    except:
+        packet.end(succesful=False)
+        raise
+
+    packet.add_custom_metadata("orderly", _custom_metadata(entrypoint, orderly))
+    return packet.end()
+
+
+def _run_report_script(
+    packet, path, path_src, entrypoint, parameters, search_options
+) -> OrderlyCustomMetadata:
     try:
         with ActiveOrderlyContext(packet, path_src, search_options) as orderly:
-            packet.mark_file_immutable(entrypoint)
-            run_script(path_dest, entrypoint, envir)
+            # Calling runpy with the full path to the script gives us better
+            # tracebacks
+            runpy.run_path(
+                str(path / entrypoint),
+                init_globals=parameters,
+                run_name="__main__",
+            )
+
     except Exception as error:
-        _orderly_cleanup_failure(packet)
         # This is pretty barebones for now; we will need to do some
         # work to make sure that we retain enough contextual errors
         # for the user to see that the report failed, and that it
@@ -43,12 +104,7 @@ def orderly_run(
         msg = "Running orderly report failed!"
         raise Exception(msg) from error
 
-    try:
-        _orderly_cleanup_success(packet, entrypoint, orderly)
-    except Exception:
-        _orderly_cleanup_failure(packet)
-        raise
-    return packet_id
+    return orderly
 
 
 def _validate_src_directory(name, root) -> Tuple[Path, str]:
@@ -105,22 +161,6 @@ def _copy_resources_implicit(src, dest):
         shutil.copy2(src / p, p_dest)
 
 
-def _orderly_cleanup_success(packet, entrypoint, orderly):
-    missing = set()
-    for artefact in orderly.artefacts:
-        for path in artefact.files:
-            if not packet.path.joinpath(path).exists():
-                missing.add(path)
-    if missing:
-        missing = ", ".join(f"'{x}'" for x in sorted(missing))
-        msg = f"Script did not produce the expected artefacts: {missing}"
-        raise Exception(msg)
-    # check files (either strict or relaxed) -- but we can't do that yet
-    packet.add_custom_metadata("orderly", _custom_metadata(entrypoint, orderly))
-    packet.end(insert=True)
-    shutil.rmtree(packet.path)
-
-
 def _custom_metadata(entrypoint, orderly):
     role = [{"path": entrypoint, "role": "orderly"}]
     for p in orderly.resources:
@@ -136,5 +176,13 @@ def _custom_metadata(entrypoint, orderly):
     }
 
 
-def _orderly_cleanup_failure(packet):
-    packet.end(insert=False)
+def _check_artefacts(metadata, path):
+    missing = set()
+    for artefact in metadata.artefacts:
+        for file in artefact.files:
+            if not path.joinpath(file).exists():
+                missing.add(file)
+    if missing:
+        missing = ", ".join(f"'{x}'" for x in sorted(missing))
+        msg = f"Script did not produce the expected artefacts: {missing}"
+        raise Exception(msg)

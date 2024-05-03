@@ -372,6 +372,39 @@ def test_can_use_shared_resources_directory(tmp_path):
     }
 
 
+def test_can_import_module_in_report(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["imports"], root)
+
+    id = orderly_run("imports", root=root)
+
+    desc = root.index.metadata(id).custom["orderly"]["description"]["display"]
+    assert desc == "Hello from module"
+
+
+def test_imported_modules_are_not_persisted(tmp_path):
+    root = helpers.create_temporary_root(tmp_path)
+    helpers.copy_examples(["imports"], root)
+
+    id1 = orderly_run("imports", root=root)
+
+    with open(tmp_path / "src" / "imports" / "helpers.py", "w") as f:
+        f.writelines(
+            """
+def get_description():
+    return "Description has been changed"
+"""
+        )
+
+    id2 = orderly_run("imports", root=root)
+
+    desc1 = root.index.metadata(id1).custom["orderly"]["description"]["display"]
+    assert desc1 == "Hello from module"
+
+    desc2 = root.index.metadata(id2).custom["orderly"]["description"]["display"]
+    assert desc2 == "Description has been changed"
+
+
 def test_can_validate_parameters():
     assert _validate_parameters({}, {}) == {}
     assert _validate_parameters(None, {}) == {}
