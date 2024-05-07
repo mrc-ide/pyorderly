@@ -1,4 +1,5 @@
 from orderly.core import (
+    Parameters,
     artefact,
     dependency,
     description,
@@ -14,4 +15,5 @@ __all__ = [
     "parameters",
     "resource",
     "shared_resource",
+    "Parameters",
 ]

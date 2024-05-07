@@ -2,6 +2,7 @@ import os.path
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Dict, List, Union
 
 from dataclasses_json import dataclass_json
@@ -32,7 +33,24 @@ class Description:
         return Description(None, None, None)
 
 
-def parameters(**kwargs):
+class Parameters(SimpleNamespace):
+    """
+    A container for parameters used in a report.
+
+    An instance of this class is returned by the `orderly.parameters` function.
+    Individual parameters can be accessed as fields of the object.
+
+    Example:
+
+        >>> params = orderly.parameters(p=1)
+        >>> params.p
+        1
+    """
+
+    pass
+
+
+def parameters(**kwargs) -> Parameters:
     """Declare parameters used in a report.
 
     Parameters
@@ -50,14 +68,14 @@ def parameters(**kwargs):
     if ctx.is_active:
         # We don't need to apply defaults from kwargs as the packet runner
         # already did so.
-        return ctx.parameters
+        return Parameters(**ctx.parameters)
     else:
         missing = [k for k, v in kwargs.items() if v is None]
         if missing:
             msg = f"No value was specified for {pl(missing, 'parameter')} {', '.join(missing)}."
             raise Exception(msg)
 
-        return kwargs
+        return Parameters(**kwargs)
 
 
 def resource(files):

@@ -231,7 +231,7 @@ def test_can_use_parameters(tmp_path):
     with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             params = orderly.parameters(x=None, y=None)
-            assert params == {"x": 1, "y": "foo"}
+            assert params == orderly.Parameters(x=1, y="foo")
 
 
 def test_can_use_parameters_without_packet(tmp_path):
@@ -241,7 +241,7 @@ def test_can_use_parameters_without_packet(tmp_path):
 
     with transient_working_directory(src):
         p = orderly.parameters(x=1, y="foo")
-        assert p == {"x": 1, "y": "foo"}
+        assert p == orderly.Parameters(x=1, y="foo")
 
         with pytest.raises(
             Exception, match="No value was specified for parameter x."
