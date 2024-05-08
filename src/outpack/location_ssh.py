@@ -130,7 +130,7 @@ class OutpackLocationSSH(LocationDriver):
 
         for packet in ids:
             with self._sftp.open(str(path / packet)) as f:
-                result[packet] = f.read().decode("ascii").strip()
+                result[packet] = f.read().decode("utf-8").strip()
 
         return result
 
