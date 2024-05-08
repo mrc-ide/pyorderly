@@ -55,8 +55,10 @@ def root_open(
         return path
 
     if path is None:
-        path = os.getcwd()
-    path = Path(path)
+        path = Path.cwd()
+    else:
+        path = Path(path).absolute()
+
     if not path.is_dir():
         msg = "Expected 'path' to be an existing directory"
         raise Exception(msg)

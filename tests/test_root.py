@@ -114,3 +114,16 @@ def test_can_export_files_from_root_using_archive(tmp_path):
     res = r.export_file(id, "data.txt", "result.txt", dest)
     assert res == "result.txt"
     assert (dest / "result.txt").exists()
+
+
+def test_root_path_is_absolute(tmp_path):
+    helpers.create_temporary_root(tmp_path / "foo")
+    (tmp_path / "bar").mkdir()
+
+    with transient_working_directory(tmp_path / "foo"):
+        r = root_open(None)
+        assert r.path.is_absolute()
+
+    with transient_working_directory(tmp_path / "bar"):
+        r = root_open("../foo")
+        assert r.path.is_absolute()
