@@ -13,6 +13,7 @@ from outpack.location import outpack_location_add_path
 from outpack.location_pull import outpack_location_pull_metadata
 from outpack.metadata import PacketDepends, PacketDependsPath
 from outpack.search_options import SearchOptions
+from outpack.util import transient_working_directory
 
 from .. import helpers
 
@@ -533,3 +534,13 @@ def test_run_pulls_packet_only_if_require_complete_tree(tmp_path):
 
     assert root["dst1"].index.unpacked() == [id2]
     assert root["dst2"].index.unpacked() == [id1, id3]
+
+
+def test_can_run_with_relative_path_root(tmp_path):
+    root = helpers.create_temporary_root(tmp_path / "foo")
+    helpers.copy_examples("data", root)
+
+    (tmp_path / "bar").mkdir()
+    with transient_working_directory(tmp_path / "bar"):
+        id = orderly_run("data", root="../foo")
+        assert (tmp_path / "foo" / "archive" / "data" / id).exists()
