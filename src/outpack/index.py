@@ -46,14 +46,10 @@ class Index:
         return self.refresh().data.location
 
     def location(self, name) -> Dict[str, PacketLocation]:
-        return self.refresh().data.location[name]
+        return self.refresh().data.location.get(name, {})
 
     def packets_in_location(self, name) -> List[str]:
-        try:
-            packets = list(self.location(name).keys())
-        except KeyError:
-            packets = []
-        return packets
+        return list(self.location(name).keys())
 
     def unpacked(self) -> List[str]:
         return self.refresh().data.unpacked

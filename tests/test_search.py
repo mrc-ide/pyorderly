@@ -255,7 +255,8 @@ def test_search_can_pull_automatically(tmp_path):
 
 def test_search_can_filter_by_location(tmp_path):
     root = create_temporary_roots(tmp_path, names=["x", "y", "dst"])
-    remote_id = create_random_packet(root["x"])
+    x_id = create_random_packet(root["x"])
+    y_id = create_random_packet(root["y"])
     local_id = create_random_packet(root["dst"])
 
     outpack_location_add_path("x", root["x"], root=root["dst"])
@@ -267,9 +268,30 @@ def test_search_can_filter_by_location(tmp_path):
         return search("name == 'data'", root=root["dst"], options=options)
 
     assert do_search(allow_remote=True, location=["local"]) == {local_id}
-    assert do_search(allow_remote=True, location=["x"]) == {remote_id}
-    assert do_search(allow_remote=True, location=["y"]) == set()
+    assert do_search(allow_remote=True, location=["x"]) == {x_id}
+    assert do_search(allow_remote=True, location=["y"]) == {y_id}
     assert do_search(allow_remote=True, location=["x", "local"]) == {
         local_id,
-        remote_id,
+        x_id,
+    }
+
+    with pytest.raises(Exception, match="Unknown location: 'nonexistent'"):
+        do_search(allow_remote=True, location=["x", "nonexistent"])
+
+
+def test_search_can_pull_and_filter(tmp_path):
+    root = create_temporary_roots(tmp_path, names=["x", "y", "dst"])
+    outpack_location_add_path("x", root["x"], root=root["dst"])
+    outpack_location_add_path("y", root["y"], root=root["dst"])
+
+    x_id = create_random_packet(root["x"])
+    create_random_packet(root["y"])
+    local_id = create_random_packet(root["dst"])
+
+    options = SearchOptions(
+        allow_remote=True, pull_metadata=True, location=["x", "local"]
+    )
+    assert search("name == 'data'", root=root["dst"], options=options) == {
+        local_id,
+        x_id,
     }

@@ -263,3 +263,19 @@ def test_can_resolve_locations(tmp_path):
         )
 
     assert e.match("Unknown location: '[fg]', '[fg]'")
+
+
+def test_resolve_location_makes_copy(tmp_path):
+    root = create_temporary_roots(tmp_path, add_location=True)
+
+    candidates = ["src", "local"]
+    result = location_resolve_valid(
+        candidates,
+        root["dst"],
+        include_local=False,
+        include_orphan=False,
+        allow_no_locations=True,
+    )
+
+    assert result == ["src"]
+    assert candidates == ["src", "local"]
