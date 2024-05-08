@@ -1,38 +1,17 @@
 import collections
 import shutil
-from abc import abstractmethod
-from contextlib import AbstractContextManager
 from pathlib import PurePath
-from typing import Dict, List
 
 from outpack.config import Location, update_config
-from outpack.metadata import MetadataCore, PacketFile, PacketLocation
+from outpack.location_driver import LocationDriver
+from outpack.location_path import OutpackLocationPath
+from outpack.location_ssh import OutpackLocationSSH, parse_ssh_url
 from outpack.root import OutpackRoot, root_open
 from outpack.static import (
     LOCATION_LOCAL,
     LOCATION_ORPHAN,
     LOCATION_RESERVED_NAME,
 )
-
-
-class LocationDriver(AbstractContextManager):
-    """
-    A location implementation.
-
-    The driver object is treated as a context manager and is entered and exited
-    before and after its methods are called.
-    """
-
-    @abstractmethod
-    def list(self) -> Dict[str, PacketLocation]: ...
-
-    @abstractmethod
-    def metadata(self, packet_ids: List[str]) -> Dict[str, str]: ...
-
-    @abstractmethod
-    def fetch_file(
-        self, packet: MetadataCore, file: PacketFile, dest: str
-    ) -> None: ...
 
 
 def outpack_location_list(root=None, *, locate=True):
@@ -54,8 +33,6 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
     if type == "path":
         root_open(loc.args["path"], locate=False)
     elif type == "ssh":
-        from outpack.location_ssh import parse_ssh_url
-
         parse_ssh_url(loc.args["url"])
     elif type in ("http", "custom"):  # pragma: no cover
         msg = f"Cannot add a location with type '{type}' yet."
@@ -170,12 +147,8 @@ def _location_exists(root, name):
 def _location_driver(location_name, root) -> LocationDriver:
     location = root.config.location[location_name]
     if location.type == "path":
-        from outpack.location_path import OutpackLocationPath
-
         return OutpackLocationPath(location.args["path"])
     elif location.type == "ssh":
-        from outpack.location_ssh import OutpackLocationSSH
-
         return OutpackLocationSSH(
             location.args["url"],
             location.args.get("known_hosts"),

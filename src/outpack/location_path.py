@@ -2,7 +2,7 @@ import os
 import shutil
 from typing import Dict, List
 
-from outpack.location import LocationDriver
+from outpack.location_driver import LocationDriver
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.root import find_file_by_hash, root_open
 from outpack.static import LOCATION_LOCAL

@@ -57,6 +57,9 @@ class SSHServer(AbstractContextManager):
                 socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             )
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+            # Bind to all interfaces on a random port. We read the port back
+            # using getsockname to allow test code to connect.
             sock.bind(("", 0))
             sock.listen(5)
 

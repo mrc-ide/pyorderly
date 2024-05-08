@@ -10,7 +10,7 @@ import paramiko
 
 from outpack.config import Config
 from outpack.hash import hash_parse
-from outpack.location import LocationDriver
+from outpack.location_driver import LocationDriver
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.static import LOCATION_LOCAL
 
