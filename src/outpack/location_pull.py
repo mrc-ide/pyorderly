@@ -9,7 +9,11 @@ import humanize
 
 from outpack.filestore import FileStore
 from outpack.hash import hash_validate_string
-from outpack.location import _location_driver, location_resolve_valid
+from outpack.location import (
+    LocationDriver,
+    _location_driver,
+    location_resolve_valid,
+)
 from outpack.metadata import (
     MetadataCore,
     PacketFileWithLocation,
@@ -31,25 +35,31 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
         allow_no_locations=True,
     )
     for name in location_name:
-        driver = _location_driver(name, root)
-        _pull_all_metadata(driver, root, name)
-        known_packets = []
-        for packet_location in root.index.all_locations().values():
-            known_packets.extend(list(packet_location.values()))
-        _validate_hashes(driver, name, known_packets)
-        _mark_all_known(driver, root, name)
+        with _location_driver(name, root) as driver:
+            available = list(driver.list().values())
+            known_packets = {
+                k: v
+                for loc in root.index.all_locations().values()
+                for k, v in loc.items()
+            }
+
+            _validate_hashes(name, available, known_packets)
+            _pull_missing_metadata(driver, root, name, available)
+            _mark_all_known(root, name, available)
 
     # TODO: mrc-4601 deorphan recovered packets
 
 
-def _pull_packet_metadata(driver, root, location_name, packet_id):
-    metadata = driver.metadata(packet_id)[packet_id]
-    expected_hash = driver.list()[packet_id].hash
-
+def _store_packet_metadata(
+    root: OutpackRoot,
+    location_name: str,
+    packet: PacketLocation,
+    metadata: str,
+):
     hash_validate_string(
         metadata,
-        expected_hash,
-        f"metadata for '{packet_id}' from '{location_name}'",
+        packet.hash,
+        f"metadata for '{packet.packet}' from '{location_name}'",
         [
             "This is bad news, I'm afraid. Your location is sending data "
             "that does not match the hash it says it does. Please let us "
@@ -60,7 +70,7 @@ def _pull_packet_metadata(driver, root, location_name, packet_id):
 
     path_metadata = root.path / ".outpack" / "metadata"
     os.makedirs(path_metadata, exist_ok=True)
-    filename = path_metadata / packet_id
+    filename = path_metadata / packet.packet
     with open(filename, "w") as f:
         f.writelines(metadata)
 
@@ -74,15 +84,16 @@ def _get_remove_location_hint(location_name):
     )
 
 
-def _validate_hashes(driver, location_name, packets: List[PacketLocation]):
+def _validate_hashes(
+    location_name: str,
+    location_packets: List[PacketLocation],
+    known_packets: Dict[str, PacketLocation],
+):
     mismatched_hashes = set()
-    known_there = driver.list()
-    for packet in packets:
-        if known_there.get(packet.packet) is not None:
-            hash_there = known_there[packet.packet].hash
-            hash_here = packet.hash
-            if hash_there != hash_here:
-                mismatched_hashes.add(packet.packet)
+    for packet in location_packets:
+        packet_here = known_packets.get(packet.packet)
+        if packet_here is not None and packet_here.hash != packet.hash:
+            mismatched_hashes.add(packet.packet)
 
     if mismatched_hashes:
         id_text = "', '".join(mismatched_hashes)
@@ -100,21 +111,18 @@ def _validate_hashes(driver, location_name, packets: List[PacketLocation]):
         raise Exception(msg)
 
 
-def _mark_all_known(driver, root, location_name):
-    try:
-        known_here = root.index.location(location_name)
-    except KeyError:
-        known_here = {}
-
-    known_there = driver.list()
-    for packet_id in known_there:
-        if packet_id not in known_here.keys():
+def _mark_all_known(
+    root: OutpackRoot, location_name: str, packets: List[PacketLocation]
+):
+    known_already = root.index.packets_in_location(root)
+    for packet in packets:
+        if packet.packet not in known_already:
             mark_known(
                 root,
-                packet_id,
+                packet.packet,
                 location_name,
-                known_there[packet_id].hash,
-                known_there[packet_id].time,
+                packet.hash,
+                packet.time,
             )
 
 
@@ -253,12 +261,14 @@ def location_pull_files(
             from_this_location = [
                 file for file in missing if file.location == location
             ]
-            _location_pull_hash_store(
-                from_this_location,
-                location,
-                _location_driver(location, root),
-                store,
-            )
+            with _location_driver(location, root) as driver:
+                _location_pull_hash_store(
+                    from_this_location,
+                    location,
+                    driver,
+                    store,
+                    root,
+                )
 
     try:
         yield store
@@ -270,8 +280,9 @@ def location_pull_files(
 def _location_pull_hash_store(
     files: List[PacketFileWithLocation],
     location_name: str,
-    driver,
+    driver: LocationDriver,
     store: FileStore,
+    root: OutpackRoot,
 ):
     no_of_files = len(files)
     # TODO: show a nice progress bar for users
@@ -281,8 +292,9 @@ def _location_pull_hash_store(
             f"({humanize.naturalsize(file.size)}) from '{location_name}'"
         )
         with store.tmp() as path:
-            tmp = driver.fetch_file(file.hash, path)
-            store.put(tmp, file.hash)
+            packet = root.index.metadata(file.packet_id)
+            driver.fetch_file(packet, file, path)
+            store.put(path, file.hash)
 
 
 def _location_pull_files_archive(packet_id: str, store, root: OutpackRoot):
@@ -294,12 +306,21 @@ def _location_pull_files_archive(packet_id: str, store, root: OutpackRoot):
         store.get(file.hash, dest_root / file.path, overwrite=True)
 
 
-def _pull_all_metadata(driver, root, location_name):
-    known_there = driver.list()
-    known_here = root.index.all_metadata().keys()
-    for packet_id in known_there:
-        if packet_id not in known_here:
-            _pull_packet_metadata(driver, root, location_name, packet_id)
+def _pull_missing_metadata(
+    driver: LocationDriver,
+    root: OutpackRoot,
+    location_name: str,
+    packets: List[PacketLocation],
+):
+    known_here = root.index.all_metadata()
+
+    to_pull = [p for p in packets if p.packet not in known_here]
+    metadata = driver.metadata([p.packet for p in to_pull])
+
+    for packet in to_pull:
+        _store_packet_metadata(
+            root, location_name, packet, metadata[packet.packet]
+        )
 
 
 @dataclass
@@ -482,10 +503,10 @@ def _location_build_pull_plan_files(
                 if packet_id in files and file.hash not in files[packet_id]:
                     continue
                 file_with_location = PacketFileWithLocation.from_packet_file(
-                    file, location_name
+                    file, location_name, packet_id
                 )
                 if file.hash not in seen_hashes:
-                    seen_hashes.add(file_with_location.hash)
+                    seen_hashes.add(file.hash)
                     all_files.append(file_with_location)
 
     return all_files

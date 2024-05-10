@@ -24,15 +24,15 @@ class PacketFile:
 
 
 @dataclass
-class PacketFileWithLocation:
-    path: str
-    size: float
-    hash: str
+class PacketFileWithLocation(PacketFile):
     location: str
+    packet_id: str
 
     @staticmethod
-    def from_packet_file(file: PacketFile, location: str):
-        return PacketFileWithLocation(file.path, file.size, file.hash, location)
+    def from_packet_file(file: PacketFile, location: str, packet_id: str):
+        return PacketFileWithLocation(
+            file.path, file.size, file.hash, location, packet_id
+        )
 
 
 @dataclass_json()

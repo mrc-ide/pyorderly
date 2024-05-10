@@ -3,7 +3,9 @@ import shutil
 from pathlib import PurePath
 
 from outpack.config import Location, update_config
+from outpack.location_driver import LocationDriver
 from outpack.location_path import OutpackLocationPath
+from outpack.location_ssh import OutpackLocationSSH, parse_ssh_url
 from outpack.root import OutpackRoot, root_open
 from outpack.static import (
     LOCATION_LOCAL,
@@ -30,6 +32,8 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
 
     if type == "path":
         root_open(loc.args["path"], locate=False)
+    elif type == "ssh":
+        parse_ssh_url(loc.args["url"])
     elif type in ("http", "custom"):  # pragma: no cover
         msg = f"Cannot add a location with type '{type}' yet."
         raise Exception(msg)
@@ -141,20 +145,22 @@ def _location_exists(root, name):
     return name in outpack_location_list(root)
 
 
-# TODO: Create a driver interface type
-# atm we can't specify a type for driver return
-# in this function. We want to return either an
-# OutpackLocationPath driver or an http driver
-# or other types down the line. We could set union type but
-# would be nicer to use an interface-like pattern
-# see mrc-5043
-def _location_driver(location_name, root):
+def _location_driver(location_name, root) -> LocationDriver:
     location = root.config.location[location_name]
     if location.type == "path":
         return OutpackLocationPath(location.args["path"])
-    elif location.type == "http":  # pragma: no cover
+    elif location.type == "ssh":
+        return OutpackLocationSSH(
+            location.args["url"],
+            location.args.get("known_hosts"),
+            location.args.get("password"),
+        )
+    elif location.type == "http":
         msg = "Http remote not yet supported"
         raise Exception(msg)
-    elif location.type == "custom":  # pragma: no cover
+    elif location.type == "custom":
         msg = "custom remote not yet supported"
         raise Exception(msg)
+
+    msg = "invalid location type"
+    raise Exception(msg)

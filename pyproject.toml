@@ -31,7 +31,8 @@ dependencies = [
   "pygit2",
   "outpack-query-parser",
   "humanize",
-  "tblib"
+  "tblib",
+  "paramiko",
 ]
 
 [project.urls]

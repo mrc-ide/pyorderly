@@ -19,6 +19,8 @@ from outpack.root import root_open
 from outpack.schema import outpack_schema_version
 from outpack.util import openable_temporary_file
 
+from .ssh_server import SSHServer  # noqa: F401
+
 
 @contextmanager
 def create_packet(root, name, *, packet_id=None, parameters=None):
