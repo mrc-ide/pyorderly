@@ -1,0 +1,42 @@
+:py:mod:`outpack.location_driver`
+=================================
+
+.. py:module:: outpack.location_driver
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_driver.LocationDriver
+
+
+
+
+.. py:class:: LocationDriver
+
+
+   Bases: :py:obj:`contextlib.AbstractContextManager`
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+

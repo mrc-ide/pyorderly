@@ -28,8 +28,10 @@ Submodules
    index/index.rst
    init/index.rst
    location/index.rst
+   location_driver/index.rst
    location_path/index.rst
    location_pull/index.rst
+   location_ssh/index.rst
    metadata/index.rst
    packet/index.rst
    root/index.rst

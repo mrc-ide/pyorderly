@@ -65,27 +65,19 @@ Attributes
 .. py:class:: PacketFileWithLocation
 
 
-   .. py:attribute:: path
-      :type: str
-
-      
-
-   .. py:attribute:: size
-      :type: float
-
-      
-
-   .. py:attribute:: hash
-      :type: str
-
-      
+   Bases: :py:obj:`PacketFile`
 
    .. py:attribute:: location
       :type: str
 
       
 
-   .. py:method:: from_packet_file(file: PacketFile, location: str)
+   .. py:attribute:: packet_id
+      :type: str
+
+      
+
+   .. py:method:: from_packet_file(file: PacketFile, location: str, packet_id: str)
       :staticmethod:
 
 

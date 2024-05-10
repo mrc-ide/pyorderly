@@ -1,0 +1,87 @@
+:py:mod:`outpack.location_ssh`
+==============================
+
+.. py:module:: outpack.location_ssh
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_ssh.OutpackLocationSSH
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_ssh.parse_ssh_url
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   outpack.location_ssh.SCP_URL
+
+
+.. py:data:: SCP_URL
+
+   
+
+.. py:function:: parse_ssh_url(url)
+
+   Parse the URL of an SSH location.
+
+   We follow Git's definition of URLs, and support two syntaxes: a short
+   `username@hostname:path` version, inspired by the scp command, and a longer
+   more explicit `ssh://username@hostname:port/path`.
+
+   The SCP syntax doesn't support configuring a port number (though an
+   .ssh/config file can be used to work around that limitation).
+
+   By default, the path in the SCP syntax is relative to the remote user's home
+   directory, and `hostname:/foo/bar` can be used to specify an absolute path.
+   The explicit URL syntax is always absolute.
+
+   See https://git-scm.com/docs/git-pull#_git_urls.
+
+
+.. py:class:: OutpackLocationSSH(url: str, known_hosts=None, password=None)
+
+
+   Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+   .. py:method:: __exit__(*args)
+
+      Raise any exception triggered within the runtime context.
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
+
+
+

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>outpack.location_path &mdash; outpack-py 0.0.1 documentation</title>
+  <title>outpack.location_ssh &mdash; outpack-py 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -25,8 +25,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="outpack.location_pull" href="../location_pull/index.html" />
-    <link rel="prev" title="outpack.location_driver" href="../location_driver/index.html" /> 
+    <link rel="next" title="outpack.metadata" href="../metadata/index.html" />
+    <link rel="prev" title="outpack.location_pull" href="../location_pull/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,9 +66,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../init/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.init</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location_driver/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_driver</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../location_path/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../location_pull/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_pull</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../location_ssh/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_ssh</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_ssh</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.metadata</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../packet/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.packet</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../root/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.root</span></code></a></li>
@@ -103,9 +103,9 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
           <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
-      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_ssh</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/autoapi/outpack/location_path/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/autoapi/outpack/location_ssh/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -113,51 +113,91 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-outpack.location_path">
-<span id="outpack-location-path"></span><h1><a class="reference internal" href="#module-outpack.location_path" title="outpack.location_path"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_path</span></code></a><a class="headerlink" href="#module-outpack.location_path" title="Link to this heading"></a></h1>
+  <section id="module-outpack.location_ssh">
+<span id="outpack-location-ssh"></span><h1><a class="reference internal" href="#module-outpack.location_ssh" title="outpack.location_ssh"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack.location_ssh</span></code></a><a class="headerlink" href="#module-outpack.location_ssh" title="Link to this heading"></a></h1>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <section id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_path.OutpackLocationPath" title="outpack.location_path.OutpackLocationPath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OutpackLocationPath</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.OutpackLocationSSH" title="outpack.location_ssh.OutpackLocationSSH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OutpackLocationSSH</span></code></a></p></td>
 <td><p>A location implementation.</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.parse_ssh_url" title="outpack.location_ssh.parse_ssh_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_ssh_url</span></code></a>(url)</p></td>
+<td><p>Parse the URL of an SSH location.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.SCP_URL" title="outpack.location_ssh.SCP_URL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SCP_URL</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="outpack.location_ssh.SCP_URL">
+<span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">SCP_URL</span></span><a class="headerlink" href="#outpack.location_ssh.SCP_URL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="outpack.location_ssh.parse_ssh_url">
+<span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">parse_ssh_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.parse_ssh_url" title="Link to this definition"></a></dt>
+<dd><p>Parse the URL of an SSH location.</p>
+<p>We follow Git’s definition of URLs, and support two syntaxes: a short
+<cite>username&#64;hostname:path</cite> version, inspired by the scp command, and a longer
+more explicit <cite>ssh://username&#64;hostname:port/path</cite>.</p>
+<p>The SCP syntax doesn’t support configuring a port number (though an
+.ssh/config file can be used to work around that limitation).</p>
+<p>By default, the path in the SCP syntax is relative to the remote user’s home
+directory, and <cite>hostname:/foo/bar</cite> can be used to specify an absolute path.
+The explicit URL syntax is always absolute.</p>
+<p>See <a class="reference external" href="https://git-scm.com/docs/git-pull#_git_urls">https://git-scm.com/docs/git-pull#_git_urls</a>.</p>
+</dd></dl>
+
 <dl class="py class">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.location_path.</span></span><span class="sig-name descname"><span class="pre">OutpackLocationPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">OutpackLocationSSH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_hosts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../location_driver/index.html#outpack.location_driver.LocationDriver" title="outpack.location_driver.LocationDriver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack.location_driver.LocationDriver</span></code></a></p>
 <p>A location implementation.</p>
 <p>The driver object is treated as a context manager and is entered and exited
 before and after its methods are called.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath.__enter__">
-<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath.__enter__" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH.__enter__" title="Link to this definition"></a></dt>
 <dd><p>Return <cite>self</cite> upon entering the runtime context.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath.__exit__">
-<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath.__exit__" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH.__exit__" title="Link to this definition"></a></dt>
 <dd><p>Raise any exception triggered within the runtime context.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath.list">
-<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath.list" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH.list">
+<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketLocation" title="outpack.metadata.PacketLocation"><span class="pre">outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH.list" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath.metadata">
-<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packet_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath.metadata" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH.metadata" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="outpack.location_path.OutpackLocationPath.fetch_file">
-<span class="sig-name descname"><span class="pre">fetch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_packet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">outpack.metadata.MetadataCore</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">outpack.metadata.PacketFile</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_path.OutpackLocationPath.fetch_file" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="outpack.location_ssh.OutpackLocationSSH.fetch_file">
+<span class="sig-name descname"><span class="pre">fetch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#outpack.metadata.MetadataCore" title="outpack.metadata.MetadataCore"><span class="pre">outpack.metadata.MetadataCore</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#outpack.metadata.PacketFile" title="outpack.metadata.PacketFile"><span class="pre">outpack.metadata.PacketFile</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.OutpackLocationSSH.fetch_file" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -170,8 +210,8 @@ before and after its methods are called.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../location_driver/index.html" class="btn btn-neutral float-left" title="outpack.location_driver" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../location_pull/index.html" class="btn btn-neutral float-right" title="outpack.location_pull" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../location_pull/index.html" class="btn btn-neutral float-left" title="outpack.location_pull" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../metadata/index.html" class="btn btn-neutral float-right" title="outpack.metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

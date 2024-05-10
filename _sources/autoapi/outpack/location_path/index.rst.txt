@@ -20,13 +20,30 @@ Classes
 .. py:class:: OutpackLocationPath(path)
 
 
-   .. py:method:: list()
+   Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
 
 
-   .. py:method:: metadata(packet_ids)
+   .. py:method:: __exit__(exc_type, exc_value, exc_tb)
+
+      Raise any exception triggered within the runtime context.
 
 
-   .. py:method:: fetch_file(hash, dest)
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(_packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
 
 
 
