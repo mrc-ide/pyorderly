@@ -1,4 +1,7 @@
+import os
+
 import pytest
+from jsonschema.exceptions import ValidationError
 
 from outpack.init import outpack_init
 from outpack.metadata import PacketDependsPath
@@ -273,3 +276,26 @@ def test_can_search_with_this_parameter(tmp_path):
     with create_packet(root, "downstream", parameters={"x": 2}) as p:
         result = p.use_dependency(query)
         assert result.id == id2
+
+
+@pytest.mark.skipif(
+    os.name == "nt",
+    reason="This test uses filenames that aren't valid on Windows",
+)
+def test_cannot_create_packet_with_invalid_filename(tmp_path):
+    root = create_temporary_root(tmp_path)
+
+    # These are legal filenames on POSIX, but not on Windows. If we allowed
+    # these in packets we would not be able to pull the packets on a Windows
+    # machine.
+    with pytest.raises(ValidationError):
+        with create_packet(root, "data") as p:
+            (p.path / R"bad\file\name").touch()
+
+    with pytest.raises(ValidationError):
+        with create_packet(root, "data") as p:
+            (p.path / "bad<file>name").touch()
+
+    with pytest.raises(ValidationError):
+        with create_packet(root, "data") as p:
+            (p.path / "bad\x01file\x01name").touch()
