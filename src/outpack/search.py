@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional, Set, Union
 import outpack_query_parser as parser
 
 from outpack.ids import is_outpack_id
+from outpack.location import location_resolve_valid
 from outpack.location_pull import outpack_location_pull_metadata
 from outpack.metadata import MetadataCore, Parameters
 from outpack.root import OutpackRoot, root_open
@@ -61,12 +62,17 @@ class QueryIndex:
     def __init__(self, root, options):
         self.root = root
 
-        locations = root.index.all_locations()
+        locations = location_resolve_valid(
+            options.location,
+            self.root,
+            include_local=True,
+            include_orphan=True,
+            allow_no_locations=False,
+        )
+
         ids = set(
             chain.from_iterable(
-                loc.keys()
-                for name, loc in locations.items()
-                if (options.location is None) or (name in options.location)
+                root.index.location(name).keys() for name in locations
             )
         )
 

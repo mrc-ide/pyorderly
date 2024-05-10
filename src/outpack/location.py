@@ -105,6 +105,7 @@ def location_resolve_valid(
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
             raise Exception(msg)
+        location = list(location)
     else:
         msg = (
             "Invalid input for 'location'; expected None or a list of "
