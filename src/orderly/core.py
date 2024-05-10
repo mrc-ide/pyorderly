@@ -2,6 +2,7 @@ import os.path
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Dict, List, Union
 
 from dataclasses_json import dataclass_json
@@ -10,6 +11,7 @@ from orderly.current import get_active_context
 from outpack import util
 from outpack.copy_files import copy_files
 from outpack.search import search_unique
+from outpack.util import pl
 
 
 @dataclass_json()
@@ -31,7 +33,24 @@ class Description:
         return Description(None, None, None)
 
 
-def parameters(**kwargs):  # noqa: ARG001
+class Parameters(SimpleNamespace):
+    """
+    A container for parameters used in a report.
+
+    An instance of this class is returned by the `orderly.parameters` function.
+    Individual parameters can be accessed as fields of the object.
+
+    Example:
+
+        >>> params = orderly.parameters(p=1)
+        >>> params.p
+        1
+    """
+
+    pass
+
+
+def parameters(**kwargs) -> Parameters:
     """Declare parameters used in a report.
 
     Parameters
@@ -42,9 +61,21 @@ def parameters(**kwargs):  # noqa: ARG001
 
     Returns
     -------
-    Nothing, this function has no effect at all!
+    The parameters that were passed to the report. If running outside of an
+    orderly context, this returns kwargs unmodified.
     """
-    pass
+    ctx = get_active_context()
+    if ctx.is_active:
+        # We don't need to apply defaults from kwargs as the packet runner
+        # already did so.
+        return Parameters(**ctx.parameters)
+    else:
+        missing = [k for k, v in kwargs.items() if v is None]
+        if missing:
+            msg = f"No value was specified for {pl(missing, 'parameter')} {', '.join(missing)}."
+            raise Exception(msg)
+
+        return Parameters(**kwargs)
 
 
 def resource(files):

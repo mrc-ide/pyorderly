@@ -1,8 +1,5 @@
 import orderly
 
-# TODO(mrc-5255): We'll rethink this strategy soon
-# ruff: noqa: F821
-
-orderly.parameters(a=1, b=None)
+parameters = orderly.parameters(a=1, b=None)
 with open("result.txt", "w") as f:
-    f.write(f"a: {a}\nb: {b}\n")  # type: ignore
+    f.write(f"a: {parameters.a}\nb: {parameters.b}\n")

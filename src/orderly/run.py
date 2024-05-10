@@ -72,7 +72,7 @@ def _packet_builder(
 
     try:
         orderly = _run_report_script(
-            packet, path, path_src, entrypoint, parameters, search_options
+            packet, path, path_src, entrypoint, search_options
         )
         _check_artefacts(orderly, path)
     except:
@@ -84,7 +84,7 @@ def _packet_builder(
 
 
 def _run_report_script(
-    packet, path, path_src, entrypoint, parameters, search_options
+    packet, path, path_src, entrypoint, search_options
 ) -> OrderlyCustomMetadata:
     try:
         with ActiveOrderlyContext(packet, path_src, search_options) as orderly:
@@ -92,7 +92,6 @@ def _run_report_script(
             # tracebacks
             runpy.run_path(
                 str(path / entrypoint),
-                init_globals=parameters,
                 run_name="__main__",
             )
 

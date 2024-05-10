@@ -18,8 +18,6 @@ class OrderlyCustomMetadata:
 
 @dataclass
 class OrderlyContext:
-    # Indicates if a packet is currently running
-    is_active: bool
     # The active packet, if one is running
     packet: Optional[Packet]
     # the path to the packet running directory. This is a pathlib Path object
@@ -32,8 +30,6 @@ class OrderlyContext:
     parameters: dict
     # The name of the packet
     name: str
-    # The id of the packet, only non-None if active
-    id: Optional[str]
     # Special orderly custom metadata
     orderly: OrderlyCustomMetadata
     # Options used when searching for dependencies
@@ -42,14 +38,12 @@ class OrderlyContext:
     @staticmethod
     def from_packet(packet, path_src, search_options=None):
         return OrderlyContext(
-            is_active=True,
             packet=packet,
             path=packet.path,
             path_src=Path(path_src),
             root=packet.root,
             parameters=packet.parameters,
             name=packet.name,
-            id=packet.id,
             orderly=OrderlyCustomMetadata(),
             search_options=search_options,
         )
@@ -58,18 +52,20 @@ class OrderlyContext:
     def interactive():
         path = Path(os.getcwd())
         return OrderlyContext(
-            is_active=False,
             packet=None,
             path=path,
             path_src=path,
             root=detect_orderly_interactive_root(path),
             parameters={},
             name=path.name,
-            id=None,
             orderly=OrderlyCustomMetadata(),
             # TODO: expose a way of configuring this
             search_options=None,
         )
+
+    @property
+    def is_active(self):
+        return self.packet is not None
 
 
 class ActiveOrderlyContext:
