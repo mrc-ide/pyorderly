@@ -14,6 +14,7 @@ Classes
 
    orderly.core.Artefact
    orderly.core.Description
+   orderly.core.Parameters
 
 
 
@@ -68,7 +69,24 @@ Functions
 
 
 
-.. py:function:: parameters(**kwargs)
+.. py:class:: Parameters
+
+
+   Bases: :py:obj:`types.SimpleNamespace`
+
+   A container for parameters used in a report.
+
+   An instance of this class is returned by the `orderly.parameters` function.
+   Individual parameters can be accessed as fields of the object.
+
+   Example:
+
+       >>> params = orderly.parameters(p=1)
+       >>> params.p
+       1
+
+
+.. py:function:: parameters(**kwargs) -> Parameters
 
    Declare parameters used in a report.
 
@@ -80,7 +98,8 @@ Functions
 
    Returns
    -------
-   Nothing, this function has no effect at all!
+   The parameters that were passed to the report. If running outside of an
+   orderly context, this returns kwargs unmodified.
 
 
 .. py:function:: resource(files)

@@ -35,10 +35,8 @@ Functions
 .. py:class:: OrderlyContext
 
 
-   .. py:attribute:: is_active
-      :type: bool
+   .. py:property:: is_active
 
-      
 
    .. py:attribute:: packet
       :type: Optional[outpack.packet.Packet]
@@ -67,11 +65,6 @@ Functions
 
    .. py:attribute:: name
       :type: str
-
-      
-
-   .. py:attribute:: id
-      :type: Optional[str]
 
       
 

@@ -109,6 +109,9 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.Description" title="orderly.core.Description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Description</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.Parameters" title="orderly.core.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a></p></td>
+<td><p>A container for parameters used in a report.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -116,7 +119,7 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.parameters" title="orderly.core.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.core.parameters" title="orderly.core.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code></a>(→ Parameters)</p></td>
 <td><p>Declare parameters used in a report.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#orderly.core.resource" title="orderly.core.resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resource</span></code></a>(files)</p></td>
@@ -176,9 +179,24 @@
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="orderly.core.Parameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><a class="headerlink" href="#orderly.core.Parameters" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.SimpleNamespace</span></code></p>
+<p>A container for parameters used in a report.</p>
+<p>An instance of this class is returned by the <cite>orderly.parameters</cite> function.
+Individual parameters can be accessed as fields of the object.</p>
+<p>Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">orderly</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">.</span><span class="n">p</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.core.parameters">
-<span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.core.parameters" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">orderly.core.</span></span><span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orderly.core.Parameters" title="orderly.core.Parameters"><span class="pre">Parameters</span></a></span></span><a class="headerlink" href="#orderly.core.parameters" title="Link to this definition"></a></dt>
 <dd><p>Declare parameters used in a report.</p>
 <section id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
@@ -190,7 +208,8 @@ if no default is given)</p>
 </section>
 <section id="returns">
 <h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
-<p>Nothing, this function has no effect at all!</p>
+<p>The parameters that were passed to the report. If running outside of an
+orderly context, this returns kwargs unmodified.</p>
 </section>
 </dd></dl>
 
