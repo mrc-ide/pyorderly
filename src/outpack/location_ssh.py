@@ -47,8 +47,12 @@ def parse_ssh_url(url):
         raise Exception(msg)
 
     path = PurePosixPath(parts.path)
-    if path.is_relative_to("/~"):
-        path = path.relative_to("/~")
+
+    # This condition is equivalent to path.is_relative_to("/~"), except that
+    # function isn't available on Python 3.8.
+    home = PurePosixPath("/~")
+    if path == home or home in path.parents:
+        path = path.relative_to(home)
 
     return parts.username, parts.hostname, parts.port, path
 
