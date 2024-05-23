@@ -1,3 +1,5 @@
+from pathlib import PurePosixPath
+
 import paramiko
 import pytest
 
@@ -33,60 +35,63 @@ def server_location(
     )
 
 
-def test_can_parse_scp_like_url():
-    assert parse_ssh_url("example.com:foobar") == (
+def test_can_parse_url():
+    assert parse_ssh_url("ssh://example.com/") == (
         None,
         "example.com",
         None,
-        "foobar",
+        PurePosixPath("/"),
     )
-    assert parse_ssh_url("myuser@example.com:foobar") == (
-        "myuser",
-        "example.com",
-        None,
-        "foobar",
-    )
-    assert parse_ssh_url("myuser@example.com:/home/bob/project") == (
-        "myuser",
-        "example.com",
-        None,
-        "/home/bob/project",
-    )
-
-
-def test_can_parse_explicit_url():
     assert parse_ssh_url("ssh://example.com/foobar") == (
         None,
         "example.com",
         None,
-        "/foobar",
+        PurePosixPath("/foobar"),
     )
     assert parse_ssh_url("ssh://myuser@example.com/foobar") == (
         "myuser",
         "example.com",
         None,
-        "/foobar",
+        PurePosixPath("/foobar"),
     )
     assert parse_ssh_url("ssh://myuser@example.com:1234/foobar") == (
         "myuser",
         "example.com",
         1234,
-        "/foobar",
+        PurePosixPath("/foobar"),
+    )
+
+
+def test_can_parse_relative_url():
+    assert parse_ssh_url("ssh://example.com/~") == (
+        None,
+        "example.com",
+        None,
+        PurePosixPath("."),
+    )
+
+    assert parse_ssh_url("ssh://example.com/~/foobar") == (
+        None,
+        "example.com",
+        None,
+        PurePosixPath("foobar"),
     )
 
 
 def test_errors_on_invalid_url():
-    msg = "Invalid SSH url: 'www.example.com'"
-    with pytest.raises(Exception, match=msg):
-        parse_ssh_url("www.example.com")
-
-    msg = "Invalid SSH url: '/home/alice'"
+    msg = "Protocol of SSH url must be 'ssh'"
     with pytest.raises(Exception, match=msg):
         parse_ssh_url("/home/alice")
 
-    msg = "Protocol of SSH url must be 'ssh', not 'http'"
+    with pytest.raises(Exception, match=msg):
+        parse_ssh_url("www.example.com")
+
     with pytest.raises(Exception, match=msg):
         parse_ssh_url("http://www.example.com")
+
+    msg = "No path specified for SSH location"
+    with pytest.raises(Exception, match=msg):
+        parse_ssh_url("ssh://example.com")
 
 
 def test_errors_on_missing_repo(tmp_path):
@@ -188,16 +193,15 @@ def test_errors_if_file_not_found(tmp_path, use_file_store):
 
 def test_can_add_ssh_location(tmp_path):
     root = create_temporary_root(tmp_path)
-    outpack_location_add("upstream1", "ssh", {"url": "example.com:path"}, root)
     outpack_location_add(
-        "upstream2", "ssh", {"url": "ssh://example.com/path"}, root
+        "upstream", "ssh", {"url": "ssh://example.com/path"}, root
     )
 
 
 def test_cannot_add_invalid_ssh_url(tmp_path):
     root = create_temporary_root(tmp_path)
 
-    msg = "Protocol of SSH url must be 'ssh', not 'http'"
+    msg = "Protocol of SSH url must be 'ssh'"
     with pytest.raises(Exception, match=msg):
         outpack_location_add(
             "upstream", "ssh", {"url": "http://example.com/path"}, root
