@@ -217,3 +217,11 @@ def as_posix_path(paths):
         return [as_posix_path(v) for v in paths]
     else:
         return PurePath(paths).as_posix()
+
+
+# Starting with Python 3.9 this exists as a method on str
+def removeprefix(s: str, prefix: str) -> str:
+    if s.startswith(prefix):
+        return s[len(prefix) :]
+    else:
+        return s

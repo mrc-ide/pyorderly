@@ -3,7 +3,7 @@ import errno
 from contextlib import ExitStack
 from pathlib import PurePosixPath
 from typing import Dict, List
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
 
 import paramiko
 
@@ -12,32 +12,20 @@ from outpack.hash import hash_parse
 from outpack.location_driver import LocationDriver
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.static import LOCATION_LOCAL
+from outpack.util import removeprefix
 
 
 def parse_ssh_url(url):
     """
     Parse the URL of an SSH location.
 
-    URLs follow the form `ssh://username@hostname:port/path`, where path is
-    interpreted as an absolute path (ie. the separating slash at the start of
-    the path is included in it).
-
-    However, if the path begins with `/~/` (as in `ssh://hostname/~/foo/bar`),
-    then the rest of the path is assumed to be relative to the user's home
-    directory.
-
-    This generally follows Git's semantics. Git also supports more complicated
-    expansions (eg. using another user's home directory, such as `/~alice/`),
-    but it implements this by having a server-side binary, which we don't have.
-
-    Git also supports an alternative SCP-like syntax, of the form
-    `username@hostname:path`, where `path` is relative by default, and port
-    numbers cannot be specified. The lack of scheme to identify the protocol
-    makes these URLs inconvenient, so we don't support it.
-
-    See https://git-scm.com/docs/git-pull#_git_urls.
+    URLs have the form `ssh://username@hostname:port/path`. The username and
+    port number are optional. By default, the path is interpreted as relative
+    to the remote user's home directory. In order to use an absolute path on
+    the remote server, an additional forward slash must be used, eg.
+    `ssh://hostname//foo/bar`.
     """
-    parts = urlparse(url)
+    parts = urlsplit(url)
     if parts.scheme != "ssh":
         msg = "Protocol of SSH url must be 'ssh'"
         raise Exception(msg)
@@ -46,14 +34,7 @@ def parse_ssh_url(url):
         msg = "No path specified for SSH location"
         raise Exception(msg)
 
-    path = PurePosixPath(parts.path)
-
-    # This condition is equivalent to path.is_relative_to("/~"), except that
-    # function isn't available on Python 3.8.
-    home = PurePosixPath("/~")
-    if path == home or home in path.parents:
-        path = path.relative_to(home)
-
+    path = removeprefix(parts.path, "/")
     return parts.username, parts.hostname, parts.port, path
 
 
@@ -66,7 +47,7 @@ class OutpackLocationSSH(LocationDriver):
         self._username = username
         self._hostname = hostname
         self._port = port or 22
-        self._root = path
+        self._root = PurePosixPath(path)
         self._known_hosts = known_hosts
         self._password = password
         self._stack = ExitStack()

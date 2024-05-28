@@ -4,7 +4,7 @@ import socket
 import sys
 import threading
 from contextlib import AbstractContextManager, ExitStack
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import List, Optional
 
 import paramiko
@@ -15,13 +15,11 @@ class SSHServer(AbstractContextManager):
     A test SSH server.
 
     This server should only be used for the purpose of integration testing: it
-    allows connections with any password and exposes an SFTP interface with
-    access to the entire host system.
+    allows connections with any username and password and exposes an SFTP
+    interface with access to the entire host system.
 
-    All SFTP file accesses begin at the given path, even if the client
-    specifies an absolute path. This is not a security feature (escaping is
-    trivial using ..), but merely simplifies testing, in particular on Windows.
-    The server interprets paths in requests as POSIX like.
+    SFTP requests with relative paths begin at the given root. Absolute paths
+    may also be specified by the client.
     """
 
     root: Path
@@ -35,12 +33,10 @@ class SSHServer(AbstractContextManager):
         self.shutdown = threading.Event()
 
     def url(self, path: str, username=None):
-        assert path.startswith("/")
-
         url = "ssh://"
         if username is not None:
             url += f"{username}@"
-        url += f"127.0.0.1:{self.port}{path}"
+        url += f"127.0.0.1:{self.port}/{path}"
         return url
 
     @property
@@ -126,9 +122,6 @@ class SFTPServerInterface(paramiko.SFTPServerInterface):
         self.root = root
 
     def _resolve(self, path: str) -> Path:
-        path = PurePosixPath(path)
-        if path.is_absolute():
-            path = path.relative_to("/")
         return self.root.joinpath(path)
 
     def open(self, path, flags, _attr):
