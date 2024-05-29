@@ -1,10 +1,9 @@
 import base64
 import errno
-import re
 from contextlib import ExitStack
 from pathlib import PurePosixPath
 from typing import Dict, List
-from urllib.parse import urlparse
+from urllib.parse import urlsplit
 
 import paramiko
 
@@ -13,44 +12,30 @@ from outpack.hash import hash_parse
 from outpack.location_driver import LocationDriver
 from outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from outpack.static import LOCATION_LOCAL
-
-SCP_URL = re.compile(r"((?P<username>[^@]+)@)?(?P<hostname>[^:]+):(?P<path>.*)")
+from outpack.util import removeprefix
 
 
 def parse_ssh_url(url):
     """
     Parse the URL of an SSH location.
 
-    We follow Git's definition of URLs, and support two syntaxes: a short
-    `username@hostname:path` version, inspired by the scp command, and a longer
-    more explicit `ssh://username@hostname:port/path`.
-
-    The SCP syntax doesn't support configuring a port number (though an
-    .ssh/config file can be used to work around that limitation).
-
-    By default, the path in the SCP syntax is relative to the remote user's home
-    directory, and `hostname:/foo/bar` can be used to specify an absolute path.
-    The explicit URL syntax is always absolute.
-
-    See https://git-scm.com/docs/git-pull#_git_urls.
+    URLs have the form `ssh://username@hostname:port/path`. The username and
+    port number are optional. By default, the path is interpreted as relative
+    to the remote user's home directory. In order to use an absolute path on
+    the remote server, an additional forward slash must be used, eg.
+    `ssh://hostname//foo/bar`.
     """
-    if "://" in url:
-        parts = urlparse(url)
-        if parts.scheme != "ssh":
-            msg = f"Protocol of SSH url must be 'ssh', not '{parts.scheme}'"
-            raise Exception(msg)
-
-        if parts.path == "":
-            msg = "No path specified for SSH location"
-            raise Exception(msg)
-
-        return parts.username, parts.hostname, parts.port, parts.path
-
-    elif m := SCP_URL.fullmatch(url):
-        return (m.group("username"), m.group("hostname"), None, m.group("path"))
-    else:
-        msg = f"Invalid SSH url: '{url}'"
+    parts = urlsplit(url)
+    if parts.scheme != "ssh":
+        msg = "Protocol of SSH url must be 'ssh'"
         raise Exception(msg)
+
+    if parts.path == "":
+        msg = "No path specified for SSH location"
+        raise Exception(msg)
+
+    path = removeprefix(parts.path, "/")
+    return parts.username, parts.hostname, parts.port, path
 
 
 class OutpackLocationSSH(LocationDriver):
