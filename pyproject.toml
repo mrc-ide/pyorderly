@@ -52,6 +52,7 @@ dependencies = [
   "pytest",
   "pytest_mock",
   "pytest-unordered",
+  "pytest-cov",
   "sphinx",
   "sphinx-rtd-theme",
   "myst-parser",
@@ -60,19 +61,13 @@ dependencies = [
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
-test-cov = "coverage run -m pytest {args:tests}"
-cov-report = [
-  "- coverage combine",
-  "coverage report --show-missing",
-]
+test-cov = "pytest --cov --cov-report= --cov-config=pyproject.toml {args:tests}"
+cov-report = "coverage report --show-missing"
 cov = [
   "test-cov",
   "cov-report",
 ]
-cov-report-xml = [
-  "- coverage combine",
-  "coverage xml",
-]
+cov-report-xml = "coverage xml"
 cov-ci = [
   "test-cov",
   "cov-report-xml",
@@ -185,21 +180,22 @@ convention = "numpy"
 source_pkgs = ["outpack", "orderly", "tests"]
 branch = true
 parallel = true
-omit = [
-  "src/outpack/__about__.py",
-  "tests/helpers/*",
-  "*/draft/*"
-]
 
-[tool.coverage.paths]
-outpack = ["src/outpack", "src/orderly", "*/outpack/src/outpack"]
-tests = ["tests", "*/outpack/tests"]
+# The wildcards are needed in order for the omit path to work correctly even
+# when spawning subprocess in different directories.
+omit = [
+  "**/src/outpack/__about__.py",
+  "**/tests/helpers/*",
+]
 
 [tool.coverage.report]
 exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
+  "@abstractmethod",
+  "@abc.abstractmethod",
+  "@overload",
 ]
 
 [tool.pytest.ini_options]
