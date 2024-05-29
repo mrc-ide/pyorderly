@@ -314,15 +314,11 @@ before and after its methods are called.</p>
 <dt class="sig sig-object py" id="outpack.location.parse_ssh_url">
 <span class="sig-prename descclassname"><span class="pre">outpack.location.</span></span><span class="sig-name descname"><span class="pre">parse_ssh_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location.parse_ssh_url" title="Link to this definition"></a></dt>
 <dd><p>Parse the URL of an SSH location.</p>
-<p>We follow Git’s definition of URLs, and support two syntaxes: a short
-<cite>username&#64;hostname:path</cite> version, inspired by the scp command, and a longer
-more explicit <cite>ssh://username&#64;hostname:port/path</cite>.</p>
-<p>The SCP syntax doesn’t support configuring a port number (though an
-.ssh/config file can be used to work around that limitation).</p>
-<p>By default, the path in the SCP syntax is relative to the remote user’s home
-directory, and <cite>hostname:/foo/bar</cite> can be used to specify an absolute path.
-The explicit URL syntax is always absolute.</p>
-<p>See <a class="reference external" href="https://git-scm.com/docs/git-pull#_git_urls">https://git-scm.com/docs/git-pull#_git_urls</a>.</p>
+<p>URLs have the form <cite>ssh://username&#64;hostname:port/path</cite>. The username and
+port number are optional. By default, the path is interpreted as relative
+to the remote user’s home directory. In order to use an absolute path on
+the remote server, an additional forward slash must be used, eg.
+<cite>ssh://hostname//foo/bar</cite>.</p>
 </dd></dl>
 
 <dl class="py class">

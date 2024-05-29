@@ -122,9 +122,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.LOCATION_LOCAL" title="outpack.location_ssh.LOCATION_LOCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOCATION_LOCAL</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location_ssh.SCP_URL" title="outpack.location_ssh.SCP_URL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SCP_URL</span></code></a></p></td>
-<td><p></p></td>
-</tr>
 </tbody>
 </table>
 </section>
@@ -160,7 +157,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.hash_parse" title="outpack.location_ssh.hash_parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hash_parse</span></code></a>(string)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location_ssh.parse_ssh_url" title="outpack.location_ssh.parse_ssh_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_ssh_url</span></code></a>(url)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#outpack.location_ssh.removeprefix" title="outpack.location_ssh.removeprefix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeprefix</span></code></a>(→ str)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#outpack.location_ssh.parse_ssh_url" title="outpack.location_ssh.parse_ssh_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_ssh_url</span></code></a>(url)</p></td>
 <td><p>Parse the URL of an SSH location.</p></td>
 </tr>
 </tbody>
@@ -327,24 +327,20 @@ before and after its methods are called.</p>
 <span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">LOCATION_LOCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'local'</span></em><a class="headerlink" href="#outpack.location_ssh.LOCATION_LOCAL" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="outpack.location_ssh.SCP_URL">
-<span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">SCP_URL</span></span><a class="headerlink" href="#outpack.location_ssh.SCP_URL" title="Link to this definition"></a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="outpack.location_ssh.removeprefix">
+<span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">removeprefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#outpack.location_ssh.removeprefix" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="outpack.location_ssh.parse_ssh_url">
 <span class="sig-prename descclassname"><span class="pre">outpack.location_ssh.</span></span><span class="sig-name descname"><span class="pre">parse_ssh_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#outpack.location_ssh.parse_ssh_url" title="Link to this definition"></a></dt>
 <dd><p>Parse the URL of an SSH location.</p>
-<p>We follow Git’s definition of URLs, and support two syntaxes: a short
-<cite>username&#64;hostname:path</cite> version, inspired by the scp command, and a longer
-more explicit <cite>ssh://username&#64;hostname:port/path</cite>.</p>
-<p>The SCP syntax doesn’t support configuring a port number (though an
-.ssh/config file can be used to work around that limitation).</p>
-<p>By default, the path in the SCP syntax is relative to the remote user’s home
-directory, and <cite>hostname:/foo/bar</cite> can be used to specify an absolute path.
-The explicit URL syntax is always absolute.</p>
-<p>See <a class="reference external" href="https://git-scm.com/docs/git-pull#_git_urls">https://git-scm.com/docs/git-pull#_git_urls</a>.</p>
+<p>URLs have the form <cite>ssh://username&#64;hostname:port/path</cite>. The username and
+port number are optional. By default, the path is interpreted as relative
+to the remote user’s home directory. In order to use an absolute path on
+the remote server, an additional forward slash must be used, eg.
+<cite>ssh://hostname//foo/bar</cite>.</p>
 </dd></dl>
 
 <dl class="py class">

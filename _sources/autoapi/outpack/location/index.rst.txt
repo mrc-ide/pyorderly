@@ -157,18 +157,11 @@ Module Contents
 
    Parse the URL of an SSH location.
 
-   We follow Git's definition of URLs, and support two syntaxes: a short
-   `username@hostname:path` version, inspired by the scp command, and a longer
-   more explicit `ssh://username@hostname:port/path`.
-
-   The SCP syntax doesn't support configuring a port number (though an
-   .ssh/config file can be used to work around that limitation).
-
-   By default, the path in the SCP syntax is relative to the remote user's home
-   directory, and `hostname:/foo/bar` can be used to specify an absolute path.
-   The explicit URL syntax is always absolute.
-
-   See https://git-scm.com/docs/git-pull#_git_urls.
+   URLs have the form `ssh://username@hostname:port/path`. The username and
+   port number are optional. By default, the path is interpreted as relative
+   to the remote user's home directory. In order to use an absolute path on
+   the remote server, an additional forward slash must be used, eg.
+   `ssh://hostname//foo/bar`.
 
 
 .. py:class:: OutpackRoot(path)
