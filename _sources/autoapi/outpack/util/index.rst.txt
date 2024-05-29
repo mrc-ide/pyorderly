@@ -1,15 +1,11 @@
-:py:mod:`outpack.util`
-======================
+outpack.util
+============
 
 .. py:module:: outpack.util
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -33,51 +29,38 @@ Functions
    outpack.util.as_posix_path
 
 
+Module Contents
+---------------
 
 .. py:function:: find_file_descend(filename, path)
 
-
 .. py:function:: iso_time_str(t)
-
 
 .. py:function:: time_to_num(x)
 
-
 .. py:function:: num_to_time(x)
-
 
 .. py:function:: all_normal_files(path)
 
-
 .. py:function:: transient_working_directory(path)
-
 
 .. py:function:: assert_file_exists(path, *, workdir=None, name='File')
 
-
 .. py:function:: assert_relative_path(path: str, name: str)
-
 
 .. py:function:: expand_dirs(paths, *, workdir=None)
 
-
 .. py:function:: match_value(arg, choices, name)
-
 
 .. py:function:: relative_path_array(files: Union[str, List[str]], name: str) -> List[str]
 
-
 .. py:function:: relative_path_mapping(files: Union[str, List[str], Dict[str, str]], name: str) -> Dict[str, str]
-
 
 .. py:function:: read_string(path)
 
-
 .. py:function:: format_list(x)
 
-
 .. py:function:: pl(x, singular, plural=None)
-
 
 .. py:function:: partition(pred, iterable)
 
@@ -89,7 +72,6 @@ Functions
 
 
 .. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
-
 
 .. py:function:: as_posix_path(paths: str) -> str
                  as_posix_path(paths: List[str]) -> List[str]

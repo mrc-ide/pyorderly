@@ -1,14 +1,11 @@
-:py:mod:`orderly.core`
-======================
+orderly.core
+============
 
 .. py:module:: orderly.core
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
@@ -17,12 +14,12 @@ Classes
    orderly.core.Parameters
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   orderly.core.get_active_context
    orderly.core.parameters
    orderly.core.resource
    orderly.core.shared_resource
@@ -31,38 +28,34 @@ Functions
    orderly.core.dependency
 
 
+Module Contents
+---------------
+
+.. py:function:: get_active_context()
 
 .. py:class:: Artefact
 
-
    .. py:attribute:: name
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: files
-      :type: List[str]
-
-      
+      :type:  List[str]
 
 
 .. py:class:: Description
 
-
    .. py:attribute:: display
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: long
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: custom
-      :type: Dict[str, Union[str, int, bool]]
+      :type:  Dict[str, Union[str, int, bool]]
 
-      
 
    .. py:method:: empty()
       :staticmethod:
@@ -71,8 +64,8 @@ Functions
 
 .. py:class:: Parameters
 
-
    Bases: :py:obj:`types.SimpleNamespace`
+
 
    A container for parameters used in a report.
 

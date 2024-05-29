@@ -1,7 +1,18 @@
-:py:mod:`outpack.static`
-========================
+outpack.static
+==============
 
 .. py:module:: outpack.static
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   outpack.static.LOCATION_LOCAL
+   outpack.static.LOCATION_ORPHAN
+   outpack.static.LOCATION_RESERVED_NAME
+   outpack.static.LOCATION_TYPES
 
 
 Module Contents
@@ -10,18 +21,12 @@ Module Contents
 .. py:data:: LOCATION_LOCAL
    :value: 'local'
 
-   
 
 .. py:data:: LOCATION_ORPHAN
    :value: 'orphan'
 
-   
 
 .. py:data:: LOCATION_RESERVED_NAME
 
-   
-
 .. py:data:: LOCATION_TYPES
-
-   
 

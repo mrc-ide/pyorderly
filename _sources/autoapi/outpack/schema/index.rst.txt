@@ -1,15 +1,11 @@
-:py:mod:`outpack.schema`
-========================
+outpack.schema
+==============
 
 .. py:module:: outpack.schema
 
 
-Package Contents
-----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -19,16 +15,14 @@ Functions
    outpack.schema.read_schema
 
 
+Package Contents
+----------------
 
 .. py:function:: validate(instance, schema_name)
 
-
 .. py:function:: retrieve_from_filesystem(path: str)
-
 
 .. py:function:: outpack_schema_version()
 
-
 .. py:function:: read_schema(name)
-
 

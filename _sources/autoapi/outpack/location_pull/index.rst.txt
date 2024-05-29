@@ -1,104 +1,321 @@
-:py:mod:`outpack.location_pull`
-===============================
+outpack.location_pull
+=====================
 
 .. py:module:: outpack.location_pull
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
+Attributes
+----------
 
 .. autoapisummary::
 
+   outpack.location_pull.LOCATION_LOCAL
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.location_pull.FileStore
+   outpack.location_pull.LocationDriver
+   outpack.location_pull.MetadataCore
+   outpack.location_pull.PacketFileWithLocation
+   outpack.location_pull.PacketLocation
+   outpack.location_pull.OutpackRoot
+   outpack.location_pull.SearchOptions
    outpack.location_pull.PullPlanInfo
    outpack.location_pull.LocationPullPlan
    outpack.location_pull.PullPlanPackets
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   outpack.location_pull.hash_validate_string
+   outpack.location_pull.location_resolve_valid
+   outpack.location_pull.find_file_by_hash
+   outpack.location_pull.mark_known
+   outpack.location_pull.root_open
+   outpack.location_pull.format_list
+   outpack.location_pull.partition
+   outpack.location_pull.pl
    outpack.location_pull.outpack_location_pull_metadata
    outpack.location_pull.outpack_location_pull_packet
    outpack.location_pull.location_pull_files
    outpack.location_pull.location_build_pull_plan
 
 
+Module Contents
+---------------
+
+.. py:class:: FileStore(path)
+
+   .. py:method:: filename(hash)
+
+
+   .. py:method:: get(hash, dst, *, overwrite=False)
+
+
+   .. py:method:: exists(hash)
+
+
+   .. py:method:: put(src, hash, *, move=False)
+
+
+   .. py:method:: ls()
+
+
+   .. py:method:: destroy() -> None
+
+
+   .. py:method:: tmp()
+
+
+.. py:function:: hash_validate_string(data, expected, name, body=None)
+
+.. py:class:: LocationDriver
+
+   Bases: :py:obj:`contextlib.AbstractContextManager`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+
+.. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
+
+.. py:class:: MetadataCore
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketFileWithLocation
+
+   Bases: :py:obj:`PacketFile`
+
+
+   .. py:attribute:: location
+      :type:  str
+
+
+   .. py:attribute:: packet_id
+      :type:  str
+
+
+   .. py:method:: from_packet_file(file: PacketFile, location: str, packet_id: str)
+      :staticmethod:
+
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+.. py:class:: OutpackRoot(path)
+
+   .. py:attribute:: files
+      :type:  Optional[outpack.filestore.FileStore]
+      :value: None
+
+
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+.. py:function:: find_file_by_hash(root, hash)
+
+.. py:function:: mark_known(root, packet_id, location, hash, time)
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:class:: SearchOptions
+
+   Control over how outpack will search for packets.
+
+   Attributes
+   ----------
+   location : array of strings, optional
+       Locations that will be included for search. If `None`, then all
+       known locations will be included
+   allow_remote : bool
+       Indicates if we will consider packets that are only available
+       remotely to be found.
+   pull_metadata : bool
+       Indicates if we will pull metadata from the locations before
+       searching
+
+
+   .. py:attribute:: location
+      :type:  Optional[List[str]]
+      :value: None
+
+
+
+   .. py:attribute:: allow_remote
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: pull_metadata
+      :type:  bool
+      :value: False
+
+
+
+   .. py:method:: create(obj)
+      :staticmethod:
+
+
+      Construct a `SearchOptions` object from some object.
+
+      Parameters
+      ----------
+      obj : any
+          Typically this will be `None` (default construct the
+          `SearchOptions` object), a `SearchOptions` object or a `dict`
+          with some of the fields present in `SearchOptions`. An
+          `TypeError` is thrown if any other type is passed.
+
+      Returns
+      -------
+      A new `SearchOptions` object.
+
+
+
+.. py:data:: LOCATION_LOCAL
+   :value: 'local'
+
+
+.. py:function:: format_list(x)
+
+.. py:function:: partition(pred, iterable)
+
+   Partition entries into false entries and true entries.
+
+   This is slightly modified version of partition from itertools
+   recipes https://docs.python.org/dev/library/itertools.html#itertools-recipes
+   If *pred* is slow, consider wrapping it with functools.lru_cache().
+
+
+.. py:function:: pl(x, singular, plural=None)
 
 .. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
 
-
 .. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options: Optional[outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, outpack.root.OutpackRoot, None] = None, locate: bool = True)
-
 
 .. py:function:: location_pull_files(files: List[outpack.metadata.PacketFileWithLocation], root: outpack.root.OutpackRoot) -> Generator[outpack.filestore.FileStore, None, None]
 
-
 .. py:class:: PullPlanInfo
 
-
    .. py:attribute:: n_extra
-      :type: int
+      :type:  int
 
-      
 
    .. py:attribute:: n_skip
-      :type: int
+      :type:  int
 
-      
 
    .. py:attribute:: n_total
-      :type: int
-
-      
+      :type:  int
 
 
 .. py:class:: LocationPullPlan
 
-
    .. py:attribute:: packets
-      :type: Dict[str, outpack.metadata.PacketLocation]
+      :type:  Dict[str, outpack.metadata.PacketLocation]
 
-      
 
    .. py:attribute:: files
-      :type: List[outpack.metadata.PacketFileWithLocation]
+      :type:  List[outpack.metadata.PacketFileWithLocation]
 
-      
 
    .. py:attribute:: info
-      :type: PullPlanInfo
-
-      
+      :type:  PullPlanInfo
 
 
 .. py:class:: PullPlanPackets
 
-
    .. py:attribute:: requested
-      :type: List[str]
+      :type:  List[str]
 
-      
 
    .. py:attribute:: full
-      :type: List[str]
+      :type:  List[str]
 
-      
 
    .. py:attribute:: skip
-      :type: Set[str]
+      :type:  Set[str]
 
-      
 
    .. py:attribute:: fetch
-      :type: Set[str]
-
-      
+      :type:  Set[str]
 
 
 .. py:function:: location_build_pull_plan(packet_ids: List[str], locations: Optional[List[str]], *, files: Optional[Dict[str, List[str]]] = None, recursive: bool, root: outpack.root.OutpackRoot) -> LocationPullPlan

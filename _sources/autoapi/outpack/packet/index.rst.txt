@@ -1,32 +1,176 @@
-:py:mod:`outpack.packet`
-========================
+outpack.packet
+==============
 
 .. py:module:: outpack.packet
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.packet.MetadataCore
+   outpack.packet.PacketDepends
+   outpack.packet.PacketFile
+   outpack.packet.Packet
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.packet.copy_files
+   outpack.packet.hash_file
+   outpack.packet.hash_parse
+   outpack.packet.hash_string
+   outpack.packet.hash_validate_file
+   outpack.packet.outpack_id
+   outpack.packet.validate_outpack_id
+   outpack.packet.outpack_location_pull_packet
+   outpack.packet.mark_known
+   outpack.packet.root_open
+   outpack.packet.outpack_schema_version
+   outpack.packet.validate
+   outpack.packet.as_query
+   outpack.packet.search_unique
+   outpack.packet.git_info
+   outpack.packet.all_normal_files
+   outpack.packet.as_posix_path
+   outpack.packet.insert_packet
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:function:: copy_files(id: str, files: Dict[str, str], dest: pathlib.Path, options: outpack.search_options.SearchOptions, root: outpack.root.OutpackRoot) -> Plan
 
-.. autoapisummary::
+.. py:function:: hash_file(path, algorithm='sha256')
 
-   outpack.packet.Packet
+.. py:function:: hash_parse(string)
+
+.. py:function:: hash_string(data, algorithm)
+
+.. py:function:: hash_validate_file(path, expected, body=None)
+
+.. py:function:: outpack_id()
+
+.. py:function:: validate_outpack_id(x: str)
+
+.. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options: Optional[outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, outpack.root.OutpackRoot, None] = None, locate: bool = True)
+
+.. py:class:: MetadataCore
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketDepends
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: query
+      :type:  str
+
+
+   .. py:attribute:: files
+      :type:  List[PacketDependsPath]
+
+
+   .. py:method:: files_from_dict(files)
+      :staticmethod:
 
 
 
-Functions
-~~~~~~~~~
+.. py:class:: PacketFile
 
-.. autoapisummary::
+   .. py:attribute:: path
+      :type:  str
 
-   outpack.packet.insert_packet
 
+   .. py:attribute:: size
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:function:: mark_known(root, packet_id, location, hash, time)
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:function:: outpack_schema_version()
+
+.. py:function:: validate(instance, schema_name)
+
+.. py:function:: as_query(query: Union[Query, str]) -> Query
+
+.. py:function:: search_unique(query: Union[Query, str], *, root: Union[outpack.root.OutpackRoot, str, os.PathLike], options: Optional[outpack.search_options.SearchOptions] = None, this: Optional[outpack.metadata.Parameters] = None)
+
+   Search an outpack repository for a packet that matches the given query.
+
+   Returns a single packet ID. Throws an exception if no packet is found or if
+   the query is not syntactically guaranteed to find at most one.
+
+
+.. py:function:: git_info(path)
+
+.. py:function:: all_normal_files(path)
+
+.. py:function:: as_posix_path(paths: str) -> str
+                 as_posix_path(paths: List[str]) -> List[str]
+                 as_posix_path(paths: Dict[str, str]) -> Dict[str, str]
+
+   Convert a native path into a posix path.
+
+   This is used when exporting paths into packet metadata, ensuring the
+   produced packets are portable across platforms.
 
 
 .. py:class:: Packet(root, path, name, *, parameters=None, id=None, locate=True)
-
 
    .. py:method:: use_dependency(query, files=None, search_options=None)
 
@@ -40,7 +184,5 @@ Functions
    .. py:method:: end(*, succesful=True)
 
 
-
 .. py:function:: insert_packet(root, path, meta)
-
 

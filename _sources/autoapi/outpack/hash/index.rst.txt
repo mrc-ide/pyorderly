@@ -1,23 +1,19 @@
-:py:mod:`outpack.hash`
-======================
+outpack.hash
+============
 
 .. py:module:: outpack.hash
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    outpack.hash.Hash
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -29,19 +25,18 @@ Functions
    outpack.hash.hash_validate_string
 
 
+Module Contents
+---------------
 
 .. py:class:: Hash
 
-
    .. py:attribute:: algorithm
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: value
-      :type: str
+      :type:  str
 
-      
 
    .. py:method:: __str__()
 
@@ -51,19 +46,13 @@ Functions
 
 .. py:function:: hash_file(path, algorithm='sha256')
 
-
 .. py:function:: hash_string(data, algorithm)
-
 
 .. py:function:: hash_parse(string)
 
-
 .. py:function:: hash_validate(found, expected, name, body=None)
-
 
 .. py:function:: hash_validate_file(path, expected, body=None)
 
-
 .. py:function:: hash_validate_string(data, expected, name, body=None)
-
 

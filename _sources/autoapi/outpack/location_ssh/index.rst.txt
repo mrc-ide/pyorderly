@@ -1,41 +1,169 @@
-:py:mod:`outpack.location_ssh`
-==============================
+outpack.location_ssh
+====================
 
 .. py:module:: outpack.location_ssh
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   outpack.location_ssh.LOCATION_LOCAL
+   outpack.location_ssh.SCP_URL
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.location_ssh.Config
+   outpack.location_ssh.LocationDriver
+   outpack.location_ssh.MetadataCore
+   outpack.location_ssh.PacketFile
+   outpack.location_ssh.PacketLocation
+   outpack.location_ssh.OutpackLocationSSH
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.location_ssh.hash_parse
+   outpack.location_ssh.parse_ssh_url
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:class:: Config
 
-.. autoapisummary::
-
-   outpack.location_ssh.OutpackLocationSSH
+   .. py:attribute:: schema_version
+      :type:  str
 
 
-
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   outpack.location_ssh.parse_ssh_url
+   .. py:attribute:: core
+      :type:  ConfigCore
 
 
+   .. py:attribute:: location
+      :type:  Dict[str, Location]
 
-Attributes
-~~~~~~~~~~
 
-.. autoapisummary::
+   .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)
+      :staticmethod:
 
-   outpack.location_ssh.SCP_URL
+
+
+.. py:function:: hash_parse(string)
+
+.. py:class:: LocationDriver
+
+   Bases: :py:obj:`contextlib.AbstractContextManager`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+
+.. py:class:: MetadataCore
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketFile
+
+   .. py:attribute:: path
+      :type:  str
+
+
+   .. py:attribute:: size
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+.. py:data:: LOCATION_LOCAL
+   :value: 'local'
 
 
 .. py:data:: SCP_URL
-
-   
 
 .. py:function:: parse_ssh_url(url)
 
@@ -57,22 +185,25 @@ Attributes
 
 .. py:class:: OutpackLocationSSH(url: str, known_hosts=None, password=None)
 
-
    Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
 
    A location implementation.
 
    The driver object is treated as a context manager and is entered and exited
    before and after its methods are called.
 
+
    .. py:method:: __enter__()
 
       Return `self` upon entering the runtime context.
 
 
+
    .. py:method:: __exit__(*args)
 
       Raise any exception triggered within the runtime context.
+
 
 
    .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
@@ -82,6 +213,5 @@ Attributes
 
 
    .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
-
 
 

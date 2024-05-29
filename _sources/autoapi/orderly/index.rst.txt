@@ -1,35 +1,31 @@
-:py:mod:`orderly`
-=================
+orderly
+=======
 
 .. py:module:: orderly
 
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   core/index.rst
-   current/index.rst
-   read/index.rst
-   run/index.rst
+   /autoapi/orderly/core/index
+   /autoapi/orderly/current/index
+   /autoapi/orderly/read/index
+   /autoapi/orderly/run/index
 
-
-Package Contents
-----------------
 
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    orderly.Parameters
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -41,11 +37,13 @@ Functions
    orderly.shared_resource
 
 
+Package Contents
+----------------
 
 .. py:class:: Parameters
 
-
    Bases: :py:obj:`types.SimpleNamespace`
+
 
    A container for parameters used in a report.
 

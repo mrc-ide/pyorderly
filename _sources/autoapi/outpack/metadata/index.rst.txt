@@ -1,17 +1,23 @@
-:py:mod:`outpack.metadata`
-==========================
+outpack.metadata
+================
 
 .. py:module:: outpack.metadata
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
+Attributes
+----------
 
 .. autoapisummary::
 
+   outpack.metadata.Parameters
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.metadata.GitInfo
    outpack.metadata.PacketFile
    outpack.metadata.PacketFileWithLocation
    outpack.metadata.PacketDependsPath
@@ -20,42 +26,48 @@ Classes
    outpack.metadata.PacketLocation
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   outpack.metadata.hash_file
    outpack.metadata.read_metadata_core
    outpack.metadata.read_packet_location
 
 
+Module Contents
+---------------
 
-Attributes
-~~~~~~~~~~
+.. py:function:: hash_file(path, algorithm='sha256')
 
-.. autoapisummary::
+.. py:class:: GitInfo
 
-   outpack.metadata.Parameters
+   .. py:attribute:: sha
+      :type:  str
+
+
+   .. py:attribute:: branch
+      :type:  str
+
+
+   .. py:attribute:: url
+      :type:  List[str]
 
 
 .. py:class:: PacketFile
 
-
    .. py:attribute:: path
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: size
-      :type: float
+      :type:  float
 
-      
 
    .. py:attribute:: hash
-      :type: str
+      :type:  str
 
-      
 
    .. py:method:: from_file(directory, path, hash_algorithm)
       :staticmethod:
@@ -64,18 +76,16 @@ Attributes
 
 .. py:class:: PacketFileWithLocation
 
-
    Bases: :py:obj:`PacketFile`
 
-   .. py:attribute:: location
-      :type: str
 
-      
+   .. py:attribute:: location
+      :type:  str
+
 
    .. py:attribute:: packet_id
-      :type: str
+      :type:  str
 
-      
 
    .. py:method:: from_packet_file(file: PacketFile, location: str, packet_id: str)
       :staticmethod:
@@ -84,35 +94,27 @@ Attributes
 
 .. py:class:: PacketDependsPath
 
-
    .. py:attribute:: here
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: there
-      :type: str
-
-      
+      :type:  str
 
 
 .. py:class:: PacketDepends
 
-
    .. py:attribute:: packet
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: query
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: files
-      :type: List[PacketDependsPath]
+      :type:  List[PacketDependsPath]
 
-      
 
    .. py:method:: files_from_dict(files)
       :staticmethod:
@@ -121,82 +123,62 @@ Attributes
 
 .. py:data:: Parameters
 
-   
-
 .. py:class:: MetadataCore
 
-
    .. py:attribute:: schema_version
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: id
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: name
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: parameters
-      :type: Parameters
+      :type:  Parameters
 
-      
 
    .. py:attribute:: time
-      :type: Dict[str, float]
+      :type:  Dict[str, float]
 
-      
 
    .. py:attribute:: files
-      :type: List[PacketFile]
+      :type:  List[PacketFile]
 
-      
 
    .. py:attribute:: depends
-      :type: List[PacketDepends]
+      :type:  List[PacketDepends]
 
-      
 
    .. py:attribute:: git
-      :type: Optional[outpack.tools.GitInfo]
+      :type:  Optional[outpack.tools.GitInfo]
 
-      
 
    .. py:attribute:: custom
-      :type: Optional[dict]
+      :type:  Optional[dict]
 
-      
 
    .. py:method:: file_hash(name)
 
 
-
 .. py:class:: PacketLocation
 
-
    .. py:attribute:: packet
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: time
-      :type: float
+      :type:  float
 
-      
 
    .. py:attribute:: hash
-      :type: str
-
-      
+      :type:  str
 
 
 .. py:function:: read_metadata_core(path) -> MetadataCore
 
-
 .. py:function:: read_packet_location(path) -> PacketLocation
-
 

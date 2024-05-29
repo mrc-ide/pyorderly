@@ -1,22 +1,66 @@
-:py:mod:`orderly.run`
-=====================
+orderly.run
+===========
 
 .. py:module:: orderly.run
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   orderly.run.Description
+   orderly.run.ActiveOrderlyContext
+   orderly.run.OrderlyCustomMetadata
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   orderly.run.orderly_read
+   orderly.run.orderly_run
 
 
 Module Contents
 ---------------
 
+.. py:class:: Description
 
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   orderly.run.orderly_run
+   .. py:attribute:: display
+      :type:  str
 
 
+   .. py:attribute:: long
+      :type:  str
+
+
+   .. py:attribute:: custom
+      :type:  Dict[str, Union[str, int, bool]]
+
+
+   .. py:method:: empty()
+      :staticmethod:
+
+
+
+.. py:class:: ActiveOrderlyContext(*args, **kwargs)
+
+   .. py:method:: __enter__()
+
+
+   .. py:method:: __exit__(exc_type, exc_value, exc_tb)
+
+
+   .. py:method:: current()
+      :staticmethod:
+
+
+
+.. py:class:: OrderlyCustomMetadata
+
+.. py:function:: orderly_read(path)
 
 .. py:function:: orderly_run(name, *, parameters=None, search_options=None, root=None, locate=True)
-
 

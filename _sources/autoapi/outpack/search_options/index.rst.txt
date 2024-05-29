@@ -1,24 +1,21 @@
-:py:mod:`outpack.search_options`
-================================
+outpack.search_options
+======================
 
 .. py:module:: outpack.search_options
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    outpack.search_options.SearchOptions
 
 
-
+Module Contents
+---------------
 
 .. py:class:: SearchOptions
-
 
    Control over how outpack will search for packets.
 
@@ -34,25 +31,28 @@ Classes
        Indicates if we will pull metadata from the locations before
        searching
 
-   .. py:attribute:: location
-      :type: Optional[List[str]]
 
-      
+   .. py:attribute:: location
+      :type:  Optional[List[str]]
+      :value: None
+
+
 
    .. py:attribute:: allow_remote
-      :type: bool
+      :type:  bool
       :value: False
 
-      
+
 
    .. py:attribute:: pull_metadata
-      :type: bool
+      :type:  bool
       :value: False
 
-      
+
 
    .. py:method:: create(obj)
       :staticmethod:
+
 
       Construct a `SearchOptions` object from some object.
 

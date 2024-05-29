@@ -1,29 +1,30 @@
-:py:mod:`outpack.sandbox`
-=========================
+outpack.sandbox
+===============
 
 .. py:module:: outpack.sandbox
 
 
-Module Contents
----------------
-
-
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   outpack.sandbox.run_in_sandbox
-
-
-
 Attributes
-~~~~~~~~~~
+----------
 
 .. autoapisummary::
 
    outpack.sandbox.result
 
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.sandbox.openable_temporary_file
+   outpack.sandbox.run_in_sandbox
+
+
+Module Contents
+---------------
+
+.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
 
 .. py:function:: run_in_sandbox(target, args=(), cwd=None, syspath=None)
 
@@ -48,7 +49,4 @@ Attributes
 
 
 .. py:data:: result
-   :value: (True,)
-
-   
 

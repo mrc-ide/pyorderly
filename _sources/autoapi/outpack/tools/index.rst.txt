@@ -1,49 +1,41 @@
-:py:mod:`outpack.tools`
-=======================
+outpack.tools
+=============
 
 .. py:module:: outpack.tools
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    outpack.tools.GitInfo
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
    outpack.tools.git_info
 
 
+Module Contents
+---------------
 
 .. py:class:: GitInfo
 
-
    .. py:attribute:: sha
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: branch
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: url
-      :type: List[str]
-
-      
+      :type:  List[str]
 
 
 .. py:function:: git_info(path)
-
 

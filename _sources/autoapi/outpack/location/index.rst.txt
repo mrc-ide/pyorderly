@@ -1,18 +1,39 @@
-:py:mod:`outpack.location`
-==========================
+outpack.location
+================
 
 .. py:module:: outpack.location
 
 
-Module Contents
----------------
-
-
-Functions
-~~~~~~~~~
+Attributes
+----------
 
 .. autoapisummary::
 
+   outpack.location.LOCATION_LOCAL
+   outpack.location.LOCATION_ORPHAN
+   outpack.location.LOCATION_RESERVED_NAME
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.location.Location
+   outpack.location.LocationDriver
+   outpack.location.OutpackLocationPath
+   outpack.location.OutpackLocationSSH
+   outpack.location.OutpackRoot
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.location.update_config
+   outpack.location.parse_ssh_url
+   outpack.location.root_open
    outpack.location.outpack_location_list
    outpack.location.outpack_location_add
    outpack.location.outpack_location_add_path
@@ -21,22 +42,167 @@ Functions
    outpack.location.location_resolve_valid
 
 
+Module Contents
+---------------
+
+.. py:class:: Location(name, type, args=None)
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: type
+      :type:  str
+
+
+   .. py:attribute:: args
+      :type:  Optional[dict]
+      :value: None
+
+
+
+.. py:function:: update_config(config, root_path)
+
+.. py:class:: LocationDriver
+
+   Bases: :py:obj:`contextlib.AbstractContextManager`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+
+.. py:class:: OutpackLocationPath(path)
+
+   Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+
+   .. py:method:: __exit__(exc_type, exc_value, exc_tb)
+
+      Raise any exception triggered within the runtime context.
+
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(_packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
+
+
+.. py:class:: OutpackLocationSSH(url: str, known_hosts=None, password=None)
+
+   Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+
+   .. py:method:: __exit__(*args)
+
+      Raise any exception triggered within the runtime context.
+
+
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
+
+
+.. py:function:: parse_ssh_url(url)
+
+   Parse the URL of an SSH location.
+
+   We follow Git's definition of URLs, and support two syntaxes: a short
+   `username@hostname:path` version, inspired by the scp command, and a longer
+   more explicit `ssh://username@hostname:port/path`.
+
+   The SCP syntax doesn't support configuring a port number (though an
+   .ssh/config file can be used to work around that limitation).
+
+   By default, the path in the SCP syntax is relative to the remote user's home
+   directory, and `hostname:/foo/bar` can be used to specify an absolute path.
+   The explicit URL syntax is always absolute.
+
+   See https://git-scm.com/docs/git-pull#_git_urls.
+
+
+.. py:class:: OutpackRoot(path)
+
+   .. py:attribute:: files
+      :type:  Optional[outpack.filestore.FileStore]
+      :value: None
+
+
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:data:: LOCATION_LOCAL
+   :value: 'local'
+
+
+.. py:data:: LOCATION_ORPHAN
+   :value: 'orphan'
+
+
+.. py:data:: LOCATION_RESERVED_NAME
 
 .. py:function:: outpack_location_list(root=None, *, locate=True)
 
-
 .. py:function:: outpack_location_add(name, type, args, root=None, *, locate=True)
-
 
 .. py:function:: outpack_location_add_path(name, path, root=None, *, locate=True)
 
-
 .. py:function:: outpack_location_remove(name, root=None, *, locate=True)
-
 
 .. py:function:: outpack_location_rename(old, new, root=None, *, locate=True)
 
-
 .. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
-
 

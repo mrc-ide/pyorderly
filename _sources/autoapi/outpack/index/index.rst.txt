@@ -1,40 +1,104 @@
-:py:mod:`outpack.index`
-=======================
+outpack.index
+=============
 
 .. py:module:: outpack.index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.index.MetadataCore
+   outpack.index.PacketLocation
+   outpack.index.IndexData
+   outpack.index.Index
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.index.read_metadata_core
+   outpack.index.read_packet_location
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:class:: MetadataCore
 
-.. autoapisummary::
-
-   outpack.index.IndexData
-   outpack.index.Index
+   .. py:attribute:: schema_version
+      :type:  str
 
 
+   .. py:attribute:: id
+      :type:  str
 
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+.. py:function:: read_metadata_core(path) -> MetadataCore
+
+.. py:function:: read_packet_location(path) -> PacketLocation
 
 .. py:class:: IndexData
 
-
    .. py:attribute:: metadata
-      :type: Dict[str, outpack.metadata.MetadataCore]
+      :type:  Dict[str, outpack.metadata.MetadataCore]
 
-      
 
    .. py:attribute:: location
-      :type: Dict[str, Dict[str, outpack.metadata.PacketLocation]]
+      :type:  Dict[str, Dict[str, outpack.metadata.PacketLocation]]
 
-      
 
    .. py:attribute:: unpacked
-      :type: List[str]
+      :type:  List[str]
 
-      
 
    .. py:method:: new()
       :staticmethod:
@@ -42,7 +106,6 @@ Classes
 
 
 .. py:class:: Index(path)
-
 
    .. py:method:: rebuild()
 
@@ -66,6 +129,5 @@ Classes
 
 
    .. py:method:: unpacked() -> List[str]
-
 
 

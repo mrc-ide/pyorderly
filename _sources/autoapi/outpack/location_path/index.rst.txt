@@ -1,40 +1,173 @@
-:py:mod:`outpack.location_path`
-===============================
+outpack.location_path
+=====================
 
 .. py:module:: outpack.location_path
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   outpack.location_path.LOCATION_LOCAL
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.location_path.LocationDriver
+   outpack.location_path.MetadataCore
+   outpack.location_path.PacketFile
+   outpack.location_path.PacketLocation
+   outpack.location_path.OutpackLocationPath
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.location_path.find_file_by_hash
+   outpack.location_path.root_open
+   outpack.location_path.read_string
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:class:: LocationDriver
 
-.. autoapisummary::
+   Bases: :py:obj:`contextlib.AbstractContextManager`
 
-   outpack.location_path.OutpackLocationPath
-
-
-
-
-.. py:class:: OutpackLocationPath(path)
-
-
-   Bases: :py:obj:`outpack.location_driver.LocationDriver`
 
    A location implementation.
 
    The driver object is treated as a context manager and is entered and exited
    before and after its methods are called.
 
+
+   .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+
+   .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+
+.. py:class:: MetadataCore
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketFile
+
+   .. py:attribute:: path
+      :type:  str
+
+
+   .. py:attribute:: size
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+.. py:function:: find_file_by_hash(root, hash)
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:data:: LOCATION_LOCAL
+   :value: 'local'
+
+
+.. py:function:: read_string(path)
+
+.. py:class:: OutpackLocationPath(path)
+
+   Bases: :py:obj:`outpack.location_driver.LocationDriver`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
    .. py:method:: __enter__()
 
       Return `self` upon entering the runtime context.
 
 
+
    .. py:method:: __exit__(exc_type, exc_value, exc_tb)
 
       Raise any exception triggered within the runtime context.
+
 
 
    .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
@@ -44,6 +177,5 @@ Classes
 
 
    .. py:method:: fetch_file(_packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str)
-
 
 

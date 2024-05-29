@@ -1,14 +1,19 @@
-:py:mod:`outpack.config`
-========================
+outpack.config
+==============
 
 .. py:module:: outpack.config
 
 
-Module Contents
----------------
+Attributes
+----------
+
+.. autoapisummary::
+
+   outpack.config.LOCATION_TYPES
+
 
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
@@ -17,87 +22,80 @@ Classes
    outpack.config.Config
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   outpack.config.outpack_schema_version
+   outpack.config.match_value
    outpack.config.read_config
    outpack.config.write_config
    outpack.config.update_config
 
 
+Module Contents
+---------------
+
+.. py:function:: outpack_schema_version()
+
+.. py:data:: LOCATION_TYPES
+
+.. py:function:: match_value(arg, choices, name)
 
 .. py:function:: read_config(root_path)
 
-
 .. py:function:: write_config(config, root_path)
-
 
 .. py:function:: update_config(config, root_path)
 
-
 .. py:class:: ConfigCore
 
-
    .. py:attribute:: hash_algorithm
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: path_archive
-      :type: Optional[str]
+      :type:  Optional[str]
 
-      
 
    .. py:attribute:: use_file_store
-      :type: bool
+      :type:  bool
 
-      
 
    .. py:attribute:: require_complete_tree
-      :type: bool
-
-      
+      :type:  bool
 
 
 .. py:class:: Location(name, type, args=None)
 
-
    .. py:attribute:: name
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: type
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: args
-      :type: Optional[dict]
+      :type:  Optional[dict]
+      :value: None
 
-      
 
 
 .. py:class:: Config
 
-
    .. py:attribute:: schema_version
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: core
-      :type: ConfigCore
+      :type:  ConfigCore
 
-      
 
    .. py:attribute:: location
-      :type: Dict[str, Location]
+      :type:  Dict[str, Location]
 
-      
 
    .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)
       :staticmethod:

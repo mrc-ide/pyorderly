@@ -25,6 +25,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="outpack" href="../../outpack/index.html" />
     <link rel="prev" title="orderly.read" href="../read/index.html" /> 
 </head>
 
@@ -52,18 +53,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html">outpack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../code.html">Code examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../outpack/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">outpack</span></code></a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">orderly</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../core/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.core</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../current/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.current</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../read/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.read</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/index.html">orderly.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../current/index.html">orderly.current</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../read/index.html">orderly.read</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">orderly.run</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#functions">Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../outpack/index.html">outpack</a></li>
 </ul>
 </li>
 </ul>
@@ -83,8 +86,8 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
-          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly</span></code></a></li>
-      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></li>
+          <li class="breadcrumb-item"><a href="../index.html">orderly</a></li>
+      <li class="breadcrumb-item active">orderly.run</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/orderly/run/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,24 +98,98 @@
            <div itemprop="articleBody">
              
   <section id="module-orderly.run">
-<span id="orderly-run"></span><h1><a class="reference internal" href="#module-orderly.run" title="orderly.run"><code class="xref py py-mod docutils literal notranslate"><span class="pre">orderly.run</span></code></a><a class="headerlink" href="#module-orderly.run" title="Link to this heading"></a></h1>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<span id="orderly-run"></span><h1>orderly.run<a class="headerlink" href="#module-orderly.run" title="Link to this heading"></a></h1>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.run.orderly_run" title="orderly.run.orderly_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orderly_run</span></code></a>(name, *[, parameters, search_options, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.run.Description" title="orderly.run.Description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Description</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.run.ActiveOrderlyContext" title="orderly.run.ActiveOrderlyContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveOrderlyContext</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.run.OrderlyCustomMetadata" title="orderly.run.OrderlyCustomMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderlyCustomMetadata</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#orderly.run.orderly_read" title="orderly.run.orderly_read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orderly_read</span></code></a>(path)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#orderly.run.orderly_run" title="orderly.run.orderly_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orderly_run</span></code></a>(name, *[, parameters, search_options, ...])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="orderly.run.Description">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orderly.run.</span></span><span class="sig-name descname"><span class="pre">Description</span></span><a class="headerlink" href="#orderly.run.Description" title="Link to this definition"></a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="orderly.run.Description.display">
+<span class="sig-name descname"><span class="pre">display</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#orderly.run.Description.display" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="orderly.run.Description.long">
+<span class="sig-name descname"><span class="pre">long</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#orderly.run.Description.long" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="orderly.run.Description.custom">
+<span class="sig-name descname"><span class="pre">custom</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orderly.run.Description.custom" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orderly.run.Description.empty">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.Description.empty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="orderly.run.ActiveOrderlyContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orderly.run.</span></span><span class="sig-name descname"><span class="pre">ActiveOrderlyContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.ActiveOrderlyContext" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="orderly.run.ActiveOrderlyContext.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.ActiveOrderlyContext.__enter__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orderly.run.ActiveOrderlyContext.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.ActiveOrderlyContext.__exit__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orderly.run.ActiveOrderlyContext.current">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.ActiveOrderlyContext.current" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="orderly.run.OrderlyCustomMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orderly.run.</span></span><span class="sig-name descname"><span class="pre">OrderlyCustomMetadata</span></span><a class="headerlink" href="#orderly.run.OrderlyCustomMetadata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="orderly.run.orderly_read">
+<span class="sig-prename descclassname"><span class="pre">orderly.run.</span></span><span class="sig-name descname"><span class="pre">orderly_read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.orderly_read" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="orderly.run.orderly_run">
 <span class="sig-prename descclassname"><span class="pre">orderly.run.</span></span><span class="sig-name descname"><span class="pre">orderly_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orderly.run.orderly_run" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-</section>
 </section>
 </section>
 
@@ -121,6 +198,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../read/index.html" class="btn btn-neutral float-left" title="orderly.read" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../outpack/index.html" class="btn btn-neutral float-right" title="outpack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

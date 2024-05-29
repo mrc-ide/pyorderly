@@ -1,50 +1,125 @@
-:py:mod:`outpack.root`
-======================
+outpack.root
+============
 
 .. py:module:: outpack.root
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
+   outpack.root.FileStore
+   outpack.root.Index
+   outpack.root.PacketLocation
    outpack.root.OutpackRoot
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   outpack.root.read_config
+   outpack.root.hash_file
+   outpack.root.hash_parse
+   outpack.root.validate
+   outpack.root.find_file_descend
    outpack.root.root_open
    outpack.root.find_file_by_hash
    outpack.root.mark_known
 
 
+Module Contents
+---------------
+
+.. py:function:: read_config(root_path)
+
+.. py:class:: FileStore(path)
+
+   .. py:method:: filename(hash)
+
+
+   .. py:method:: get(hash, dst, *, overwrite=False)
+
+
+   .. py:method:: exists(hash)
+
+
+   .. py:method:: put(src, hash, *, move=False)
+
+
+   .. py:method:: ls()
+
+
+   .. py:method:: destroy() -> None
+
+
+   .. py:method:: tmp()
+
+
+.. py:function:: hash_file(path, algorithm='sha256')
+
+.. py:function:: hash_parse(string)
+
+.. py:class:: Index(path)
+
+   .. py:method:: rebuild()
+
+
+   .. py:method:: refresh()
+
+
+   .. py:method:: all_metadata() -> Dict[str, outpack.metadata.MetadataCore]
+
+
+   .. py:method:: metadata(id) -> outpack.metadata.MetadataCore
+
+
+   .. py:method:: all_locations() -> Dict[str, Dict[str, outpack.metadata.PacketLocation]]
+
+
+   .. py:method:: location(name) -> Dict[str, outpack.metadata.PacketLocation]
+
+
+   .. py:method:: packets_in_location(name) -> List[str]
+
+
+   .. py:method:: unpacked() -> List[str]
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+.. py:function:: validate(instance, schema_name)
+
+.. py:function:: find_file_descend(filename, path)
 
 .. py:class:: OutpackRoot(path)
 
-
    .. py:attribute:: files
-      :type: Optional[outpack.filestore.FileStore]
+      :type:  Optional[outpack.filestore.FileStore]
+      :value: None
 
-      
+
 
    .. py:method:: export_file(id, there, here, dest)
 
 
-
 .. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
-
 
 .. py:function:: find_file_by_hash(root, hash)
 
-
 .. py:function:: mark_known(root, packet_id, location, hash, time)
-
 

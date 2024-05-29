@@ -1,38 +1,116 @@
-:py:mod:`outpack.location_driver`
-=================================
+outpack.location_driver
+=======================
 
 .. py:module:: outpack.location_driver
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.location_driver.MetadataCore
+   outpack.location_driver.PacketFile
+   outpack.location_driver.PacketLocation
+   outpack.location_driver.LocationDriver
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:class:: MetadataCore
 
-.. autoapisummary::
-
-   outpack.location_driver.LocationDriver
+   .. py:attribute:: schema_version
+      :type:  str
 
 
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:class:: PacketFile
+
+   .. py:attribute:: path
+      :type:  str
+
+
+   .. py:attribute:: size
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
+
+
+
+.. py:class:: PacketLocation
+
+   .. py:attribute:: packet
+      :type:  str
+
+
+   .. py:attribute:: time
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
 
 
 .. py:class:: LocationDriver
 
-
    Bases: :py:obj:`contextlib.AbstractContextManager`
+
 
    A location implementation.
 
    The driver object is treated as a context manager and is entered and exited
    before and after its methods are called.
 
+
    .. py:method:: list() -> Dict[str, outpack.metadata.PacketLocation]
       :abstractmethod:
 
 
+
    .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
       :abstractmethod:
+
 
 
    .. py:method:: fetch_file(packet: outpack.metadata.MetadataCore, file: outpack.metadata.PacketFile, dest: str) -> None

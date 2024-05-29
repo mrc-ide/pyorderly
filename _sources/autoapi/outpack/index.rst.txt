@@ -1,45 +1,45 @@
-:py:mod:`outpack`
-=================
+outpack
+=======
 
 .. py:module:: outpack
 
 
 Subpackages
 -----------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 3
 
-   schema/index.rst
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/outpack/schema/index
 
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   __about__/index.rst
-   config/index.rst
-   copy_files/index.rst
-   filestore/index.rst
-   hash/index.rst
-   ids/index.rst
-   index/index.rst
-   init/index.rst
-   location/index.rst
-   location_driver/index.rst
-   location_path/index.rst
-   location_pull/index.rst
-   location_ssh/index.rst
-   metadata/index.rst
-   packet/index.rst
-   root/index.rst
-   sandbox/index.rst
-   search/index.rst
-   search_options/index.rst
-   static/index.rst
-   tools/index.rst
-   util/index.rst
+   /autoapi/outpack/__about__/index
+   /autoapi/outpack/config/index
+   /autoapi/outpack/copy_files/index
+   /autoapi/outpack/filestore/index
+   /autoapi/outpack/hash/index
+   /autoapi/outpack/ids/index
+   /autoapi/outpack/index/index
+   /autoapi/outpack/init/index
+   /autoapi/outpack/location/index
+   /autoapi/outpack/location_driver/index
+   /autoapi/outpack/location_path/index
+   /autoapi/outpack/location_pull/index
+   /autoapi/outpack/location_ssh/index
+   /autoapi/outpack/metadata/index
+   /autoapi/outpack/packet/index
+   /autoapi/outpack/root/index
+   /autoapi/outpack/sandbox/index
+   /autoapi/outpack/search/index
+   /autoapi/outpack/search_options/index
+   /autoapi/outpack/static/index
+   /autoapi/outpack/tools/index
+   /autoapi/outpack/util/index
 
 

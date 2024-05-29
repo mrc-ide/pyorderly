@@ -1,24 +1,54 @@
-:py:mod:`outpack.filestore`
-===========================
+outpack.filestore
+=================
 
 .. py:module:: outpack.filestore
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.filestore.Hash
+   outpack.filestore.FileStore
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.filestore.hash_parse
+   outpack.filestore.hash_validate_file
+   outpack.filestore.openable_temporary_file
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:class:: Hash
 
-.. autoapisummary::
-
-   outpack.filestore.FileStore
+   .. py:attribute:: algorithm
+      :type:  str
 
 
+   .. py:attribute:: value
+      :type:  str
 
+
+   .. py:method:: __str__()
+
+      Return str(self).
+
+
+
+.. py:function:: hash_parse(string)
+
+.. py:function:: hash_validate_file(path, expected, body=None)
+
+.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
 
 .. py:class:: FileStore(path)
-
 
    .. py:method:: filename(hash)
 
@@ -39,6 +69,5 @@ Classes
 
 
    .. py:method:: tmp()
-
 
 

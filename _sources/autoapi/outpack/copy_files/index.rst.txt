@@ -1,53 +1,163 @@
-:py:mod:`outpack.copy_files`
-============================
+outpack.copy_files
+==================
 
 .. py:module:: outpack.copy_files
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.copy_files.PacketFile
+   outpack.copy_files.OutpackRoot
+   outpack.copy_files.SearchOptions
+   outpack.copy_files.Plan
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.copy_files.location_build_pull_plan
+   outpack.copy_files.location_pull_files
+   outpack.copy_files.copy_files
+   outpack.copy_files.copy_files_from_remote
 
 
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+.. py:function:: location_build_pull_plan(packet_ids: List[str], locations: Optional[List[str]], *, files: Optional[Dict[str, List[str]]] = None, recursive: bool, root: outpack.root.OutpackRoot) -> LocationPullPlan
 
-.. autoapisummary::
+   Create a plan to pull packets from one or more locations.
 
-   outpack.copy_files.Plan
+   Parameters
+   ----------
+   packet_ids :
+       A list of packet IDs to pull.
+
+   locations :
+       A list of location names from which to pull packets. If None, all
+       configured locations will be considered.
+
+   files :
+       A filter restricting, for each packet, which file hashes to pull. This
+       allows a subset of a packet's files to pulled. If None, or if a packet
+       ID is mising from the dictionary, the entire packet is pulled.
+
+   recursive :
+       If True, all transitive dependencies of the requested packets will be
+       pulled as well.
+
+   root :
+       The root object used to determine the location configuration and which
+       files are missing and need pulling.
+
+
+.. py:function:: location_pull_files(files: List[outpack.metadata.PacketFileWithLocation], root: outpack.root.OutpackRoot) -> Generator[outpack.filestore.FileStore, None, None]
+
+.. py:class:: PacketFile
+
+   .. py:attribute:: path
+      :type:  str
+
+
+   .. py:attribute:: size
+      :type:  float
+
+
+   .. py:attribute:: hash
+      :type:  str
+
+
+   .. py:method:: from_file(directory, path, hash_algorithm)
+      :staticmethod:
 
 
 
-Functions
-~~~~~~~~~
+.. py:class:: OutpackRoot(path)
 
-.. autoapisummary::
+   .. py:attribute:: files
+      :type:  Optional[outpack.filestore.FileStore]
+      :value: None
 
-   outpack.copy_files.copy_files
-   outpack.copy_files.copy_files_from_remote
+
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+.. py:class:: SearchOptions
+
+   Control over how outpack will search for packets.
+
+   Attributes
+   ----------
+   location : array of strings, optional
+       Locations that will be included for search. If `None`, then all
+       known locations will be included
+   allow_remote : bool
+       Indicates if we will consider packets that are only available
+       remotely to be found.
+   pull_metadata : bool
+       Indicates if we will pull metadata from the locations before
+       searching
+
+
+   .. py:attribute:: location
+      :type:  Optional[List[str]]
+      :value: None
+
+
+
+   .. py:attribute:: allow_remote
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: pull_metadata
+      :type:  bool
+      :value: False
+
+
+
+   .. py:method:: create(obj)
+      :staticmethod:
+
+
+      Construct a `SearchOptions` object from some object.
+
+      Parameters
+      ----------
+      obj : any
+          Typically this will be `None` (default construct the
+          `SearchOptions` object), a `SearchOptions` object or a `dict`
+          with some of the fields present in `SearchOptions`. An
+          `TypeError` is thrown if any other type is passed.
+
+      Returns
+      -------
+      A new `SearchOptions` object.
 
 
 
 .. py:class:: Plan
 
-
    .. py:attribute:: id
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: name
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: files
-      :type: Dict[str, outpack.metadata.PacketFile]
-
-      
+      :type:  Dict[str, outpack.metadata.PacketFile]
 
 
 .. py:function:: copy_files(id: str, files: Dict[str, str], dest: pathlib.Path, options: outpack.search_options.SearchOptions, root: outpack.root.OutpackRoot) -> Plan
 
-
 .. py:function:: copy_files_from_remote(id: str, files: Dict[str, outpack.metadata.PacketFile], dest: pathlib.Path, options: outpack.search_options.SearchOptions, root: outpack.root.OutpackRoot)
-
 

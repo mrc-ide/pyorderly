@@ -1,22 +1,52 @@
-:py:mod:`outpack.init`
-======================
+outpack.init
+============
 
 .. py:module:: outpack.init
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.init.Config
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   outpack.init.read_config
+   outpack.init.write_config
+   outpack.init.outpack_init
 
 
 Module Contents
 ---------------
 
+.. py:class:: Config
 
-Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   outpack.init.outpack_init
+   .. py:attribute:: schema_version
+      :type:  str
 
 
+   .. py:attribute:: core
+      :type:  ConfigCore
+
+
+   .. py:attribute:: location
+      :type:  Dict[str, Location]
+
+
+   .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)
+      :staticmethod:
+
+
+
+.. py:function:: read_config(root_path)
+
+.. py:function:: write_config(config, root_path)
 
 .. py:function:: outpack_init(path, *, path_archive='archive', use_file_store=False, require_complete_tree=False)
-
 

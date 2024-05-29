@@ -1,28 +1,39 @@
-:py:mod:`outpack.search`
-========================
+outpack.search
+==============
 
 .. py:module:: outpack.search
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
+Attributes
+----------
 
 .. autoapisummary::
 
+   outpack.search.Parameters
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   outpack.search.MetadataCore
+   outpack.search.OutpackRoot
+   outpack.search.SearchOptions
    outpack.search.Query
    outpack.search.QueryEnv
    outpack.search.QueryIndex
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
+   outpack.search.is_outpack_id
+   outpack.search.location_resolve_valid
+   outpack.search.outpack_location_pull_metadata
+   outpack.search.root_open
    outpack.search.as_query
    outpack.search.search
    outpack.search.search_unique
@@ -36,27 +47,145 @@ Functions
    outpack.search.eval_query
 
 
+Module Contents
+---------------
+
+.. py:function:: is_outpack_id(x: str)
+
+.. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
+
+.. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
+
+.. py:class:: MetadataCore
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: parameters
+      :type:  Parameters
+
+
+   .. py:attribute:: time
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: files
+      :type:  List[PacketFile]
+
+
+   .. py:attribute:: depends
+      :type:  List[PacketDepends]
+
+
+   .. py:attribute:: git
+      :type:  Optional[outpack.tools.GitInfo]
+
+
+   .. py:attribute:: custom
+      :type:  Optional[dict]
+
+
+   .. py:method:: file_hash(name)
+
+
+.. py:data:: Parameters
+
+.. py:class:: OutpackRoot(path)
+
+   .. py:attribute:: files
+      :type:  Optional[outpack.filestore.FileStore]
+      :value: None
+
+
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:class:: SearchOptions
+
+   Control over how outpack will search for packets.
+
+   Attributes
+   ----------
+   location : array of strings, optional
+       Locations that will be included for search. If `None`, then all
+       known locations will be included
+   allow_remote : bool
+       Indicates if we will consider packets that are only available
+       remotely to be found.
+   pull_metadata : bool
+       Indicates if we will pull metadata from the locations before
+       searching
+
+
+   .. py:attribute:: location
+      :type:  Optional[List[str]]
+      :value: None
+
+
+
+   .. py:attribute:: allow_remote
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: pull_metadata
+      :type:  bool
+      :value: False
+
+
+
+   .. py:method:: create(obj)
+      :staticmethod:
+
+
+      Construct a `SearchOptions` object from some object.
+
+      Parameters
+      ----------
+      obj : any
+          Typically this will be `None` (default construct the
+          `SearchOptions` object), a `SearchOptions` object or a `dict`
+          with some of the fields present in `SearchOptions`. An
+          `TypeError` is thrown if any other type is passed.
+
+      Returns
+      -------
+      A new `SearchOptions` object.
+
+
 
 .. py:class:: Query
 
-
    .. py:attribute:: text
-      :type: str
+      :type:  str
 
-      
 
    .. py:attribute:: node
-      :type: Any
+      :type:  Any
 
-      
 
    .. py:method:: __str__()
 
       Return str(self).
 
 
+
    .. py:method:: parse(text)
       :classmethod:
+
 
 
    .. py:method:: is_single_valued()
@@ -70,29 +199,21 @@ Functions
 
 .. py:class:: QueryEnv(root: outpack.root.OutpackRoot, options: outpack.search_options.SearchOptions, this: Optional[outpack.metadata.Parameters])
 
-
-
 .. py:class:: QueryIndex(root, options)
 
-
    .. py:attribute:: root
-      :type: outpack.root.OutpackRoot
+      :type:  outpack.root.OutpackRoot
 
-      
 
    .. py:attribute:: index
-      :type: Dict[str, outpack.metadata.MetadataCore]
+      :type:  Dict[str, outpack.metadata.MetadataCore]
 
-      
 
    .. py:attribute:: options
-      :type: outpack.search_options.SearchOptions
-
-      
+      :type:  outpack.search_options.SearchOptions
 
 
 .. py:function:: as_query(query: Union[Query, str]) -> Query
-
 
 .. py:function:: search(query: Union[Query, str], *, root: Union[outpack.root.OutpackRoot, str, os.PathLike], options: Optional[outpack.search_options.SearchOptions] = None, this: Optional[outpack.metadata.Parameters] = None) -> Set[str]
 
@@ -111,25 +232,17 @@ Functions
 
 .. py:function:: eval_test_value(node, env: QueryEnv, metadata: outpack.metadata.MetadataCore) -> Optional[Union[bool, int, float, str]]
 
-
 .. py:function:: eval_latest(node: outpack_query_parser.Latest, env: QueryEnv) -> Set[str]
-
 
 .. py:function:: eval_single(node: outpack_query_parser.Single, env: QueryEnv) -> Set[str]
 
-
 .. py:function:: eval_test_one(node: outpack_query_parser.Test, env: QueryEnv, metadata: outpack.metadata.MetadataCore) -> bool
-
 
 .. py:function:: eval_test(node: outpack_query_parser.Test, env: QueryEnv) -> Set[str]
 
-
 .. py:function:: eval_boolean(node: outpack_query_parser.BooleanExpr, env: QueryEnv) -> Set[str]
-
 
 .. py:function:: eval_negation(node: outpack_query_parser.Negation, env: QueryEnv) -> Set[str]
 
-
 .. py:function:: eval_query(node, env: QueryEnv) -> Set[str]
-
 

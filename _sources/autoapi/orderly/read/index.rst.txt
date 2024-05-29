@@ -1,37 +1,32 @@
-:py:mod:`orderly.read`
-======================
+orderly.read
+============
 
 .. py:module:: orderly.read
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    orderly.read.Visitor
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
    orderly.read.orderly_read
 
 
+Module Contents
+---------------
 
 .. py:function:: orderly_read(path)
 
-
 .. py:class:: Visitor
 
-
    .. py:method:: read_body(stmts)
-
 
 
