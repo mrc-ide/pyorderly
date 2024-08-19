@@ -1,6 +1,6 @@
-import orderly
+import pyorderly
 
-orderly.resource("numbers.txt")
+pyorderly.resource("numbers.txt")
 with open("numbers.txt") as f:
     dat = [int(x) for x in f.readlines()]
 

@@ -1,4 +1,4 @@
-import orderly
+import pyorderly
 from helpers import get_description  # type: ignore
 
-orderly.description(display=get_description())
+pyorderly.description(display=get_description())

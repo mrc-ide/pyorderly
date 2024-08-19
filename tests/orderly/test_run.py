@@ -2,18 +2,18 @@ import multiprocessing
 import os
 
 import pytest
-from orderly.run import (
+from pyorderly.run import (
     _validate_parameters,
     _validate_src_directory,
     orderly_run,
 )
 from pytest_unordered import unordered
 
-from outpack.location import outpack_location_add_path
-from outpack.location_pull import outpack_location_pull_metadata
-from outpack.metadata import PacketDepends, PacketDependsPath
-from outpack.search_options import SearchOptions
-from outpack.util import transient_working_directory
+from pyorderly.outpack.location import outpack_location_add_path
+from pyorderly.outpack.location_pull import outpack_location_pull_metadata
+from pyorderly.outpack.metadata import PacketDepends, PacketDependsPath
+from pyorderly.outpack.search_options import SearchOptions
+from pyorderly.outpack.util import transient_working_directory
 
 from .. import helpers
 
@@ -159,8 +159,8 @@ def test_can_use_explicit_resource_directory(tmp_path):
     helpers.write_file(report / "data" / "numbers.txt", "1\n2\n3\n")
 
     code = """
-import orderly
-orderly.resource("data")
+import pyorderly
+pyorderly.resource("data")
 with open("data/numbers.txt") as f:
     return str(sum(map(int, f.readlines())))
 """
@@ -194,8 +194,8 @@ with open("report.py", "w") as f:
 def test_error_if_resource_is_modified(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
     code = """
-import orderly
-orderly.resource("data.txt")
+import pyorderly
+pyorderly.resource("data.txt")
 with open("data.txt", "w") as f:
     f.write("new data")
 """
@@ -242,8 +242,8 @@ def test_can_error_if_artefacts_not_produced(tmp_path):
     root = helpers.create_temporary_root(tmp_path)
 
     code = """
-import orderly
-orderly.artefact("something", "a")
+import pyorderly
+pyorderly.artefact("something", "a")
 """
     with pytest.raises(
         Exception, match="Script did not produce the expected artefacts: 'a'"
@@ -251,9 +251,9 @@ orderly.artefact("something", "a")
         helpers.run_snippet("report", code, root)
 
     code = """
-import orderly
-orderly.artefact("something", "a")
-orderly.artefact("something", ["c", "b"])
+import pyorderly
+pyorderly.artefact("something", "a")
+pyorderly.artefact("something", ["c", "b"])
 """
     with pytest.raises(
         Exception,

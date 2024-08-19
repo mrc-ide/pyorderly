@@ -1,3 +1,3 @@
-import orderly
+import pyorderly
 
-orderly.description(display="Some report")
+pyorderly.description(display="Some report")
