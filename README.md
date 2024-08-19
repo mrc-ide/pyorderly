@@ -1,7 +1,7 @@
-# outpack
+# pyorderly
 
-[![PyPI - Version](https://img.shields.io/pypi/v/outpack.svg)](https://pypi.org/project/outpack)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/outpack.svg)](https://pypi.org/project/outpack)
+[![PyPI - Version](https://img.shields.io/pypi/v/pyorderly.svg)](https://pypi.org/project/pyorderly)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyorderly.svg)](https://pypi.org/project/pyorderly)
 
 -----
 
@@ -13,7 +13,7 @@
 ## Installation
 
 ```console
-pip install outpack
+pip install pyorderly
 ```
 
 ## Development
@@ -33,7 +33,7 @@ hatch run lint:fmt
 The outpack query parser is implemented in Rust as part of the
 [outpack_server](https://github.com/mrc-ide/outpack_server) repository. When
 developing new features in the query parser, they can be tested out in your
-development environment of `outpack-py` by installing the parser from your local
+development environment of `pyorderly` by installing the parser from your local
 checkout:
 
 ```
@@ -43,4 +43,4 @@ hatch run pip install /path/to/outpack_server
 
 ## License
 
-`outpack` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`pyorderly` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.

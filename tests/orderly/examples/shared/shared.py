@@ -1,6 +1,6 @@
-import orderly
+import pyorderly
 
-orderly.shared_resource({"shared_data.txt": "numbers.txt"})
+pyorderly.shared_resource({"shared_data.txt": "numbers.txt"})
 
 with open("shared_data.txt") as f:
     dat = [int(x) for x in f.readlines()]

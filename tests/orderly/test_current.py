@@ -1,5 +1,6 @@
 import pytest
-from orderly.current import detect_orderly_interactive_root
+
+from pyorderly.current import detect_orderly_interactive_root
 
 from .. import helpers
 

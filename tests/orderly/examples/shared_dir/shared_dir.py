@@ -1,8 +1,8 @@
 from operator import mul
 
-import orderly
+import pyorderly
 
-orderly.shared_resource({"shared_data": "data"})
+pyorderly.shared_resource({"shared_data": "data"})
 
 with open("shared_data/numbers.txt") as f:
     numbers = [float(x) for x in f.readlines()]

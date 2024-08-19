@@ -14,7 +14,7 @@ schema_version <-
   jsonlite::read_json(file.path(tmp, "schema", "config.json"))$version
 
 fs::dir_copy(file.path(tmp, "schema"), dest)
-writeLines(c("# Imported from outpack",
+writeLines(c("# Imported from pyorderly.outpack",
              "",
              sprintf("* Schema version %s", schema_version),
              sprintf("* Imported on %s", Sys.time()),

@@ -1,12 +1,12 @@
 import os
 
-import orderly
 import pytest
-from orderly.current import ActiveOrderlyContext
-from orderly.run import orderly_run
 
-from outpack.packet import Packet
-from outpack.util import transient_working_directory
+import pyorderly
+from pyorderly.current import ActiveOrderlyContext
+from pyorderly.outpack.packet import Packet
+from pyorderly.outpack.util import transient_working_directory
+from pyorderly.run import orderly_run
 
 from .. import helpers
 
@@ -17,18 +17,18 @@ def test_resource_requires_that_files_exist_with_no_packet(tmp_path):
     src.mkdir(parents=True)
     with transient_working_directory(src):
         with pytest.raises(Exception, match="File does not exist:"):
-            orderly.resource("a")
+            pyorderly.resource("a")
 
     (src / "a").touch()
     with transient_working_directory(src):
-        res = orderly.resource("a")
+        res = pyorderly.resource("a")
     assert res == ["a"]
 
 
 def test_resource_requires_relative_paths(tmp_path):
     (tmp_path / "a").touch()
     with pytest.raises(Exception, match="to be a relative path"):
-        orderly.resource(str(tmp_path / "a"))
+        pyorderly.resource(str(tmp_path / "a"))
 
 
 def test_resource_expands_lists_with_no_packet(tmp_path):
@@ -37,7 +37,7 @@ def test_resource_expands_lists_with_no_packet(tmp_path):
     helpers.touch_files(src / "a" / "x", src / "a" / "y")
 
     with transient_working_directory(src):
-        res = orderly.resource("a")
+        res = pyorderly.resource("a")
     assert set(res) == {os.path.join("a", "x"), os.path.join("a", "y")}
 
 
@@ -49,7 +49,7 @@ def test_resource_requires_file_exists_with_packet(tmp_path):
     p = Packet(root, src, "tmp")
     with ActiveOrderlyContext(p, src) as active:
         with transient_working_directory(src):
-            res = orderly.resource(["a"])
+            res = pyorderly.resource(["a"])
 
     assert active.resources == res
 
@@ -61,7 +61,7 @@ def test_shared_resource_can_copy_single_name(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = orderly.shared_resource("numbers.txt")
+        res = pyorderly.shared_resource("numbers.txt")
 
     assert (src / "numbers.txt").exists()
     assert res == {"numbers.txt": "numbers.txt"}
@@ -76,7 +76,7 @@ def test_shared_resource_can_copy_multiple_names(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = orderly.shared_resource(["numbers.txt", "data"])
+        res = pyorderly.shared_resource(["numbers.txt", "data"])
 
     assert (src / "numbers.txt").exists()
     assert (src / "data" / "weights.txt").exists()
@@ -95,7 +95,7 @@ def test_shared_resource_can_rename_files_when_copying(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = orderly.shared_resource(
+        res = pyorderly.shared_resource(
             {
                 "foo.txt": "numbers.txt",
                 "bar.txt": os.path.join("data", "weights.txt"),
@@ -123,7 +123,7 @@ def test_shared_resource_requires_relative_paths(tmp_path):
 
     with transient_working_directory(src):
         with pytest.raises(Exception, match="to be a relative path"):
-            orderly.shared_resource(str(tmp_path / "shared" / "numbers.txt"))
+            pyorderly.shared_resource(str(tmp_path / "shared" / "numbers.txt"))
 
 
 def test_artefact_is_allowed_without_packet(tmp_path):
@@ -131,7 +131,7 @@ def test_artefact_is_allowed_without_packet(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = orderly.artefact("a", "b")
+        res = pyorderly.artefact("a", "b")
     assert res == ["b"]
 
 
@@ -141,7 +141,7 @@ def test_can_add_description(tmp_path):
     src.mkdir()
     p = Packet(root, src, "tmp")
     with ActiveOrderlyContext(p, src) as active:
-        orderly.description(
+        pyorderly.description(
             long="long description",
             display="display description",
             custom={"a": 1, "b": "foo"},
@@ -157,9 +157,9 @@ def test_cant_add_description_twice(tmp_path):
     src.mkdir(parents=True)
     p = Packet(root, src, "tmp")
     with ActiveOrderlyContext(p, src):
-        orderly.description(long="long description")
+        pyorderly.description(long="long description")
         with pytest.raises(Exception, match="Only one call to 'description'"):
-            orderly.description(display="display description")
+            pyorderly.description(display="display description")
 
 
 def test_can_run_description_without_packet_with_no_effect(tmp_path):
@@ -167,7 +167,7 @@ def test_can_run_description_without_packet_with_no_effect(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = orderly.description(
+        res = pyorderly.description(
             long="long description",
             display="display description",
             custom={"a": 1, "b": "foo"},
@@ -185,7 +185,7 @@ def test_can_use_dependency(tmp_path):
     with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             files = {"input.txt": "result.txt"}
-            result = orderly.dependency(None, "latest", files)
+            result = pyorderly.dependency(None, "latest", files)
 
     assert result.id == id1
     assert result.name == "data"
@@ -203,7 +203,7 @@ def test_dependency_must_have_empty_name(tmp_path):
     with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
             with pytest.raises(Exception, match="'name' must be None"):
-                orderly.dependency("data", "latest", {})
+                pyorderly.dependency("data", "latest", {})
 
 
 def test_can_use_dependency_without_packet(tmp_path):
@@ -213,7 +213,7 @@ def test_can_use_dependency_without_packet(tmp_path):
     src = tmp_path / "src" / "depends"
     with transient_working_directory(src):
         files = {"input.txt": "result.txt"}
-        result = orderly.dependency(None, "latest", files)
+        result = pyorderly.dependency(None, "latest", files)
 
     assert result.id == id1
     assert result.name == "data"
@@ -230,8 +230,8 @@ def test_can_use_parameters(tmp_path):
     p = Packet(root, src, "tmp", parameters={"x": 1, "y": "foo"})
     with ActiveOrderlyContext(p, src):
         with transient_working_directory(src):
-            params = orderly.parameters(x=None, y=None)
-            assert params == orderly.Parameters(x=1, y="foo")
+            params = pyorderly.parameters(x=None, y=None)
+            assert params == pyorderly.Parameters(x=1, y="foo")
 
 
 def test_can_use_parameters_without_packet(tmp_path):
@@ -240,15 +240,15 @@ def test_can_use_parameters_without_packet(tmp_path):
     src.mkdir(parents=True)
 
     with transient_working_directory(src):
-        p = orderly.parameters(x=1, y="foo")
-        assert p == orderly.Parameters(x=1, y="foo")
+        p = pyorderly.parameters(x=1, y="foo")
+        assert p == pyorderly.Parameters(x=1, y="foo")
 
         with pytest.raises(
             Exception, match="No value was specified for parameter x."
         ):
-            orderly.parameters(x=None, y="foo")
+            pyorderly.parameters(x=None, y="foo")
 
         with pytest.raises(
             Exception, match="No value was specified for parameters x, y."
         ):
-            orderly.parameters(x=None, y=None)
+            pyorderly.parameters(x=None, y=None)

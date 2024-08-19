@@ -47,7 +47,7 @@ jobs:
       - name: Test install
         run: |
           pip install .
-          python -c "import orderly; import outpack"
+          python -c "import pyorderly"
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4
         with:
