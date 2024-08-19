@@ -174,7 +174,7 @@ ban-relative-imports = "all"
 convention = "numpy"
 
 [tool.coverage.run]
-source_pkgs = ["pyorderly", "pyorderly.outpack", "tests"]
+source_pkgs = ["pyorderly", "tests"]
 branch = true
 parallel = true
 
