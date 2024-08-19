@@ -79,8 +79,6 @@ class FileStore:
             if not os.access(path, os.W_OK):
                 os.chmod(path, stat.S_IWUSR)
                 func(path)
-            else:
-                raise
 
         shutil.rmtree(self._path, onerror=onerror)
 

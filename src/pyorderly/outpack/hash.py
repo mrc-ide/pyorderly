@@ -28,7 +28,7 @@ def hash_string(data, algorithm):
 
 
 def hash_parse(string):
-    if type(string) == Hash:
+    if isinstance(string, Hash):
         return string
     return Hash(*string.split(":"))
 

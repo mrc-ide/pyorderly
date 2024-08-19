@@ -29,5 +29,7 @@ def outpack_schema_version():
 
 
 def read_schema(name):
-    schema = importlib_resources.files("pyorderly.outpack.schema").joinpath(name)
+    schema = importlib_resources.files("pyorderly.outpack.schema").joinpath(
+        name
+    )
     return schema.read_text()

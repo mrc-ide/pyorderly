@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 from typing import List, Optional
 
 import pytest
-from pyorderly.run import orderly_run
+
 from pyorderly.outpack.init import outpack_init
 from pyorderly.outpack.location import outpack_location_add_path
 from pyorderly.outpack.metadata import MetadataCore, PacketDepends
@@ -17,6 +17,7 @@ from pyorderly.outpack.packet import Packet, insert_packet
 from pyorderly.outpack.root import root_open
 from pyorderly.outpack.schema import outpack_schema_version
 from pyorderly.outpack.util import openable_temporary_file
+from pyorderly.run import orderly_run
 
 from .ssh_server import SSHServer  # noqa: F401
 

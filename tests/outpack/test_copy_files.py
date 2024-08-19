@@ -2,7 +2,11 @@ import re
 
 import pytest
 
-from pyorderly.outpack.copy_files import _plan_copy_files, _validate_files, copy_files
+from pyorderly.outpack.copy_files import (
+    _plan_copy_files,
+    _validate_files,
+    copy_files,
+)
 from pyorderly.outpack.location_pull import outpack_location_pull_metadata
 from pyorderly.outpack.search_options import SearchOptions
 

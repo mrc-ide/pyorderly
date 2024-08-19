@@ -5,13 +5,13 @@ from typing import Tuple
 
 from pyorderly.core import Description
 from pyorderly.current import ActiveOrderlyContext, OrderlyCustomMetadata
-from pyorderly.read import orderly_read
 from pyorderly.outpack.ids import outpack_id
 from pyorderly.outpack.metadata import MetadataCore
 from pyorderly.outpack.packet import Packet, insert_packet
 from pyorderly.outpack.root import root_open
 from pyorderly.outpack.sandbox import run_in_sandbox
 from pyorderly.outpack.util import all_normal_files
+from pyorderly.read import orderly_read
 
 
 def orderly_run(

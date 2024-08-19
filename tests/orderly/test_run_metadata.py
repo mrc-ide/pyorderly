@@ -1,12 +1,12 @@
 import os
 
 import pytest
+
 import pyorderly
 from pyorderly.current import ActiveOrderlyContext
-from pyorderly.run import orderly_run
-
 from pyorderly.outpack.packet import Packet
 from pyorderly.outpack.util import transient_working_directory
+from pyorderly.run import orderly_run
 
 from .. import helpers
 

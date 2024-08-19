@@ -3,7 +3,12 @@ import time
 from pathlib import Path
 
 from pyorderly.outpack.copy_files import copy_files
-from pyorderly.outpack.hash import hash_file, hash_parse, hash_string, hash_validate_file
+from pyorderly.outpack.hash import (
+    hash_file,
+    hash_parse,
+    hash_string,
+    hash_validate_file,
+)
 from pyorderly.outpack.ids import outpack_id, validate_outpack_id
 from pyorderly.outpack.location_pull import outpack_location_pull_packet
 from pyorderly.outpack.metadata import (

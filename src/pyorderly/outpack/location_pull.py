@@ -19,7 +19,12 @@ from pyorderly.outpack.metadata import (
     PacketFileWithLocation,
     PacketLocation,
 )
-from pyorderly.outpack.root import OutpackRoot, find_file_by_hash, mark_known, root_open
+from pyorderly.outpack.root import (
+    OutpackRoot,
+    find_file_by_hash,
+    mark_known,
+    root_open,
+)
 from pyorderly.outpack.search_options import SearchOptions
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import format_list, partition, pl

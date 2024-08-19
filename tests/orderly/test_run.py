@@ -2,11 +2,6 @@ import multiprocessing
 import os
 
 import pytest
-from pyorderly.run import (
-    _validate_parameters,
-    _validate_src_directory,
-    orderly_run,
-)
 from pytest_unordered import unordered
 
 from pyorderly.outpack.location import outpack_location_add_path
@@ -14,6 +9,11 @@ from pyorderly.outpack.location_pull import outpack_location_pull_metadata
 from pyorderly.outpack.metadata import PacketDepends, PacketDependsPath
 from pyorderly.outpack.search_options import SearchOptions
 from pyorderly.outpack.util import transient_working_directory
+from pyorderly.run import (
+    _validate_parameters,
+    _validate_src_directory,
+    orderly_run,
+)
 
 from .. import helpers
 

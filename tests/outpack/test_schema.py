@@ -3,7 +3,11 @@ import json
 import pytest
 from jsonschema.exceptions import ValidationError
 
-from pyorderly.outpack.schema import outpack_schema_version, read_schema, validate
+from pyorderly.outpack.schema import (
+    outpack_schema_version,
+    read_schema,
+    validate,
+)
 
 
 def test_can_read_schema():
