@@ -1,0 +1,53 @@
+pyorderly.outpack.root
+======================
+
+.. py:module:: pyorderly.outpack.root
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.root.OutpackRoot
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.root.root_open
+   pyorderly.outpack.root.find_file_by_hash
+   pyorderly.outpack.root.mark_known
+
+
+Module Contents
+---------------
+
+.. py:class:: OutpackRoot(path)
+
+   .. py:attribute:: files
+      :type:  Optional[pyorderly.outpack.filestore.FileStore]
+      :value: None
+
+
+
+   .. py:attribute:: path
+
+
+   .. py:attribute:: config
+
+
+   .. py:attribute:: index
+
+
+   .. py:method:: export_file(id, there, here, dest)
+
+
+.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+
+.. py:function:: find_file_by_hash(root, hash)
+
+.. py:function:: mark_known(root, packet_id, location, hash, time)
+

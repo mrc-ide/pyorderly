@@ -1,0 +1,68 @@
+pyorderly.outpack.location_ssh
+==============================
+
+.. py:module:: pyorderly.outpack.location_ssh
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_ssh.OutpackLocationSSH
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_ssh.parse_ssh_url
+
+
+Module Contents
+---------------
+
+.. py:function:: parse_ssh_url(url)
+
+   Parse the URL of an SSH location.
+
+   URLs have the form `ssh://username@hostname:port/path`. The username and
+   port number are optional. By default, the path is interpreted as relative
+   to the remote user's home directory. In order to use an absolute path on
+   the remote server, an additional forward slash must be used, eg.
+   `ssh://hostname//foo/bar`.
+
+
+.. py:class:: OutpackLocationSSH(url: str, known_hosts=None, password=None)
+
+   Bases: :py:obj:`pyorderly.outpack.location_driver.LocationDriver`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+
+   .. py:method:: __exit__(*args)
+
+      Raise any exception triggered within the runtime context.
+
+
+
+   .. py:method:: list() -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(packet: pyorderly.outpack.metadata.MetadataCore, file: pyorderly.outpack.metadata.PacketFile, dest: str)
+
+

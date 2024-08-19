@@ -1,0 +1,66 @@
+pyorderly.outpack.index
+=======================
+
+.. py:module:: pyorderly.outpack.index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.index.IndexData
+   pyorderly.outpack.index.Index
+
+
+Module Contents
+---------------
+
+.. py:class:: IndexData
+
+   .. py:attribute:: metadata
+      :type:  Dict[str, pyorderly.outpack.metadata.MetadataCore]
+
+
+   .. py:attribute:: location
+      :type:  Dict[str, Dict[str, pyorderly.outpack.metadata.PacketLocation]]
+
+
+   .. py:attribute:: unpacked
+      :type:  List[str]
+
+
+   .. py:method:: new()
+      :staticmethod:
+
+
+
+.. py:class:: Index(path)
+
+   .. py:attribute:: data
+
+
+   .. py:method:: rebuild()
+
+
+   .. py:method:: refresh()
+
+
+   .. py:method:: all_metadata() -> Dict[str, pyorderly.outpack.metadata.MetadataCore]
+
+
+   .. py:method:: metadata(id) -> pyorderly.outpack.metadata.MetadataCore
+
+
+   .. py:method:: all_locations() -> Dict[str, Dict[str, pyorderly.outpack.metadata.PacketLocation]]
+
+
+   .. py:method:: location(name) -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+
+
+   .. py:method:: packets_in_location(name) -> List[str]
+
+
+   .. py:method:: unpacked() -> List[str]
+
+

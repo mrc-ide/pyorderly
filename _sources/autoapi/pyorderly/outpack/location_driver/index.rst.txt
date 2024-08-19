@@ -1,0 +1,43 @@
+pyorderly.outpack.location_driver
+=================================
+
+.. py:module:: pyorderly.outpack.location_driver
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_driver.LocationDriver
+
+
+Module Contents
+---------------
+
+.. py:class:: LocationDriver
+
+   Bases: :py:obj:`contextlib.AbstractContextManager`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: list() -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+      :abstractmethod:
+
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+      :abstractmethod:
+
+
+
+   .. py:method:: fetch_file(packet: pyorderly.outpack.metadata.MetadataCore, file: pyorderly.outpack.metadata.PacketFile, dest: str) -> None
+      :abstractmethod:
+
+
+

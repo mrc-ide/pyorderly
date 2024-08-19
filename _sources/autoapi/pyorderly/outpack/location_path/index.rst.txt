@@ -1,0 +1,49 @@
+pyorderly.outpack.location_path
+===============================
+
+.. py:module:: pyorderly.outpack.location_path
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_path.OutpackLocationPath
+
+
+Module Contents
+---------------
+
+.. py:class:: OutpackLocationPath(path)
+
+   Bases: :py:obj:`pyorderly.outpack.location_driver.LocationDriver`
+
+
+   A location implementation.
+
+   The driver object is treated as a context manager and is entered and exited
+   before and after its methods are called.
+
+
+   .. py:method:: __enter__()
+
+      Return `self` upon entering the runtime context.
+
+
+
+   .. py:method:: __exit__(exc_type, exc_value, exc_tb)
+
+      Raise any exception triggered within the runtime context.
+
+
+
+   .. py:method:: list() -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+
+
+   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+
+
+   .. py:method:: fetch_file(_packet: pyorderly.outpack.metadata.MetadataCore, file: pyorderly.outpack.metadata.PacketFile, dest: str)
+
+

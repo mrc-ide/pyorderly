@@ -1,0 +1,19 @@
+pyorderly.run
+=============
+
+.. py:module:: pyorderly.run
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.run.orderly_run
+
+
+Module Contents
+---------------
+
+.. py:function:: orderly_run(name, *, parameters=None, search_options=None, root=None, locate=True)
+

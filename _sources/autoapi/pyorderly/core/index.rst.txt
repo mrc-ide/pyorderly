@@ -1,0 +1,212 @@
+pyorderly.core
+==============
+
+.. py:module:: pyorderly.core
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.core.Artefact
+   pyorderly.core.Description
+   pyorderly.core.Parameters
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.core.parameters
+   pyorderly.core.resource
+   pyorderly.core.shared_resource
+   pyorderly.core.artefact
+   pyorderly.core.description
+   pyorderly.core.dependency
+
+
+Module Contents
+---------------
+
+.. py:class:: Artefact
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: files
+      :type:  List[str]
+
+
+.. py:class:: Description
+
+   .. py:attribute:: display
+      :type:  str
+
+
+   .. py:attribute:: long
+      :type:  str
+
+
+   .. py:attribute:: custom
+      :type:  Dict[str, Union[str, int, bool]]
+
+
+   .. py:method:: empty()
+      :staticmethod:
+
+
+
+.. py:class:: Parameters
+
+   Bases: :py:obj:`types.SimpleNamespace`
+
+
+   A container for parameters used in a report.
+
+   An instance of this class is returned by the `orderly.parameters` function.
+   Individual parameters can be accessed as fields of the object.
+
+   Example:
+
+       >>> params = orderly.parameters(p=1)
+       >>> params.p
+       1
+
+
+.. py:function:: parameters(**kwargs) -> Parameters
+
+   Declare parameters used in a report.
+
+   Parameters
+   ----------
+   kwargs :
+     Keyword mappings of parameter names to default values (or to None
+     if no default is given)
+
+   Returns
+   -------
+   The parameters that were passed to the report. If running outside of an
+   orderly context, this returns kwargs unmodified.
+
+
+.. py:function:: resource(files)
+
+   Declare that a file, or group of files, are an orderly resource.
+
+   By explicitly declaring files as resources, orderly will mark the
+   files as immutable inputs and validate that your analysis does not
+   modify them with 'orderly.run'.
+
+   Parameters
+   ----------
+   files : str|Path or [str|Path]
+
+   Returns
+   -------
+   Nothing, this is called for its side effects within a running packet
+
+
+
+.. py:function:: shared_resource(files: Union[str, List[str], Dict[str, str]]) -> Dict[str, str]
+
+   Copy shared resources into a packet directory.
+
+   You can use this to share common resources (data or code) between multiple
+   packets. Additional metadata will be added to keep track of where the files
+   came from. Using this function requires the shared resources directory
+   `shared/` exists at the orderly root; an error will be
+   raised if this is not configured when we attempt to fetch files.
+
+   Parameters
+   ----------
+   files: str | [str] | dict[str, str]
+       The shared resources to copy. If a dictionary is provided, the keys will
+       be the destination file while the value is the filename within the
+       shared resource directory.
+
+   Returns
+   -------
+       A dictionary of files that were copied. If a directory was copied, this
+       includes all of its individual contents. Do not rely on the ordering
+       where directory expansion was performed, as it may be platform
+       dependent.
+
+
+.. py:function:: artefact(name, files)
+
+   Declare an artefact.
+
+   By doing this you turn on a number of orderly features:
+
+   (1) Files that are artefacts will not be copied from the src
+   directory into the draft directory unless they are also listed as
+   a resource by 'orderly.resource'
+
+   (2) If your script fails to produce these files, then
+   `orderly.run` will fail, guaranteeing that your task really does
+   produce the things you need it do.
+
+   (3) Within the final metadata, your artefacts will have additional
+   metadata; the description that you provide and a grouping.
+
+   Parameters
+   ----------
+   description : str
+       The name of the artefact
+
+   files : str or [str]
+       The file, or array of files, that make up this artefact. These
+       are relative paths.
+
+   Returns
+   -------
+   Nothing, this is called for its side effects within a running packet
+
+
+.. py:function:: description(*, display=None, long=None, custom=None)
+
+   Describe the current report.
+
+   Parameters
+   ----------
+   display : str
+     A friendly name for the report; this will be displayed in some
+     locations of the web interfaces, packit.
+
+   long : str
+     A longer description, perhaps a sentence or two.
+
+   custom : dict
+     Any additional metadata. Must be a dictionary with string keys
+     and string, number or boolean values.
+
+   Returns
+   -------
+   Nothing, this is called for its side effects within a running packet
+
+
+.. py:function:: dependency(name, query, files)
+
+   Declare a dependency on another packet.
+
+   Parameters
+   ----------
+   name: str | None
+     The name of the packet to depend on, or None
+
+   query: str
+     A search query for packets, as a string. For example, "latest",
+     "latest(parameter:x == 'value')" or "20230807-152344-ee606dce"
+
+   files: str | [str] | dict[str, str]
+     Files to use from the dependent packet
+
+   Returns
+   -------
+   Data on the resolved dependency; this is an `orderly.helpers.Plan` object,
+   which contains elements `id`, `name` and `files`
+
+

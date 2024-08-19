@@ -1,0 +1,41 @@
+pyorderly.outpack.tools
+=======================
+
+.. py:module:: pyorderly.outpack.tools
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.tools.GitInfo
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.tools.git_info
+
+
+Module Contents
+---------------
+
+.. py:class:: GitInfo
+
+   .. py:attribute:: sha
+      :type:  str
+
+
+   .. py:attribute:: branch
+      :type:  str
+
+
+   .. py:attribute:: url
+      :type:  List[str]
+
+
+.. py:function:: git_info(path)
+

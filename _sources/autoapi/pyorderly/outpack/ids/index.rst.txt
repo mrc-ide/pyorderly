@@ -1,0 +1,38 @@
+pyorderly.outpack.ids
+=====================
+
+.. py:module:: pyorderly.outpack.ids
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   pyorderly.outpack.ids.RE_ID
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.ids.fractional_to_bytes
+   pyorderly.outpack.ids.outpack_id
+   pyorderly.outpack.ids.is_outpack_id
+   pyorderly.outpack.ids.validate_outpack_id
+
+
+Module Contents
+---------------
+
+.. py:data:: RE_ID
+
+.. py:function:: fractional_to_bytes(x)
+
+.. py:function:: outpack_id()
+
+.. py:function:: is_outpack_id(x: str)
+
+.. py:function:: validate_outpack_id(x: str)
+

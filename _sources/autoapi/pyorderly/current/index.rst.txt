@@ -1,0 +1,112 @@
+pyorderly.current
+=================
+
+.. py:module:: pyorderly.current
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.current.OrderlyCustomMetadata
+   pyorderly.current.OrderlyContext
+   pyorderly.current.ActiveOrderlyContext
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.current.get_active_context
+   pyorderly.current.detect_orderly_interactive_root
+
+
+Module Contents
+---------------
+
+.. py:class:: OrderlyCustomMetadata
+
+   .. py:attribute:: resources
+      :value: []
+
+
+
+   .. py:attribute:: shared_resources
+
+
+   .. py:attribute:: artefacts
+      :value: []
+
+
+
+   .. py:attribute:: description
+      :value: None
+
+
+
+.. py:class:: OrderlyContext
+
+   .. py:attribute:: packet
+      :type:  Optional[pyorderly.outpack.packet.Packet]
+
+
+   .. py:attribute:: path
+      :type:  pathlib.Path
+
+
+   .. py:attribute:: path_src
+      :type:  pathlib.Path
+
+
+   .. py:attribute:: root
+      :type:  pyorderly.outpack.root.OutpackRoot
+
+
+   .. py:attribute:: parameters
+      :type:  dict
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: orderly
+      :type:  OrderlyCustomMetadata
+
+
+   .. py:attribute:: search_options
+      :type:  Optional[pyorderly.outpack.search_options.SearchOptions]
+
+
+   .. py:method:: from_packet(packet, path_src, search_options=None)
+      :staticmethod:
+
+
+
+   .. py:method:: interactive()
+      :staticmethod:
+
+
+
+   .. py:property:: is_active
+
+
+.. py:class:: ActiveOrderlyContext(*args, **kwargs)
+
+   .. py:method:: __enter__()
+
+
+   .. py:method:: __exit__(exc_type, exc_value, exc_tb)
+
+
+   .. py:method:: current()
+      :staticmethod:
+
+
+
+.. py:function:: get_active_context()
+
+.. py:function:: detect_orderly_interactive_root(path)
+

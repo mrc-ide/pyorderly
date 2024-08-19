@@ -1,0 +1,34 @@
+pyorderly.outpack.location
+==========================
+
+.. py:module:: pyorderly.outpack.location
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location.outpack_location_list
+   pyorderly.outpack.location.outpack_location_add
+   pyorderly.outpack.location.outpack_location_add_path
+   pyorderly.outpack.location.outpack_location_remove
+   pyorderly.outpack.location.outpack_location_rename
+   pyorderly.outpack.location.location_resolve_valid
+
+
+Module Contents
+---------------
+
+.. py:function:: outpack_location_list(root=None, *, locate=True)
+
+.. py:function:: outpack_location_add(name, type, args, root=None, *, locate=True)
+
+.. py:function:: outpack_location_add_path(name, path, root=None, *, locate=True)
+
+.. py:function:: outpack_location_remove(name, root=None, *, locate=True)
+
+.. py:function:: outpack_location_rename(old, new, root=None, *, locate=True)
+
+.. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
+

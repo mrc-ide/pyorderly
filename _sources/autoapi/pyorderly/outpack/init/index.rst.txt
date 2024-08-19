@@ -1,0 +1,19 @@
+pyorderly.outpack.init
+======================
+
+.. py:module:: pyorderly.outpack.init
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.init.outpack_init
+
+
+Module Contents
+---------------
+
+.. py:function:: outpack_init(path, *, path_archive='archive', use_file_store=False, require_complete_tree=False)
+

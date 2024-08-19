@@ -1,0 +1,32 @@
+pyorderly.outpack.static
+========================
+
+.. py:module:: pyorderly.outpack.static
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   pyorderly.outpack.static.LOCATION_LOCAL
+   pyorderly.outpack.static.LOCATION_ORPHAN
+   pyorderly.outpack.static.LOCATION_RESERVED_NAME
+   pyorderly.outpack.static.LOCATION_TYPES
+
+
+Module Contents
+---------------
+
+.. py:data:: LOCATION_LOCAL
+   :value: 'local'
+
+
+.. py:data:: LOCATION_ORPHAN
+   :value: 'orphan'
+
+
+.. py:data:: LOCATION_RESERVED_NAME
+
+.. py:data:: LOCATION_TYPES
+

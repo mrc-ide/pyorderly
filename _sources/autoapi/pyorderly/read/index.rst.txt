@@ -1,0 +1,37 @@
+pyorderly.read
+==============
+
+.. py:module:: pyorderly.read
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.read.Visitor
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.read.orderly_read
+
+
+Module Contents
+---------------
+
+.. py:function:: orderly_read(path)
+
+.. py:class:: Visitor
+
+   .. py:attribute:: parameters
+      :value: None
+
+
+
+   .. py:method:: read_body(stmts)
+
+

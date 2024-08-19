@@ -1,0 +1,88 @@
+pyorderly.outpack.util
+======================
+
+.. py:module:: pyorderly.outpack.util
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.util.find_file_descend
+   pyorderly.outpack.util.iso_time_str
+   pyorderly.outpack.util.time_to_num
+   pyorderly.outpack.util.num_to_time
+   pyorderly.outpack.util.all_normal_files
+   pyorderly.outpack.util.transient_working_directory
+   pyorderly.outpack.util.assert_file_exists
+   pyorderly.outpack.util.assert_relative_path
+   pyorderly.outpack.util.expand_dirs
+   pyorderly.outpack.util.match_value
+   pyorderly.outpack.util.relative_path_array
+   pyorderly.outpack.util.relative_path_mapping
+   pyorderly.outpack.util.read_string
+   pyorderly.outpack.util.format_list
+   pyorderly.outpack.util.pl
+   pyorderly.outpack.util.partition
+   pyorderly.outpack.util.openable_temporary_file
+   pyorderly.outpack.util.as_posix_path
+   pyorderly.outpack.util.removeprefix
+
+
+Module Contents
+---------------
+
+.. py:function:: find_file_descend(filename, path)
+
+.. py:function:: iso_time_str(t)
+
+.. py:function:: time_to_num(x)
+
+.. py:function:: num_to_time(x)
+
+.. py:function:: all_normal_files(path)
+
+.. py:function:: transient_working_directory(path)
+
+.. py:function:: assert_file_exists(path, *, workdir=None, name='File')
+
+.. py:function:: assert_relative_path(path: str, name: str)
+
+.. py:function:: expand_dirs(paths, *, workdir=None)
+
+.. py:function:: match_value(arg, choices, name)
+
+.. py:function:: relative_path_array(files: Union[str, List[str]], name: str) -> List[str]
+
+.. py:function:: relative_path_mapping(files: Union[str, List[str], Dict[str, str]], name: str) -> Dict[str, str]
+
+.. py:function:: read_string(path)
+
+.. py:function:: format_list(x)
+
+.. py:function:: pl(x, singular, plural=None)
+
+.. py:function:: partition(pred, iterable)
+
+   Partition entries into false entries and true entries.
+
+   This is slightly modified version of partition from itertools
+   recipes https://docs.python.org/dev/library/itertools.html#itertools-recipes
+   If *pred* is slow, consider wrapping it with functools.lru_cache().
+
+
+.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
+
+.. py:function:: as_posix_path(paths: str) -> str
+                 as_posix_path(paths: List[str]) -> List[str]
+                 as_posix_path(paths: Dict[str, str]) -> Dict[str, str]
+
+   Convert a native path into a posix path.
+
+   This is used when exporting paths into packet metadata, ensuring the
+   produced packets are portable across platforms.
+
+
+.. py:function:: removeprefix(s: str, prefix: str) -> str
+

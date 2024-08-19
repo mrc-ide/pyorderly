@@ -1,0 +1,97 @@
+pyorderly.outpack.config
+========================
+
+.. py:module:: pyorderly.outpack.config
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.config.ConfigCore
+   pyorderly.outpack.config.Location
+   pyorderly.outpack.config.Config
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.config.read_config
+   pyorderly.outpack.config.write_config
+   pyorderly.outpack.config.update_config
+
+
+Module Contents
+---------------
+
+.. py:function:: read_config(root_path)
+
+.. py:function:: write_config(config, root_path)
+
+.. py:function:: update_config(config, root_path)
+
+.. py:class:: ConfigCore
+
+   .. py:attribute:: hash_algorithm
+      :type:  str
+
+
+   .. py:attribute:: path_archive
+      :type:  Optional[str]
+
+
+   .. py:attribute:: use_file_store
+      :type:  bool
+
+
+   .. py:attribute:: require_complete_tree
+      :type:  bool
+
+
+.. py:class:: Location(name, type, args=None)
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: type
+      :type:  str
+
+
+   .. py:attribute:: args
+      :type:  Optional[dict]
+      :value: None
+
+
+
+   .. py:attribute:: required
+
+
+   .. py:attribute:: present
+
+
+   .. py:attribute:: missing
+
+
+.. py:class:: Config
+
+   .. py:attribute:: schema_version
+      :type:  str
+
+
+   .. py:attribute:: core
+      :type:  ConfigCore
+
+
+   .. py:attribute:: location
+      :type:  Dict[str, Location]
+
+
+   .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)
+      :staticmethod:
+
+
+

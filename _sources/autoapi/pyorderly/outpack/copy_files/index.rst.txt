@@ -1,0 +1,44 @@
+pyorderly.outpack.copy_files
+============================
+
+.. py:module:: pyorderly.outpack.copy_files
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.copy_files.Plan
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.copy_files.copy_files
+   pyorderly.outpack.copy_files.copy_files_from_remote
+
+
+Module Contents
+---------------
+
+.. py:class:: Plan
+
+   .. py:attribute:: id
+      :type:  str
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: files
+      :type:  Dict[str, pyorderly.outpack.metadata.PacketFile]
+
+
+.. py:function:: copy_files(id: str, files: Dict[str, str], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot) -> Plan
+
+.. py:function:: copy_files_from_remote(id: str, files: Dict[str, pyorderly.outpack.metadata.PacketFile], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot)
+

@@ -1,0 +1,28 @@
+pyorderly.outpack.schema
+========================
+
+.. py:module:: pyorderly.outpack.schema
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.schema.validate
+   pyorderly.outpack.schema.retrieve_from_filesystem
+   pyorderly.outpack.schema.outpack_schema_version
+   pyorderly.outpack.schema.read_schema
+
+
+Package Contents
+----------------
+
+.. py:function:: validate(instance, schema_name)
+
+.. py:function:: retrieve_from_filesystem(path: str)
+
+.. py:function:: outpack_schema_version()
+
+.. py:function:: read_schema(name)
+
