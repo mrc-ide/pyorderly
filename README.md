@@ -45,12 +45,12 @@ hatch run pip install /path/to/outpack_server
 - Increment the version number using [the `hatch version` command](https://hatch.pypa.io/latest/version/#updating).
 - Commit the changes and create a PR.
 - Get the PR approved and merged to main.
-- Create a [GitHub release](https://github.com/mrc-ide/outpack-py/releases/new):
+- Create a [GitHub release](https://github.com/mrc-ide/pyorderly/releases/new):
   - Set the tag name as `vX.Y.Z`, matching the version reported by hatch.
   - Write some release notes (possibly using the `Generate release notes` button).
   - Publish the release!
 - Sit back and relax while the release gets built and published.
-- Check that the new version is available on [PyPI](https://pypi.org/project/outpack/#history).
+- Check that the new version is available on [PyPI](https://pypi.org/project/pyorderly/#history).
 
 ## License
 

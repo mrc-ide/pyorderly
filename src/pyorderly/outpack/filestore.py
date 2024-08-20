@@ -79,6 +79,11 @@ class FileStore:
             if not os.access(path, os.W_OK):
                 os.chmod(path, stat.S_IWUSR)
                 func(path)
+            else:
+                # This is always called by rmtree from within a try-catch
+                # block, but the linter doesn't see that and complains about
+                # the argument-less `raise` statement.
+                raise  # noqa: PLE0704
 
         shutil.rmtree(self._path, onerror=onerror)
 
