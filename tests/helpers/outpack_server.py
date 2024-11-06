@@ -1,5 +1,4 @@
 import shutil
-import signal
 import subprocess
 import time
 from contextlib import contextmanager
@@ -85,9 +84,12 @@ def start_outpack_server(root: Union[Path, OutpackRoot], port: int = 8080):
         try:
             _wait_ready(p, url, args)
             yield url
+
+            # We expect the server to still be running after the yield returns.
+            # If it isn't then that suggests something we did made it crash.
+            code = p.poll()
+            if code is not None:
+                raise subprocess.CalledProcessError(p.returncode, args)
+
         finally:
             p.terminate()
-
-    expected_code = -signal.SIGTERM
-    if p.returncode != expected_code:
-        raise subprocess.CalledProcessError(p.returncode, args)
