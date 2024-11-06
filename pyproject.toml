@@ -33,7 +33,8 @@ dependencies = [
   "humanize",
   "tblib",
   "paramiko",
-  "requests"
+  "requests",
+  "typing-extensions",
 ]
 
 [project.urls]

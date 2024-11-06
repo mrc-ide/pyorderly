@@ -1,8 +1,9 @@
 import shutil
-from typing import Dict, List, override
+from typing import Dict, List
 from urllib.parse import urljoin
 
 import requests
+from typing_extensions import override
 
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
