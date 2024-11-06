@@ -1,6 +1,7 @@
 import builtins
 import os
 import shutil
+from pathlib import Path
 
 from typing_extensions import override
 
@@ -54,3 +55,19 @@ class OutpackLocationPath(LocationDriver):
                 msg = f"Hash '{file.hash}' not found at location"
                 raise Exception(msg)
         shutil.copyfile(path, dest)
+
+    @override
+    def list_unknown_packets(self, ids: list[str]) -> list[str]:
+        raise NotImplementedError()
+
+    @override
+    def list_unknown_files(self, hashes: list[str]) -> list[str]:
+        raise NotImplementedError()
+
+    @override
+    def push_file(self, src: Path, hash: str):
+        raise NotImplementedError()
+
+    @override
+    def push_metadata(self, src: Path, hash: str):
+        raise NotImplementedError()

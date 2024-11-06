@@ -1,5 +1,6 @@
 import builtins
 import shutil
+from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
@@ -78,3 +79,34 @@ class OutpackLocationHTTP(LocationDriver):
         response = self._client.get(f"file/{file.hash}", stream=True)
         with open(dest, "wb") as f:
             shutil.copyfileobj(response.raw, f)
+
+    @override
+    def list_unknown_packets(self, ids: list[str]) -> list[str]:
+        response = self._client.post(
+            "/packets/missing",
+            json={
+                "ids": ids,
+                "unpacked": True,
+            },
+        ).json()
+        return response["data"]
+
+    @override
+    def list_unknown_files(self, hashes: list[str]) -> list[str]:
+        response = self._client.post(
+            "/files/missing",
+            json={
+                "hashes": hashes,
+            },
+        ).json()
+        return response["data"]
+
+    @override
+    def push_file(self, src: Path, hash: str):
+        with open(src, "rb") as f:
+            self._client.post(f"file/{hash}", stream=True, data=f)
+
+    @override
+    def push_metadata(self, src: Path, hash: str):
+        with open(src, "rb") as f:
+            self._client.post(f"file/{hash}", stream=True, data=f)

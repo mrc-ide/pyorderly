@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
 from pathlib import Path, PurePath
-from typing import Optional, Union, overload
+from typing import Optional, TypeVar, Union
 
 
 def find_file_descend(filename, path):
@@ -60,7 +60,9 @@ def transient_working_directory(path):
             os.chdir(origin)
 
 
-def assert_file_exists(path, *, workdir=None, name="File"):
+def assert_file_exists(
+    path: Union[str, list[str]], *, workdir=None, name="File"
+):
     with transient_working_directory(workdir):
         if isinstance(path, list):
             missing = [str(p) for p in path if not os.path.exists(p)]
@@ -193,19 +195,10 @@ def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
             pass
 
 
-@overload
-def as_posix_path(paths: str) -> str: ...
+Paths = TypeVar("Paths", str, list[str], dict[str, str])
 
 
-@overload
-def as_posix_path(paths: list[str]) -> list[str]: ...
-
-
-@overload
-def as_posix_path(paths: dict[str, str]) -> dict[str, str]: ...
-
-
-def as_posix_path(paths):
+def as_posix_path(paths: Paths) -> Paths:
     """
     Convert a native path into a posix path.
 
@@ -218,3 +211,13 @@ def as_posix_path(paths):
         return [as_posix_path(v) for v in paths]
     else:
         return PurePath(paths).as_posix()
+
+
+T = TypeVar("T")
+
+
+def as_list(x: Union[T, list[T]]) -> list[T]:
+    if isinstance(x, list):
+        return x
+    else:
+        return [x]
