@@ -79,7 +79,7 @@ generate-docs = [
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.lint]
 extra-dependencies = [
@@ -104,12 +104,10 @@ all = [
 ]
 
 [tool.black]
-target-version = ["py37"]
 line-length = 80
 skip-string-normalization = true
 
 [tool.ruff]
-target-version = "py37"
 line-length = 120
 
 [tool.ruff.lint]
@@ -163,9 +161,6 @@ unfixable = [
   # Don't touch unused imports
   "F401",
 ]
-
-[tool.ruff.lint.isort]
-known-first-party = ["outpack"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"

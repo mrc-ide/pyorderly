@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
 
 from pyorderly.outpack.location_pull import (
     location_build_pull_plan,
@@ -15,12 +14,12 @@ from pyorderly.outpack.search_options import SearchOptions
 class Plan:
     id: str
     name: str
-    files: Dict[str, PacketFile]
+    files: dict[str, PacketFile]
 
 
 def copy_files(
     id: str,
-    files: Dict[str, str],
+    files: dict[str, str],
     dest: Path,
     options: SearchOptions,
     root: OutpackRoot,
@@ -43,7 +42,7 @@ def copy_files(
 
 def copy_files_from_remote(
     id: str,
-    files: Dict[str, PacketFile],
+    files: dict[str, PacketFile],
     dest: Path,
     options: SearchOptions,
     root: OutpackRoot,

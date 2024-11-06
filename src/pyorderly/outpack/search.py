@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Dict, Optional, Set, Union
+from typing import Any, Optional, Union
 
 import outpack_query_parser as parser
 
@@ -56,7 +56,7 @@ class QueryEnv:
 
 class QueryIndex:
     root: OutpackRoot
-    index: Dict[str, MetadataCore]
+    index: dict[str, MetadataCore]
     options: SearchOptions
 
     def __init__(self, root, options):
@@ -98,7 +98,7 @@ def search(
     root: Union[OutpackRoot, str, os.PathLike],
     options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
-) -> Set[str]:
+) -> set[str]:
     """
     Search an outpack repository for all packets that match the given query.
 
@@ -179,7 +179,7 @@ def eval_test_value(
         raise NotImplementedError(msg)
 
 
-def eval_latest(node: parser.Latest, env: QueryEnv) -> Set[str]:
+def eval_latest(node: parser.Latest, env: QueryEnv) -> set[str]:
     if node.inner:
         candidates = eval_query(node.inner, env)
     else:
@@ -191,7 +191,7 @@ def eval_latest(node: parser.Latest, env: QueryEnv) -> Set[str]:
         return set()
 
 
-def eval_single(node: parser.Single, env: QueryEnv) -> Set[str]:
+def eval_single(node: parser.Single, env: QueryEnv) -> set[str]:
     candidates = eval_query(node.inner, env)
     if len(candidates) != 1:
         msg = f"Query found {len(candidates)} packets, but expected exactly one"
@@ -231,7 +231,7 @@ def eval_test_one(
         raise NotImplementedError(msg)
 
 
-def eval_test(node: parser.Test, env: QueryEnv) -> Set[str]:
+def eval_test(node: parser.Test, env: QueryEnv) -> set[str]:
     return {
         packet_id
         for (packet_id, metadata) in env.index.index.items()
@@ -239,7 +239,7 @@ def eval_test(node: parser.Test, env: QueryEnv) -> Set[str]:
     }
 
 
-def eval_boolean(node: parser.BooleanExpr, env: QueryEnv) -> Set[str]:
+def eval_boolean(node: parser.BooleanExpr, env: QueryEnv) -> set[str]:
     lhs = eval_query(node.lhs, env)
     rhs = eval_query(node.rhs, env)
 
@@ -252,12 +252,12 @@ def eval_boolean(node: parser.BooleanExpr, env: QueryEnv) -> Set[str]:
         raise NotImplementedError(msg)
 
 
-def eval_negation(node: parser.Negation, env: QueryEnv) -> Set[str]:
+def eval_negation(node: parser.Negation, env: QueryEnv) -> set[str]:
     complement = eval_query(node.inner, env)
     return set(env.index.index.keys()).difference(complement)
 
 
-def eval_query(node, env: QueryEnv) -> Set[str]:
+def eval_query(node, env: QueryEnv) -> set[str]:
     if isinstance(node, parser.Latest):
         return eval_latest(node, env)
     elif isinstance(node, parser.Single):

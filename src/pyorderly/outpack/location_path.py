@@ -1,6 +1,6 @@
+import builtins
 import os
 import shutil
-from typing import Dict, List
 
 from typing_extensions import override
 
@@ -24,11 +24,11 @@ class OutpackLocationPath(LocationDriver):
         pass
 
     @override
-    def list(self) -> Dict[str, PacketLocation]:
+    def list(self) -> dict[str, PacketLocation]:
         return self.__root.index.location(LOCATION_LOCAL)
 
     @override
-    def metadata(self, packet_ids: List[str]) -> Dict[str, str]:
+    def metadata(self, packet_ids: builtins.list[str]) -> dict[str, str]:
         all_ids = self.__root.index.location(LOCATION_LOCAL).keys()
         missing_ids = set(packet_ids).difference(all_ids)
         if missing_ids:

@@ -1,9 +1,10 @@
 import itertools
 import os
 import time
+from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Dict, Generator, List, Optional, Set, Union
+from typing import Optional, Union
 
 import humanize
 
@@ -91,8 +92,8 @@ def _get_remove_location_hint(location_name):
 
 def _validate_hashes(
     location_name: str,
-    location_packets: List[PacketLocation],
-    known_packets: Dict[str, PacketLocation],
+    location_packets: list[PacketLocation],
+    known_packets: dict[str, PacketLocation],
 ):
     mismatched_hashes = set()
     for packet in location_packets:
@@ -117,7 +118,7 @@ def _validate_hashes(
 
 
 def _mark_all_known(
-    root: OutpackRoot, location_name: str, packets: List[PacketLocation]
+    root: OutpackRoot, location_name: str, packets: list[PacketLocation]
 ):
     known_already = root.index.packets_in_location(root)
     for packet in packets:
@@ -132,7 +133,7 @@ def _mark_all_known(
 
 
 def outpack_location_pull_packet(
-    ids: Union[str, List[str]],
+    ids: Union[str, list[str]],
     *,
     options: Optional[SearchOptions] = None,
     recursive: Optional[bool] = None,
@@ -223,7 +224,7 @@ non-recursive pull, as this might leave an incomplete tree"""
 # after we hash them the first time).
 @contextmanager
 def location_pull_files(
-    files: List[PacketFileWithLocation], root: OutpackRoot
+    files: list[PacketFileWithLocation], root: OutpackRoot
 ) -> Generator[FileStore, None, None]:
     store = root.files
     cleanup_store = False
@@ -283,7 +284,7 @@ def location_pull_files(
 
 
 def _location_pull_hash_store(
-    files: List[PacketFileWithLocation],
+    files: list[PacketFileWithLocation],
     location_name: str,
     driver: LocationDriver,
     store: FileStore,
@@ -315,7 +316,7 @@ def _pull_missing_metadata(
     driver: LocationDriver,
     root: OutpackRoot,
     location_name: str,
-    packets: List[PacketLocation],
+    packets: list[PacketLocation],
 ):
     known_here = root.index.all_metadata()
 
@@ -337,24 +338,24 @@ class PullPlanInfo:
 
 @dataclass
 class LocationPullPlan:
-    packets: Dict[str, PacketLocation]
-    files: List[PacketFileWithLocation]
+    packets: dict[str, PacketLocation]
+    files: list[PacketFileWithLocation]
     info: PullPlanInfo
 
 
 @dataclass
 class PullPlanPackets:
-    requested: List[str]
-    full: List[str]
-    skip: Set[str]
-    fetch: Set[str]
+    requested: list[str]
+    full: list[str]
+    skip: set[str]
+    fetch: set[str]
 
 
 def location_build_pull_plan(
-    packet_ids: List[str],
-    locations: Optional[List[str]],
+    packet_ids: list[str],
+    locations: Optional[list[str]],
     *,
-    files: Optional[Dict[str, List[str]]] = None,
+    files: Optional[dict[str, list[str]]] = None,
     recursive: bool,
     root: OutpackRoot,
 ) -> LocationPullPlan:
@@ -405,7 +406,7 @@ def location_build_pull_plan(
 
 
 def _location_build_pull_plan_packets(
-    packet_ids: List[str], root: OutpackRoot, *, recursive: Optional[bool]
+    packet_ids: list[str], root: OutpackRoot, *, recursive: Optional[bool]
 ) -> PullPlanPackets:
     requested = packet_ids
     index = root.index
@@ -423,8 +424,8 @@ def _location_build_pull_plan_packets(
 
 
 def _find_all_dependencies(
-    packet_ids: List[str], metadata: Dict[str, MetadataCore]
-) -> List[str]:
+    packet_ids: list[str], metadata: dict[str, MetadataCore]
+) -> list[str]:
     ret = set(packet_ids)
     packets = set(packet_ids)
     while packets:
@@ -445,8 +446,8 @@ def _find_all_dependencies(
 
 
 def _location_build_pull_plan_location(
-    packets: PullPlanPackets, locations: Optional[List[str]], root: OutpackRoot
-) -> List[str]:
+    packets: PullPlanPackets, locations: Optional[list[str]], root: OutpackRoot
+) -> list[str]:
     location_names = location_resolve_valid(
         locations,
         root,
@@ -488,11 +489,11 @@ def _location_build_pull_plan_location(
 
 
 def _location_build_pull_plan_files(
-    packet_ids: Set[str],
-    locations: List[str],
-    files: Dict[str, List[str]],
+    packet_ids: set[str],
+    locations: list[str],
+    files: dict[str, list[str]],
     root: OutpackRoot,
-) -> List[PacketFileWithLocation]:
+) -> list[PacketFileWithLocation]:
     metadata = root.index.all_metadata()
 
     # Find first location within the set which contains each packet
@@ -518,8 +519,8 @@ def _location_build_pull_plan_files(
 
 
 def _location_build_packet_locations(
-    packets: Set[str], locations: List[str], root: OutpackRoot
-) -> Dict[str, PacketLocation]:
+    packets: set[str], locations: list[str], root: OutpackRoot
+) -> dict[str, PacketLocation]:
     packets_fetch = {}
     for location in locations:
         packets_from_location = root.index.location(location)

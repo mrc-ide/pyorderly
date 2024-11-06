@@ -1,5 +1,5 @@
+import builtins
 import shutil
-from typing import Dict, List
 from urllib.parse import urljoin
 
 import requests
@@ -58,7 +58,7 @@ class OutpackLocationHTTP(LocationDriver):
         self._client.__exit__(*args)
 
     @override
-    def list(self) -> Dict[str, PacketLocation]:
+    def list(self) -> dict[str, PacketLocation]:
         response = self._client.get("metadata/list").json()
         data = response["data"]
         return {
@@ -66,7 +66,7 @@ class OutpackLocationHTTP(LocationDriver):
         }
 
     @override
-    def metadata(self, ids: List[str]) -> Dict[str, str]:
+    def metadata(self, ids: builtins.list[str]) -> dict[str, str]:
         result = {}
         for i in ids:
             result[i] = self._client.get(f"metadata/{i}/text").text

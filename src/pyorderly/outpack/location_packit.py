@@ -2,7 +2,7 @@ import functools
 import re
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 from urllib.parse import urljoin
 
 import requests
@@ -165,7 +165,7 @@ class OAuthDeviceClient:
 # - It should check for expiry of tokens and/or check for authentication errors
 #   and purge offending tokens from it.
 @functools.cache
-def packit_authorisation(url: str, token: Optional[str]) -> Dict[str, str]:
+def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
     # If a non-Github token is provided, we assume it is a native Packit token
     # and use that directly.
     if token is not None and not re.match("^gh._", token):

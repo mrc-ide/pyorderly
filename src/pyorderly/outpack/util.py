@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
 from pathlib import Path, PurePath
-from typing import Dict, List, Optional, Union, overload
+from typing import Optional, Union, overload
 
 
 def find_file_descend(filename, path):
@@ -114,7 +114,7 @@ def match_value(arg, choices, name):
         raise Exception(msg)
 
 
-def relative_path_array(files: Union[str, List[str]], name: str) -> List[str]:
+def relative_path_array(files: Union[str, list[str]], name: str) -> list[str]:
     if not isinstance(files, list):
         files = [files]
 
@@ -125,8 +125,8 @@ def relative_path_array(files: Union[str, List[str]], name: str) -> List[str]:
 
 
 def relative_path_mapping(
-    files: Union[str, List[str], Dict[str, str]], name: str
-) -> Dict[str, str]:
+    files: Union[str, list[str], dict[str, str]], name: str
+) -> dict[str, str]:
     if isinstance(files, str):
         files = {files: files}
     elif isinstance(files, list):
@@ -197,11 +197,11 @@ def as_posix_path(paths: str) -> str: ...
 
 
 @overload
-def as_posix_path(paths: List[str]) -> List[str]: ...
+def as_posix_path(paths: list[str]) -> list[str]: ...
 
 
 @overload
-def as_posix_path(paths: Dict[str, str]) -> Dict[str, str]: ...
+def as_posix_path(paths: dict[str, str]) -> dict[str, str]: ...
 
 
 def as_posix_path(paths):

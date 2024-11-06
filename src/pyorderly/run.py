@@ -1,7 +1,6 @@
 import runpy
 import shutil
 from pathlib import Path
-from typing import Tuple
 
 from pyorderly.core import Description
 from pyorderly.current import ActiveOrderlyContext, OrderlyCustomMetadata
@@ -106,7 +105,7 @@ def _run_report_script(
     return orderly
 
 
-def _validate_src_directory(name, root) -> Tuple[Path, str]:
+def _validate_src_directory(name, root) -> tuple[Path, str]:
     path = root.path / "src" / name
     entrypoint = f"{name}.py"
 

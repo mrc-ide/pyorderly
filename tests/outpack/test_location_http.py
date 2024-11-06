@@ -1,5 +1,3 @@
-from typing import Dict
-
 import pytest
 import requests
 import responses
@@ -37,7 +35,7 @@ def test_can_list_packets(tmp_path):
     ids = [create_random_packet(tmp_path) for _ in range(3)]
     packets = root.index.location(LOCATION_LOCAL)
 
-    def filter_out_time(data: Dict[str, PacketLocation]) -> Dict[str, dict]:
+    def filter_out_time(data: dict[str, PacketLocation]) -> dict[str, dict]:
         # outpack_server doesn't roundtrip the floating-point time field very
         # well, which leads to flaky tests.
         return {
