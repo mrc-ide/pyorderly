@@ -39,6 +39,14 @@ Module Contents
 
 .. py:class:: PacketFile
 
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
    .. py:attribute:: path
       :type:  str
 
@@ -61,6 +69,11 @@ Module Contents
    Bases: :py:obj:`PacketFile`
 
 
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
    .. py:attribute:: location
       :type:  str
 
@@ -76,6 +89,14 @@ Module Contents
 
 .. py:class:: PacketDependsPath
 
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
    .. py:attribute:: here
       :type:  str
 
@@ -85,6 +106,14 @@ Module Contents
 
 
 .. py:class:: PacketDepends
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
 
    .. py:attribute:: packet
       :type:  str
@@ -106,6 +135,14 @@ Module Contents
 .. py:data:: Parameters
 
 .. py:class:: MetadataCore
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
 
    .. py:attribute:: schema_version
       :type:  str
@@ -147,6 +184,14 @@ Module Contents
 
 
 .. py:class:: PacketLocation
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
 
    .. py:attribute:: packet
       :type:  str
