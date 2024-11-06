@@ -37,6 +37,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install hatch
+
+      # Compiling outpack server from source takes a few minutes each time.
+      # This action will cache the result and re-use it on subsequent builds.
+      # The cache is keyed by Git revision, allowing us to pick up new versions
+      # of the server immediately.
+      - name: Install outpack server
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: outpack
+          git: https://github.com/mrc-ide/outpack_server
+          features: git2/vendored-libgit2
+
       - name: Test
         run: |
           hatch run cov-ci
