@@ -47,9 +47,6 @@ Module Contents
 
    .. py:method:: __str__()
 
-      Return str(self).
-
-
 
    .. py:method:: parse(text)
       :classmethod:
@@ -85,12 +82,6 @@ Module Contents
 
    .. py:attribute:: options
       :type:  pyorderly.outpack.search_options.SearchOptions
-
-
-   .. py:attribute:: locations
-
-
-   .. py:attribute:: ids
 
 
 .. py:function:: as_query(query: Union[Query, str]) -> Query

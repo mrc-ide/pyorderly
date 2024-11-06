@@ -67,15 +67,6 @@ Module Contents
 
 
 
-   .. py:attribute:: required
-
-
-   .. py:attribute:: present
-
-
-   .. py:attribute:: missing
-
-
 .. py:class:: Config
 
    .. py:attribute:: schema_version

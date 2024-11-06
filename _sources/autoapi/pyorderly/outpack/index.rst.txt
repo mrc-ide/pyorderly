@@ -4,15 +4,6 @@ pyorderly.outpack
 .. py:module:: pyorderly.outpack
 
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 1
-
-   /autoapi/pyorderly/outpack/schema/index
-
-
 Submodules
 ----------
 
@@ -35,6 +26,7 @@ Submodules
    /autoapi/pyorderly/outpack/packet/index
    /autoapi/pyorderly/outpack/root/index
    /autoapi/pyorderly/outpack/sandbox/index
+   /autoapi/pyorderly/outpack/schema/index
    /autoapi/pyorderly/outpack/search/index
    /autoapi/pyorderly/outpack/search_options/index
    /autoapi/pyorderly/outpack/static/index
