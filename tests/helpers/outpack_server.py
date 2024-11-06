@@ -72,7 +72,7 @@ def start_outpack_server(root: Union[Path, OutpackRoot], port: int = 8080):
         root_path = str(root)
 
     args = [
-        "outpack",
+        binary,
         "start-server",
         "--root",
         root_path,
