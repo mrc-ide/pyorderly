@@ -20,7 +20,7 @@ class OutpackRoot:
         self.path = Path(path)
         self.config = read_config(path)
         if self.config.core.use_file_store:
-            self.files = FileStore(self.path / "files")
+            self.files = FileStore(self.path / ".outpack" / "files")
         self.index = Index(path)
 
     def export_file(self, id, there, here, dest):

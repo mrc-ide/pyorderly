@@ -139,6 +139,7 @@ class OutpackLocationSSH(LocationDriver):
             dat = hash_parse(file.hash)
             return (
                 self._root
+                / ".outpack"
                 / "files"
                 / dat.algorithm
                 / dat.value[:2]
