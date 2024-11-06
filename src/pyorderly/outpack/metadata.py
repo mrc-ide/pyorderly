@@ -2,15 +2,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from dataclasses_json import dataclass_json
+from dataclasses_json import DataClassJsonMixin
 
 from pyorderly.outpack.hash import hash_file
 from pyorderly.outpack.tools import GitInfo
 
 
-@dataclass_json()
 @dataclass
-class PacketFile:
+class PacketFile(DataClassJsonMixin):
     path: str
     size: float
     hash: str
@@ -35,16 +34,14 @@ class PacketFileWithLocation(PacketFile):
         )
 
 
-@dataclass_json()
 @dataclass
-class PacketDependsPath:
+class PacketDependsPath(DataClassJsonMixin):
     here: str
     there: str
 
 
-@dataclass_json()
 @dataclass
-class PacketDepends:
+class PacketDepends(DataClassJsonMixin):
     packet: str
     query: str
     files: List[PacketDependsPath]
@@ -57,9 +54,8 @@ class PacketDepends:
 Parameters = Dict[str, Union[bool, int, float, str]]
 
 
-@dataclass_json()
 @dataclass
-class MetadataCore:
+class MetadataCore(DataClassJsonMixin):
     schema_version: str
     id: str
     name: str
@@ -78,9 +74,8 @@ class MetadataCore:
         raise Exception(msg)
 
 
-@dataclass_json()
 @dataclass
-class PacketLocation:
+class PacketLocation(DataClassJsonMixin):
     packet: str
     time: float
     hash: str
@@ -88,9 +83,9 @@ class PacketLocation:
 
 def read_metadata_core(path) -> MetadataCore:
     with open(path) as f:
-        return MetadataCore.from_json(f.read().strip())  # type: ignore
+        return MetadataCore.from_json(f.read().strip())
 
 
 def read_packet_location(path) -> PacketLocation:
     with open(path) as f:
-        return PacketLocation.from_json(f.read().strip())  # type: ignore
+        return PacketLocation.from_json(f.read().strip())
