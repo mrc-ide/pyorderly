@@ -69,7 +69,6 @@ class OAuthDeviceClient:
         print(
             f"Visit {parameters.verification_uri} and enter the code <{parameters.user_code}>"
         )
-        print(parameters)
         response = self.poll_access_token(parameters)
         return response
 
