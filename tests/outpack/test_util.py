@@ -19,7 +19,6 @@ from pyorderly.outpack.util import (
     partition,
     pl,
     read_string,
-    removeprefix,
     time_to_num,
 )
 
@@ -234,8 +233,3 @@ def test_as_posix_path():
         "here/aaa": "there/bbb",
         "foo/bar": "baz/qux",
     }
-
-
-def test_removeprefix():
-    assert removeprefix("foobar", "foo") == "bar"
-    assert removeprefix("foobar", "xxx") == "foobar"

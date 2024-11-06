@@ -2,6 +2,8 @@ import os
 import shutil
 from typing import Dict, List
 
+from typing_extensions import override
+
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from pyorderly.outpack.root import find_file_by_hash, root_open
@@ -13,15 +15,19 @@ class OutpackLocationPath(LocationDriver):
     def __init__(self, path):
         self.__root = root_open(path, locate=False)
 
+    @override
     def __enter__(self):
         return self
 
+    @override
     def __exit__(self, exc_type, exc_value, exc_tb):
         pass
 
+    @override
     def list(self) -> Dict[str, PacketLocation]:
         return self.__root.index.location(LOCATION_LOCAL)
 
+    @override
     def metadata(self, packet_ids: List[str]) -> Dict[str, str]:
         all_ids = self.__root.index.location(LOCATION_LOCAL).keys()
         missing_ids = set(packet_ids).difference(all_ids)
@@ -35,6 +41,7 @@ class OutpackLocationPath(LocationDriver):
             ret[packet_id] = read_string(path)
         return ret
 
+    @override
     def fetch_file(self, _packet: MetadataCore, file: PacketFile, dest: str):
         if self.__root.config.core.use_file_store:
             path = self.__root.files.filename(file.hash)

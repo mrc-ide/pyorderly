@@ -4,6 +4,8 @@ from pathlib import PurePath
 
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
+from pyorderly.outpack.location_http import OutpackLocationHTTP
+from pyorderly.outpack.location_packit import outpack_location_packit
 from pyorderly.outpack.location_path import OutpackLocationPath
 from pyorderly.outpack.location_ssh import OutpackLocationSSH, parse_ssh_url
 from pyorderly.outpack.root import OutpackRoot, root_open
@@ -34,7 +36,7 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
         root_open(loc.args["path"], locate=False)
     elif type == "ssh":
         parse_ssh_url(loc.args["url"])
-    elif type in ("http", "custom"):  # pragma: no cover
+    elif type in ("custom",):  # pragma: no cover
         msg = f"Cannot add a location with type '{type}' yet."
         raise Exception(msg)
 
@@ -156,8 +158,11 @@ def _location_driver(location_name, root) -> LocationDriver:
             location.args.get("password"),
         )
     elif location.type == "http":
-        msg = "Http remote not yet supported"
-        raise Exception(msg)
+        return OutpackLocationHTTP(location.args["url"])
+    elif location.type == "packit":
+        return outpack_location_packit(
+            location.args["url"], location.args.get("token")
+        )
     elif location.type == "custom":
         msg = "custom remote not yet supported"
         raise Exception(msg)

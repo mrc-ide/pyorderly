@@ -6,13 +6,13 @@ from typing import Dict, List
 from urllib.parse import urlsplit
 
 import paramiko
+from typing_extensions import override
 
 from pyorderly.outpack.config import Config
 from pyorderly.outpack.hash import hash_parse
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from pyorderly.outpack.static import LOCATION_LOCAL
-from pyorderly.outpack.util import removeprefix
 
 
 def parse_ssh_url(url):
@@ -34,7 +34,7 @@ def parse_ssh_url(url):
         msg = "No path specified for SSH location"
         raise Exception(msg)
 
-    path = removeprefix(parts.path, "/")
+    path = parts.path.removeprefix("/")
     return parts.username, parts.hostname, parts.port, path
 
 
@@ -52,6 +52,7 @@ class OutpackLocationSSH(LocationDriver):
         self._password = password
         self._stack = ExitStack()
 
+    @override
     def __enter__(self):
         with ExitStack() as stack:
             client = stack.enter_context(paramiko.SSHClient())
@@ -98,9 +99,11 @@ class OutpackLocationSSH(LocationDriver):
 
             return self
 
+    @override
     def __exit__(self, *args):
         return self._stack.__exit__(*args)
 
+    @override
     def list(self) -> Dict[str, PacketLocation]:
         path = self._root / ".outpack" / "location" / LOCATION_LOCAL
         result = {}
@@ -109,6 +112,7 @@ class OutpackLocationSSH(LocationDriver):
                 result[packet] = PacketLocation.from_json(f.read().strip())
         return result
 
+    @override
     def metadata(self, ids: List[str]) -> Dict[str, str]:
         path = self._root / ".outpack" / "metadata"
         result = {}
@@ -119,6 +123,7 @@ class OutpackLocationSSH(LocationDriver):
 
         return result
 
+    @override
     def fetch_file(self, packet: MetadataCore, file: PacketFile, dest: str):
         path = self._file_path(packet, file)
         if path is None:
