@@ -13,7 +13,6 @@ from pyorderly.outpack.hash import hash_parse
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
 from pyorderly.outpack.static import LOCATION_LOCAL
-from pyorderly.outpack.util import removeprefix
 
 
 def parse_ssh_url(url):
@@ -35,7 +34,7 @@ def parse_ssh_url(url):
         msg = "No path specified for SSH location"
         raise Exception(msg)
 
-    path = removeprefix(parts.path, "/")
+    path = parts.path.removeprefix("/")
     return parts.username, parts.hostname, parts.port, path
 
 
