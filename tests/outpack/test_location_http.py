@@ -2,10 +2,15 @@ from typing import Dict
 
 import pytest
 import requests
+import responses
+from requests import HTTPError
 
 from pyorderly.outpack.hash import hash_file
 from pyorderly.outpack.location import outpack_location_add
-from pyorderly.outpack.location_http import OutpackLocationHTTP
+from pyorderly.outpack.location_http import (
+    OutpackHTTPClient,
+    OutpackLocationHTTP,
+)
 from pyorderly.outpack.location_pull import (
     outpack_location_pull_metadata,
     outpack_location_pull_packet,
@@ -165,3 +170,28 @@ def test_can_pull_packet(tmp_path):
         assert id not in root["dst"].index.unpacked()
         outpack_location_pull_packet(id, root=root["dst"])
         assert id in root["dst"].index.unpacked()
+
+
+@responses.activate
+def test_http_client_errors():
+    responses.get(
+        "https://example.com/text-error", status=400, body="Request failed"
+    )
+    responses.get(
+        "https://example.com/packit-error",
+        status=400,
+        json={"error": {"detail": "Custom error message"}},
+    )
+    responses.get(
+        "https://example.com/outpack-error",
+        status=400,
+        json={"errors": [{"detail": "Custom error message"}]},
+    )
+
+    client = OutpackHTTPClient("https://example.com")
+    with pytest.raises(HTTPError, match="400 Client Error: Bad Request"):
+        client.get("/text-error")
+    with pytest.raises(HTTPError, match="400 Error: Custom error message"):
+        client.get("/packit-error")
+    with pytest.raises(HTTPError, match="400 Error: Custom error message"):
+        client.get("/outpack-error")

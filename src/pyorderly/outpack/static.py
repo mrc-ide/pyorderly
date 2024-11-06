@@ -6,6 +6,7 @@ LOCATION_TYPES = [
     LOCATION_ORPHAN,
     "path",
     "http",
+    "packit",
     "custom",
     "ssh",
 ]

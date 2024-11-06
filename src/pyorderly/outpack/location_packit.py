@@ -131,7 +131,7 @@ class OAuthDeviceClient:
         parameters: DeviceAuthorizationResponse,
     ) -> AccessTokenResponse:
         interval = parameters.interval
-        if parameters.interval is None:
+        if parameters.interval is None:  # pragma: no cover
             interval = 5
         else:
             interval = parameters.interval
@@ -142,7 +142,7 @@ class OAuthDeviceClient:
                 return response
             elif response.error == "authorization_pending":
                 pass
-            elif response.error == "slow_down":
+            elif response.error == "slow_down":  # pragma: no cover
                 interval += 5
             else:
                 if response.error_description is not None:
