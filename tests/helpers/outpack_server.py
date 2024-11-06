@@ -48,9 +48,7 @@ def _wait_ready(p, url, args, timeout=2):
             raise subprocess.CalledProcessError(code, args)
 
         try:
-            print(url)
             r = requests.get(url, timeout=1)
-            print(r)
             r.raise_for_status()
             return
         except requests.ConnectionError:
