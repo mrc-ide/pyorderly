@@ -33,6 +33,7 @@ dependencies = [
   "humanize",
   "tblib",
   "paramiko",
+  "requests"
 ]
 
 [project.urls]
@@ -46,15 +47,16 @@ path = "src/pyorderly/__about__.py"
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]>=6.5",
-  "pytest",
-  "pytest_mock",
-  "pytest-unordered",
-  "pytest-cov",
-  "sphinx",
-  "sphinx-rtd-theme",
   "myst-parser",
+  "pytest",
+  "pytest-cov",
+  "pytest-unordered",
+  "pytest_mock",
+  "responses",
+  "sphinx",
+  "sphinx-autoapi",
   "sphinx-copybutton",
-  "sphinx-autoapi"
+  "sphinx-rtd-theme",
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"

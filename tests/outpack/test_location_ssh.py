@@ -127,7 +127,7 @@ def test_can_read_config(tmp_path):
         assert not location.config.core.require_complete_tree
 
 
-def test_can_list_files(tmp_path):
+def test_can_list_packets(tmp_path):
     root = create_temporary_root(tmp_path)
     ids = [create_random_packet(tmp_path) for _ in range(3)]
     packets = root.index.location(LOCATION_LOCAL)
