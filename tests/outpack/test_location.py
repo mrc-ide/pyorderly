@@ -170,13 +170,6 @@ def test_cant_add_wip_location_type(tmp_path):
 
     with pytest.raises(Exception) as e:
         outpack_location_add(
-            "other", "http", {"url": "https://example.com"}, root=root
-        )
-
-    assert e.match("Cannot add a location with type 'http' yet.")
-
-    with pytest.raises(Exception) as e:
-        outpack_location_add(
             "other", "custom", {"driver": "mydriver"}, root=root
         )
 
