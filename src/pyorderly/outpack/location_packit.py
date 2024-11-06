@@ -185,7 +185,7 @@ def packit_authorisation(url: str, token: Optional[str]) -> Dict[str, str]:
     response = client.post("packit/api/auth/login/api", json={"token": token})
 
     print("Logged in successfully")
-    return {"Authorization": f"Bearer {response.json()["token"]}"}
+    return {"Authorization": f"Bearer {response.json()['token']}"}
 
 
 def outpack_location_packit(
