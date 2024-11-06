@@ -27,7 +27,6 @@ Functions
    pyorderly.outpack.util.partition
    pyorderly.outpack.util.openable_temporary_file
    pyorderly.outpack.util.as_posix_path
-   pyorderly.outpack.util.removeprefix
 
 
 Module Contents
@@ -83,6 +82,4 @@ Module Contents
    This is used when exporting paths into packet metadata, ensuring the
    produced packets are portable across platforms.
 
-
-.. py:function:: removeprefix(s: str, prefix: str) -> str
 

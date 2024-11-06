@@ -19,6 +19,8 @@ Submodules
    /autoapi/pyorderly/outpack/init/index
    /autoapi/pyorderly/outpack/location/index
    /autoapi/pyorderly/outpack/location_driver/index
+   /autoapi/pyorderly/outpack/location_http/index
+   /autoapi/pyorderly/outpack/location_packit/index
    /autoapi/pyorderly/outpack/location_path/index
    /autoapi/pyorderly/outpack/location_pull/index
    /autoapi/pyorderly/outpack/location_ssh/index
