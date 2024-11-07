@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 import pygit2
 from dataclasses_json import dataclass_json
@@ -10,7 +9,7 @@ from dataclasses_json import dataclass_json
 class GitInfo:
     sha: str
     branch: str
-    url: List[str]
+    url: list[str]
 
 
 def git_info(path):

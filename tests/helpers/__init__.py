@@ -6,7 +6,7 @@ import textwrap
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Optional
+from typing import Optional
 
 import pytest
 
@@ -121,7 +121,7 @@ def copy_shared_resources(names, root):
             shutil.copyfile(src, dst)
 
 
-def create_metadata_depends(id: str, depends: Optional[List[str]] = None):
+def create_metadata_depends(id: str, depends: Optional[list[str]] = None):
     if depends is None:
         depends = []
     dependencies = [

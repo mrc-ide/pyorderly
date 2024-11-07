@@ -1,6 +1,5 @@
 import pathlib
 from dataclasses import dataclass
-from typing import Dict, List
 
 from pyorderly.outpack.metadata import (
     MetadataCore,
@@ -12,9 +11,9 @@ from pyorderly.outpack.metadata import (
 
 @dataclass
 class IndexData:
-    metadata: Dict[str, MetadataCore]
-    location: Dict[str, Dict[str, PacketLocation]]
-    unpacked: List[str]
+    metadata: dict[str, MetadataCore]
+    location: dict[str, dict[str, PacketLocation]]
+    unpacked: list[str]
 
     @staticmethod
     def new():
@@ -34,7 +33,7 @@ class Index:
         self.data = _index_update(self._path, self.data)
         return self
 
-    def all_metadata(self) -> Dict[str, MetadataCore]:
+    def all_metadata(self) -> dict[str, MetadataCore]:
         return self.refresh().data.metadata
 
     def metadata(self, id) -> MetadataCore:
@@ -42,16 +41,16 @@ class Index:
             return self.data.metadata[id]
         return self.refresh().data.metadata[id]
 
-    def all_locations(self) -> Dict[str, Dict[str, PacketLocation]]:
+    def all_locations(self) -> dict[str, dict[str, PacketLocation]]:
         return self.refresh().data.location
 
-    def location(self, name) -> Dict[str, PacketLocation]:
+    def location(self, name) -> dict[str, PacketLocation]:
         return self.refresh().data.location.get(name, {})
 
-    def packets_in_location(self, name) -> List[str]:
+    def packets_in_location(self, name) -> list[str]:
         return list(self.location(name).keys())
 
-    def unpacked(self) -> List[str]:
+    def unpacked(self) -> list[str]:
         return self.refresh().data.unpacked
 
 
@@ -70,7 +69,7 @@ def _read_metadata(path_root, data):
     return data
 
 
-def _read_locations(path_root, data) -> Dict[str, Dict[str, PacketLocation]]:
+def _read_locations(path_root, data) -> dict[str, dict[str, PacketLocation]]:
     path = path_root / ".outpack" / "location"
     for loc in path.iterdir():
         if loc.name not in data:

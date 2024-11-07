@@ -3,7 +3,7 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, List, Union
+from typing import Union
 
 from dataclasses_json import dataclass_json
 
@@ -18,7 +18,7 @@ from pyorderly.outpack.util import pl
 @dataclass
 class Artefact:
     name: str
-    files: List[str]
+    files: list[str]
 
 
 @dataclass_json()
@@ -26,7 +26,7 @@ class Artefact:
 class Description:
     display: str
     long: str
-    custom: Dict[str, Union[str, int, bool]]
+    custom: dict[str, Union[str, int, bool]]
 
     @staticmethod
     def empty():
@@ -112,8 +112,8 @@ def resource(files):
 
 
 def shared_resource(
-    files: Union[str, List[str], Dict[str, str]]
-) -> Dict[str, str]:
+    files: Union[str, list[str], dict[str, str]]
+) -> dict[str, str]:
     """Copy shared resources into a packet directory.
 
     You can use this to share common resources (data or code) between multiple
@@ -151,8 +151,8 @@ def shared_resource(
 
 
 def _copy_shared_resources(
-    root: Path, packet: Path, files: Dict[str, str]
-) -> Dict[str, str]:
+    root: Path, packet: Path, files: dict[str, str]
+) -> dict[str, str]:
     shared_path = root / "shared"
     if not shared_path.exists():
         msg = "The shared resources directory 'shared' does not exist at orderly's root"

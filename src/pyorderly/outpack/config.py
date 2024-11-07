@@ -1,6 +1,6 @@
 import os.path
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Optional
 
 from dataclasses_json import config, dataclass_json
 
@@ -80,7 +80,7 @@ class Location:
 class Config:
     schema_version: str
     core: ConfigCore
-    location: Dict[str, Location] = field(
+    location: dict[str, Location] = field(
         metadata=config(
             encoder=_encode_location_dict, decoder=_decode_location_dict
         )

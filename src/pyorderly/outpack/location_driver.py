@@ -1,6 +1,6 @@
+import builtins
 from abc import abstractmethod
 from contextlib import AbstractContextManager
-from typing import Dict, List
 
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
 
@@ -14,10 +14,10 @@ class LocationDriver(AbstractContextManager):
     """
 
     @abstractmethod
-    def list(self) -> Dict[str, PacketLocation]: ...
+    def list(self) -> dict[str, PacketLocation]: ...
 
     @abstractmethod
-    def metadata(self, packet_ids: List[str]) -> Dict[str, str]: ...
+    def metadata(self, packet_ids: builtins.list[str]) -> dict[str, str]: ...
 
     @abstractmethod
     def fetch_file(
