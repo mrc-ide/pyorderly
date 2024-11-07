@@ -26,12 +26,12 @@ Module Contents
    before and after its methods are called.
 
 
-   .. py:method:: list() -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+   .. py:method:: list() -> dict[str, pyorderly.outpack.metadata.PacketLocation]
       :abstractmethod:
 
 
 
-   .. py:method:: metadata(packet_ids: List[str]) -> Dict[str, str]
+   .. py:method:: metadata(packet_ids: list[str]) -> dict[str, str]
       :abstractmethod:
 
 

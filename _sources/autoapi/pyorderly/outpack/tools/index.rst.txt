@@ -34,7 +34,7 @@ Module Contents
 
 
    .. py:attribute:: url
-      :type:  List[str]
+      :type:  list[str]
 
 
 .. py:function:: git_info(path)

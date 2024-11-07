@@ -119,10 +119,10 @@ Module Contents
 
 
 
-   .. py:method:: list() -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+   .. py:method:: list() -> dict[str, pyorderly.outpack.metadata.PacketLocation]
 
 
-   .. py:method:: metadata(ids: List[str]) -> Dict[str, str]
+   .. py:method:: metadata(ids: list[str]) -> dict[str, str]
 
 
    .. py:method:: fetch_file(packet: pyorderly.outpack.metadata.MetadataCore, file: pyorderly.outpack.metadata.PacketFile, dest: str)

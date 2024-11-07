@@ -37,7 +37,7 @@ Module Contents
 
 
    .. py:attribute:: files
-      :type:  List[str]
+      :type:  list[str]
 
 
 .. py:class:: Description
@@ -51,7 +51,7 @@ Module Contents
 
 
    .. py:attribute:: custom
-      :type:  Dict[str, Union[str, int, bool]]
+      :type:  dict[str, Union[str, int, bool]]
 
 
    .. py:method:: empty()
@@ -110,7 +110,7 @@ Module Contents
 
 
 
-.. py:function:: shared_resource(files: Union[str, List[str], Dict[str, str]]) -> Dict[str, str]
+.. py:function:: shared_resource(files: Union[str, list[str], dict[str, str]]) -> dict[str, str]
 
    Copy shared resources into a packet directory.
 

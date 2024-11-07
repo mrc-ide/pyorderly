@@ -78,7 +78,7 @@ Module Contents
 
 
    .. py:attribute:: location
-      :type:  Dict[str, Location]
+      :type:  dict[str, Location]
 
 
    .. py:method:: new(*, path_archive='archive', use_file_store=False, require_complete_tree=False)

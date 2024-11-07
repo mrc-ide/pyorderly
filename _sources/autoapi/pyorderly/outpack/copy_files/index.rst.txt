@@ -35,10 +35,10 @@ Module Contents
 
 
    .. py:attribute:: files
-      :type:  Dict[str, pyorderly.outpack.metadata.PacketFile]
+      :type:  dict[str, pyorderly.outpack.metadata.PacketFile]
 
 
-.. py:function:: copy_files(id: str, files: Dict[str, str], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot) -> Plan
+.. py:function:: copy_files(id: str, files: dict[str, str], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot) -> Plan
 
-.. py:function:: copy_files_from_remote(id: str, files: Dict[str, pyorderly.outpack.metadata.PacketFile], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot)
+.. py:function:: copy_files_from_remote(id: str, files: dict[str, pyorderly.outpack.metadata.PacketFile], dest: pathlib.Path, options: pyorderly.outpack.search_options.SearchOptions, root: pyorderly.outpack.root.OutpackRoot)
 

@@ -167,7 +167,7 @@ Module Contents
    .. py:method:: poll_access_token(parameters: DeviceAuthorizationResponse) -> AccessTokenResponse
 
 
-.. py:function:: packit_authorisation(url: str, token: Optional[str]) -> Dict[str, str]
+.. py:function:: packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]
 
 .. py:function:: outpack_location_packit(url: str, token: Optional[str] = None) -> pyorderly.outpack.location_http.OutpackLocationHTTP
 

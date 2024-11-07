@@ -77,7 +77,7 @@ Module Contents
 
 
    .. py:attribute:: index
-      :type:  Dict[str, pyorderly.outpack.metadata.MetadataCore]
+      :type:  dict[str, pyorderly.outpack.metadata.MetadataCore]
 
 
    .. py:attribute:: options
@@ -86,7 +86,7 @@ Module Contents
 
 .. py:function:: as_query(query: Union[Query, str]) -> Query
 
-.. py:function:: search(query: Union[Query, str], *, root: Union[pyorderly.outpack.root.OutpackRoot, str, os.PathLike], options: Optional[pyorderly.outpack.search_options.SearchOptions] = None, this: Optional[pyorderly.outpack.metadata.Parameters] = None) -> Set[str]
+.. py:function:: search(query: Union[Query, str], *, root: Union[pyorderly.outpack.root.OutpackRoot, str, os.PathLike], options: Optional[pyorderly.outpack.search_options.SearchOptions] = None, this: Optional[pyorderly.outpack.metadata.Parameters] = None) -> set[str]
 
    Search an outpack repository for all packets that match the given query.
 
@@ -103,17 +103,17 @@ Module Contents
 
 .. py:function:: eval_test_value(node, env: QueryEnv, metadata: pyorderly.outpack.metadata.MetadataCore) -> Optional[Union[bool, int, float, str]]
 
-.. py:function:: eval_latest(node: outpack_query_parser.Latest, env: QueryEnv) -> Set[str]
+.. py:function:: eval_latest(node: outpack_query_parser.Latest, env: QueryEnv) -> set[str]
 
-.. py:function:: eval_single(node: outpack_query_parser.Single, env: QueryEnv) -> Set[str]
+.. py:function:: eval_single(node: outpack_query_parser.Single, env: QueryEnv) -> set[str]
 
 .. py:function:: eval_test_one(node: outpack_query_parser.Test, env: QueryEnv, metadata: pyorderly.outpack.metadata.MetadataCore) -> bool
 
-.. py:function:: eval_test(node: outpack_query_parser.Test, env: QueryEnv) -> Set[str]
+.. py:function:: eval_test(node: outpack_query_parser.Test, env: QueryEnv) -> set[str]
 
-.. py:function:: eval_boolean(node: outpack_query_parser.BooleanExpr, env: QueryEnv) -> Set[str]
+.. py:function:: eval_boolean(node: outpack_query_parser.BooleanExpr, env: QueryEnv) -> set[str]
 
-.. py:function:: eval_negation(node: outpack_query_parser.Negation, env: QueryEnv) -> Set[str]
+.. py:function:: eval_negation(node: outpack_query_parser.Negation, env: QueryEnv) -> set[str]
 
-.. py:function:: eval_query(node, env: QueryEnv) -> Set[str]
+.. py:function:: eval_query(node, env: QueryEnv) -> set[str]
 

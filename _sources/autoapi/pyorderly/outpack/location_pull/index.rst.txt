@@ -30,9 +30,9 @@ Module Contents
 
 .. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
 
-.. py:function:: outpack_location_pull_packet(ids: Union[str, List[str]], *, options: Optional[pyorderly.outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, pyorderly.outpack.root.OutpackRoot, None] = None, locate: bool = True)
+.. py:function:: outpack_location_pull_packet(ids: Union[str, list[str]], *, options: Optional[pyorderly.outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, pyorderly.outpack.root.OutpackRoot, None] = None, locate: bool = True)
 
-.. py:function:: location_pull_files(files: List[pyorderly.outpack.metadata.PacketFileWithLocation], root: pyorderly.outpack.root.OutpackRoot) -> Generator[pyorderly.outpack.filestore.FileStore, None, None]
+.. py:function:: location_pull_files(files: list[pyorderly.outpack.metadata.PacketFileWithLocation], root: pyorderly.outpack.root.OutpackRoot) -> collections.abc.Generator[pyorderly.outpack.filestore.FileStore, None, None]
 
 .. py:class:: PullPlanInfo
 
@@ -51,11 +51,11 @@ Module Contents
 .. py:class:: LocationPullPlan
 
    .. py:attribute:: packets
-      :type:  Dict[str, pyorderly.outpack.metadata.PacketLocation]
+      :type:  dict[str, pyorderly.outpack.metadata.PacketLocation]
 
 
    .. py:attribute:: files
-      :type:  List[pyorderly.outpack.metadata.PacketFileWithLocation]
+      :type:  list[pyorderly.outpack.metadata.PacketFileWithLocation]
 
 
    .. py:attribute:: info
@@ -65,22 +65,22 @@ Module Contents
 .. py:class:: PullPlanPackets
 
    .. py:attribute:: requested
-      :type:  List[str]
+      :type:  list[str]
 
 
    .. py:attribute:: full
-      :type:  List[str]
+      :type:  list[str]
 
 
    .. py:attribute:: skip
-      :type:  Set[str]
+      :type:  set[str]
 
 
    .. py:attribute:: fetch
-      :type:  Set[str]
+      :type:  set[str]
 
 
-.. py:function:: location_build_pull_plan(packet_ids: List[str], locations: Optional[List[str]], *, files: Optional[Dict[str, List[str]]] = None, recursive: bool, root: pyorderly.outpack.root.OutpackRoot) -> LocationPullPlan
+.. py:function:: location_build_pull_plan(packet_ids: list[str], locations: Optional[list[str]], *, files: Optional[dict[str, list[str]]] = None, recursive: bool, root: pyorderly.outpack.root.OutpackRoot) -> LocationPullPlan
 
    Create a plan to pull packets from one or more locations.
 

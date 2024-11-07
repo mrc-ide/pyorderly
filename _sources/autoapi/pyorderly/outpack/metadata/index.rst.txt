@@ -124,7 +124,7 @@ Module Contents
 
 
    .. py:attribute:: files
-      :type:  List[PacketDependsPath]
+      :type:  list[PacketDependsPath]
 
 
    .. py:method:: files_from_dict(files)
@@ -161,15 +161,15 @@ Module Contents
 
 
    .. py:attribute:: time
-      :type:  Dict[str, float]
+      :type:  dict[str, float]
 
 
    .. py:attribute:: files
-      :type:  List[PacketFile]
+      :type:  list[PacketFile]
 
 
    .. py:attribute:: depends
-      :type:  List[PacketDepends]
+      :type:  list[PacketDepends]
 
 
    .. py:attribute:: git

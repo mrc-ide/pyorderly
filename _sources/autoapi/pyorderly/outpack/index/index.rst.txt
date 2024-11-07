@@ -19,15 +19,15 @@ Module Contents
 .. py:class:: IndexData
 
    .. py:attribute:: metadata
-      :type:  Dict[str, pyorderly.outpack.metadata.MetadataCore]
+      :type:  dict[str, pyorderly.outpack.metadata.MetadataCore]
 
 
    .. py:attribute:: location
-      :type:  Dict[str, Dict[str, pyorderly.outpack.metadata.PacketLocation]]
+      :type:  dict[str, dict[str, pyorderly.outpack.metadata.PacketLocation]]
 
 
    .. py:attribute:: unpacked
-      :type:  List[str]
+      :type:  list[str]
 
 
    .. py:method:: new()
@@ -46,21 +46,21 @@ Module Contents
    .. py:method:: refresh()
 
 
-   .. py:method:: all_metadata() -> Dict[str, pyorderly.outpack.metadata.MetadataCore]
+   .. py:method:: all_metadata() -> dict[str, pyorderly.outpack.metadata.MetadataCore]
 
 
    .. py:method:: metadata(id) -> pyorderly.outpack.metadata.MetadataCore
 
 
-   .. py:method:: all_locations() -> Dict[str, Dict[str, pyorderly.outpack.metadata.PacketLocation]]
+   .. py:method:: all_locations() -> dict[str, dict[str, pyorderly.outpack.metadata.PacketLocation]]
 
 
-   .. py:method:: location(name) -> Dict[str, pyorderly.outpack.metadata.PacketLocation]
+   .. py:method:: location(name) -> dict[str, pyorderly.outpack.metadata.PacketLocation]
 
 
-   .. py:method:: packets_in_location(name) -> List[str]
+   .. py:method:: packets_in_location(name) -> list[str]
 
 
-   .. py:method:: unpacked() -> List[str]
+   .. py:method:: unpacked() -> list[str]
 
 
