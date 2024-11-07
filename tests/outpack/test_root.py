@@ -6,7 +6,7 @@ from pyorderly.outpack.config import read_config
 from pyorderly.outpack.filestore import FileStore
 from pyorderly.outpack.index import Index
 from pyorderly.outpack.init import outpack_init
-from pyorderly.outpack.root import find_file_by_hash, root_open
+from pyorderly.outpack.root import root_open
 from pyorderly.outpack.util import transient_working_directory
 
 from .. import helpers
@@ -70,10 +70,10 @@ def test_can_find_file_by_hash(tmp_path):
     meta = root.index.metadata(id[1])
     hash = meta.files[0].hash
     assert (
-        find_file_by_hash(root, hash)
+        root.archive.find_file(hash)
         == root.path / "archive" / "data" / id[1] / "data.txt"
     )
-    assert find_file_by_hash(root, hash[:-1]) is None
+    assert root.archive.try_find_file(hash[:-1]) is None
 
 
 def test_can_reject_corrupted_files(tmp_path, capsys):
@@ -85,7 +85,8 @@ def test_can_reject_corrupted_files(tmp_path, capsys):
     path = root.path / "archive" / "data" / id[1] / "data.txt"
     with open(path, "a") as f:
         f.write("1")
-    assert find_file_by_hash(root, hash) is None
+
+    assert root.archive.try_find_file(hash) is None
     captured = capsys.readouterr()
     assert (
         captured.out

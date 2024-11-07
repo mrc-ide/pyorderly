@@ -22,7 +22,6 @@ from pyorderly.outpack.metadata import (
 )
 from pyorderly.outpack.root import (
     OutpackRoot,
-    find_file_by_hash,
     mark_known,
     root_open,
 )
@@ -182,16 +181,16 @@ non-recursive pull, as this might leave an incomplete tree"""
         )
 
     with location_pull_files(plan.files, root) as store:
-        use_archive = root.config.core.path_archive is not None
         n_packets = len(plan.packets)
         time_start = time.time()
         for idx, packet in enumerate(plan.packets.values()):
-            if use_archive:
+            if root.archive is not None:
                 print(
                     f"Writing files for '{packet.packet}' (packet {idx + 1}/"
                     f"{n_packets})"
                 )
-                _location_pull_files_archive(packet.packet, store, root)
+                meta = root.index.metadata(packet.packet)
+                root.archive.import_packet_from_store(meta, store)
 
             mark_known(
                 root, packet.packet, LOCATION_LOCAL, packet.hash, time.time()
@@ -236,7 +235,7 @@ def location_pull_files(
                 f"Found {len(exists)} {pl(exists, 'file')} in the "
                 f"file store"
             )
-    else:
+    elif root.archive is not None:
         print("Looking for suitable files already on disk")
         store = _temporary_filestore(root)
         cleanup_store = True
@@ -244,7 +243,7 @@ def location_pull_files(
         missing = []
         no_found = 0
         for file in files:
-            path = find_file_by_hash(root, file.hash)
+            path = root.archive.try_find_file(file.hash)
             if path is not None:
                 store.put(path, file.hash)
                 no_found += 1
@@ -252,6 +251,9 @@ def location_pull_files(
                 missing.append(file)
 
         print(f"Found {no_found} {pl(no_found, 'file')} on disk ")
+    else:
+        msg = "Neither filestore nor archive"
+        raise RuntimeError(msg)
 
     if len(missing) == 0:
         print("All files available locally, no need to fetch any")
@@ -301,15 +303,6 @@ def _location_pull_hash_store(
             packet = root.index.metadata(file.packet_id)
             driver.fetch_file(packet, file, path)
             store.put(path, file.hash)
-
-
-def _location_pull_files_archive(packet_id: str, store, root: OutpackRoot):
-    meta = root.index.metadata(packet_id)
-    dest_root = (
-        root.path / root.config.core.path_archive / meta.name / packet_id
-    )
-    for file in meta.files:
-        store.get(file.hash, dest_root / file.path, overwrite=True)
 
 
 def _pull_missing_metadata(

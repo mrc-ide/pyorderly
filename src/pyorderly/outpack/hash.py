@@ -1,5 +1,6 @@
 import hashlib
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
@@ -27,7 +28,7 @@ def hash_string(data, algorithm):
     return Hash(algorithm, h.hexdigest())
 
 
-def hash_parse(string):
+def hash_parse(string: Union[str, Hash]) -> Hash:
     if isinstance(string, Hash):
         return string
     return Hash(*string.split(":"))

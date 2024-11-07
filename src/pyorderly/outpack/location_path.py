@@ -6,13 +6,13 @@ from typing_extensions import override
 
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.metadata import MetadataCore, PacketFile, PacketLocation
-from pyorderly.outpack.root import find_file_by_hash, root_open
+from pyorderly.outpack.root import root_open
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import read_string
 
 
 class OutpackLocationPath(LocationDriver):
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.__root = root_open(path, locate=False)
 
     @override
@@ -42,15 +42,21 @@ class OutpackLocationPath(LocationDriver):
         return ret
 
     @override
-    def fetch_file(self, _packet: MetadataCore, file: PacketFile, dest: str):
-        if self.__root.config.core.use_file_store:
+    def fetch_file(self, packet: MetadataCore, file: PacketFile, dest: str):
+        if self.__root.files is not None:
             path = self.__root.files.filename(file.hash)
             if not os.path.exists(path):
                 msg = f"Hash '{file.hash}' not found at location"
                 raise Exception(msg)
-        else:
-            path = find_file_by_hash(self.__root, file.hash)
+        elif self.__root.archive is not None:
+            path = self.__root.archive.try_find_file(
+                file.hash, candidates=[packet.id]
+            )
             if path is None:
                 msg = f"Hash '{file.hash}' not found at location"
                 raise Exception(msg)
+        else:
+            msg = "Neither filestore nor archive"
+            raise Exception(msg)
+
         shutil.copyfile(path, dest)
