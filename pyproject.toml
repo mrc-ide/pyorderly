@@ -212,3 +212,14 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "tblib"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# https://github.com/getsentry/responses/issues/751
+module = "responses"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# https://github.com/getsentry/responses/issues/751
+module = "responses.registries"
+ignore_missing_imports = true
+
