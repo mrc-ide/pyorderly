@@ -9,11 +9,11 @@ from pyorderly.core import (
 )
 
 __all__ = [
+    "Parameters",
     "artefact",
     "dependency",
     "description",
     "parameters",
     "resource",
     "shared_resource",
-    "Parameters",
 ]
