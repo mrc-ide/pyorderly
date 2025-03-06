@@ -13,6 +13,7 @@ from pyorderly.outpack.root import OutpackRoot
 from .. import helpers
 
 
+# This exists as contextlib.chdir in Python 3.11+
 @contextmanager
 def chdir(path):
     previous = os.getcwd()

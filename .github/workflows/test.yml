@@ -47,7 +47,6 @@ jobs:
         with:
           crate: outpack
           git: https://github.com/mrc-ide/outpack_server
-          features: git2/vendored-libgit2
 
       - name: Test
         run: |

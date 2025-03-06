@@ -45,7 +45,7 @@ Issues = "https://github.com/mrc-ide/pyorderly/issues"
 Source = "https://github.com/mrc-ide/pyorderly"
 
 [project.scripts]
-orderly = "orderly.cli:cli"
+pyorderly = "pyorderly.cli:cli"
 
 [tool.hatch.version]
 path = "src/pyorderly/__about__.py"
