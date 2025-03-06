@@ -8,7 +8,6 @@ import outpack.search
 from pyorderly.cli.options import (
     NumericalParamType,
     PropagatingGroup,
-    with_root,
     with_search_options,
 )
 from pyorderly.run import orderly_run
@@ -22,8 +21,7 @@ from pyorderly.outpack.location import (
 from pyorderly.outpack.util import format_list
 
 
-@click.group(cls=PropagatingGroup)
-@with_root(propagate=True)
+@click.group()
 def cli():
     """Run 'orderly <command> --help' to see the options available for each subcommand."""
     pass
@@ -100,10 +98,8 @@ def init(path, archive, use_file_store, require_complete_tree):
     metavar="NAME VALUE",
 )
 @with_search_options
-@with_root
 def run(
     name,
-    root,
     parameter,
     numeric_parameter,
     bool_parameter,
@@ -128,7 +124,6 @@ def run(
 
     id = orderly_run(
         name,
-        root=root,
         parameters=dict(all_parameters),
         search_options=search_options,
     )
@@ -138,8 +133,7 @@ def run(
 @cli.command()
 @click.argument("query")
 @with_search_options
-@with_root
-def search(query, root, search_options):
+def search(query, search_options):
     """
     Search existing packets by query.
 
@@ -147,7 +141,7 @@ def search(query, root, search_options):
     repository. The --allow-remote option allows packets that are known locally
     but only present remotely to also be returned.
     """
-    packets = outpack.search.search(query, root=root, options=search_options)
+    packets = outpack.search.search(query, options=search_options)
     if packets:
         for id in packets:
             click.echo(id)
@@ -157,7 +151,6 @@ def search(query, root, search_options):
 
 
 @cli.group()
-@with_root(propagate=True)
 def location():
     """
     Manage remote locations.
@@ -168,10 +161,9 @@ def location():
 
 
 @location.command("list")
-@with_root
-def location_list(root):
+def location_list():
     """List configured remote locations."""
-    locations = outpack_location_list(root=root)
+    locations = outpack_location_list()
     for name in locations:
         click.echo(name)
 
@@ -179,25 +171,22 @@ def location_list(root):
 @location.command("rename")
 @click.argument("old")
 @click.argument("new")
-@with_root
-def location_rename(root, old, new):
+def location_rename(old, new):
     """Rename a remote location."""
-    outpack_location_rename(old, new, root=root)
+    outpack_location_rename(old, new)
 
 
 @location.command("remove")
 @click.argument("name")
-@with_root
-def location_remove(root, name):
+def location_remove(name):
     """Remove a remote location."""
-    outpack_location_remove(name, root=root)
+    outpack_location_remove(name)
 
 
 @location.command("add")
 @click.argument("name")
 @click.argument("location", metavar="(PATH | URL)")
-@with_root
-def location_add(root, name, location):
+def location_add(name, location):
     """
     Add a new remote location.
 
@@ -209,14 +198,12 @@ def location_add(root, name, location):
     # file path, and we always interpret that as a URL. Users can easily
     # disambiguate by using either backslashes or using a single forward slash.
     if "://" not in location:
-        outpack_location_add(name, "path", {"path": location}, root=root)
+        outpack_location_add(name, "path", {"path": location})
     else:
         parts = urlparse(location)
 
-        if parts.scheme in {"ssh"}:
-            outpack_location_add(
-                name, parts.scheme, {"url": location}, root=root
-            )
+        if parts.scheme == "ssh":
+            outpack_location_add(name, "ssh", {"url": location})
         else:
             click.echo(
                 f"Unsupported location protocol: '{parts.scheme}'", err=True
