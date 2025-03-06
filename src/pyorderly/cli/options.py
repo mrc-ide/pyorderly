@@ -2,7 +2,7 @@ import functools
 
 import click
 
-from outpack.search_options import SearchOptions
+from pyorderly.outpack.search_options import SearchOptions
 
 
 class NumericalParamType(click.ParamType):

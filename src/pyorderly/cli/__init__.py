@@ -4,10 +4,9 @@ from urllib.parse import urlparse
 
 import click
 
-import outpack.search
+from pyorderly.outpack.search import search as outpack_search
 from pyorderly.cli.options import (
     NumericalParamType,
-    PropagatingGroup,
     with_search_options,
 )
 from pyorderly.run import orderly_run
@@ -141,7 +140,7 @@ def search(query, search_options):
     repository. The --allow-remote option allows packets that are known locally
     but only present remotely to also be returned.
     """
-    packets = outpack.search.search(query, options=search_options)
+    packets = outpack_search(query, options=search_options)
     if packets:
         for id in packets:
             click.echo(id)
