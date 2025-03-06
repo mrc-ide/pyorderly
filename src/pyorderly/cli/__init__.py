@@ -22,7 +22,7 @@ from pyorderly.outpack.util import format_list
 
 @click.group()
 def cli():
-    """Run 'orderly <command> --help' to see the options available for each subcommand."""
+    """Run 'pyorderly <command> --help' to see the options available for each subcommand."""
     pass
 
 
