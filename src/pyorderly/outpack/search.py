@@ -95,7 +95,7 @@ def as_query(query: Union[Query, str]) -> Query:
 def search(
     query: Union[Query, str],
     *,
-    root: Union[OutpackRoot, str, os.PathLike],
+    root: Union[OutpackRoot, str, os.PathLike, None] = None,
     options: Optional[SearchOptions] = None,
     this: Optional[Parameters] = None,
 ) -> set[str]:

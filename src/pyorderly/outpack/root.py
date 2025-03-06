@@ -13,7 +13,7 @@ from pyorderly.outpack.schema import validate
 from pyorderly.outpack.util import find_file_descend
 
 
-class OutpackRoot:
+class OutpackRoot(os.PathLike):
     files: Optional[FileStore] = None
 
     def __init__(self, path):
@@ -46,6 +46,9 @@ class OutpackRoot:
             here_full.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(src, here_full)
         return here
+
+    def __fspath__(self):
+        return str(self.path)
 
 
 def root_open(
