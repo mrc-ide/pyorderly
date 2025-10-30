@@ -1,8 +1,8 @@
 import collections
 import shutil
 from pathlib import PurePath
-
 from typing import Optional, Union
+
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.location_http import OutpackLocationHTTP
@@ -17,6 +17,7 @@ from pyorderly.outpack.static import (
 )
 
 LocationSelector = Union[None, str, list[str]]
+
 
 def outpack_location_list(root=None, *, locate=True):
     root = root_open(root, locate=locate)
@@ -101,7 +102,7 @@ def location_resolve_valid(
     *,
     include_local: bool,
     include_orphan: bool,
-    allow_no_locations: bool
+    allow_no_locations: bool,
 ) -> list[str]:
     if location is None:
         result = outpack_location_list(root)
