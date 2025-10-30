@@ -76,7 +76,7 @@ def test_sandbox_can_run_in_different_directory(tmp_path):
 
 
 def sandbox_can_import_local_modules():
-    import my_unique_module_name  # noqa: PLC0415, type: ignore
+    import my_unique_module_name  # type: ignore # noqa: PLC0415
 
     return my_unique_module_name.hello()
 
