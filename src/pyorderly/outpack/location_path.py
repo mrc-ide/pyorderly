@@ -25,11 +25,11 @@ class OutpackLocationPath(LocationDriver):
         pass
 
     @override
-    def list(self) -> dict[str, PacketLocation]:
+    def list_packets(self) -> dict[str, PacketLocation]:
         return self.__root.index.location(LOCATION_LOCAL)
 
     @override
-    def metadata(self, packet_ids: builtins.list[str]) -> dict[str, str]:
+    def metadata(self, packet_ids: list[str]) -> dict[str, str]:
         all_ids = self.__root.index.location(LOCATION_LOCAL).keys()
         missing_ids = set(packet_ids).difference(all_ids)
         if missing_ids:

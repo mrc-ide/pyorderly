@@ -59,7 +59,7 @@ class OutpackLocationHTTP(LocationDriver):
         self._client.__exit__(*args)
 
     @override
-    def list(self) -> dict[str, PacketLocation]:
+    def list_packets(self) -> dict[str, PacketLocation]:
         response = self._client.get("metadata/list").json()
         data = response["data"]
         return {
@@ -67,7 +67,7 @@ class OutpackLocationHTTP(LocationDriver):
         }
 
     @override
-    def metadata(self, ids: builtins.list[str]) -> dict[str, str]:
+    def metadata(self, ids: list[str]) -> dict[str, str]:
         result = {}
         for i in ids:
             result[i] = self._client.get(f"metadata/{i}/text").text
