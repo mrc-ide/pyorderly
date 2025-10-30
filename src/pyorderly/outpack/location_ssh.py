@@ -1,5 +1,4 @@
 import base64
-import builtins
 import errno
 from contextlib import ExitStack
 from pathlib import Path, PurePosixPath

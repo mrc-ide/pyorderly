@@ -532,5 +532,6 @@ def _location_build_packet_locations(
             packets_fetch[packet_id] = packets_from_location[packet_id]
     return packets_fetch
 
+
 def _temporary_filestore(root: OutpackRoot) -> FileStore:
     return FileStore(root.path / "orderly" / "pull")
