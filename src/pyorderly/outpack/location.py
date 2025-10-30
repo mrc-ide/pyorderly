@@ -2,6 +2,7 @@ import collections
 import shutil
 from pathlib import PurePath
 
+from typing import Optional, Union
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
 from pyorderly.outpack.location_http import OutpackLocationHTTP
@@ -15,6 +16,7 @@ from pyorderly.outpack.static import (
     LOCATION_RESERVED_NAME,
 )
 
+LocationSelector = Union[None, str, list[str]]
 
 def outpack_location_list(root=None, *, locate=True):
     root = root_open(root, locate=locate)
@@ -94,15 +96,20 @@ def outpack_location_rename(old, new, root=None, *, locate=True):
 
 
 def location_resolve_valid(
-    location, root, *, include_local, include_orphan, allow_no_locations
-):
+    location: LocationSelector,
+    root,
+    *,
+    include_local: bool,
+    include_orphan: bool,
+    allow_no_locations: bool
+) -> list[str]:
     if location is None:
-        location = outpack_location_list(root)
+        result = outpack_location_list(root)
     elif isinstance(location, str):
         if location not in outpack_location_list(root):
             msg = f"Unknown location: '{location}'"
             raise Exception(msg)
-        location = [location]
+        result = [location]
     elif isinstance(location, collections.abc.Iterable) and all(
         isinstance(item, str) for item in location
     ):
@@ -111,7 +118,7 @@ def location_resolve_valid(
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
             raise Exception(msg)
-        location = list(location)
+        result = list(location)
     else:
         msg = (
             "Invalid input for 'location'; expected None or a list of "
@@ -119,16 +126,16 @@ def location_resolve_valid(
         )
         raise Exception(msg)
 
-    if not include_local and LOCATION_LOCAL in location:
-        location.remove(LOCATION_LOCAL)
-    if not include_orphan and LOCATION_ORPHAN in location:  # pragma: no cover
-        location.remove(LOCATION_ORPHAN)
+    if not include_local and LOCATION_LOCAL in result:
+        result.remove(LOCATION_LOCAL)
+    if not include_orphan and LOCATION_ORPHAN in result:  # pragma: no cover
+        result.remove(LOCATION_ORPHAN)
 
-    if len(location) == 0 and not allow_no_locations:
+    if len(result) == 0 and not allow_no_locations:
         msg = "No suitable location found"
         raise Exception(msg)
 
-    return location
+    return result
 
 
 def _location_check_new_name(root, name):
