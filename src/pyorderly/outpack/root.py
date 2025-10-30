@@ -2,6 +2,7 @@ import os
 import shutil
 from errno import ENOENT
 from pathlib import Path
+from typing import TypeAlias
 
 from pyorderly.outpack.config import read_config
 from pyorderly.outpack.filestore import FileStore
@@ -47,31 +48,31 @@ class OutpackRoot:
         return here
 
 
-def root_open(
-    path: OutpackRoot | str | os.PathLike | None, *, locate: bool = False
-) -> OutpackRoot:
+RootLike: TypeAlias = None | str | os.PathLike | OutpackRoot
+
+
+def root_open(path: RootLike) -> OutpackRoot:
     if isinstance(path, OutpackRoot):
         return path
 
     if path is None:
         path = Path.cwd()
-    else:
-        path = Path(path).absolute()
+        result = find_file_descend(".outpack", path)
+        if result is None:
+            msg = f"Did not find existing outpack root in '{path}' or any parent directory"
+            raise Exception(msg)
 
-    if not path.is_dir():
-        msg = "Expected 'path' to be an existing directory"
-        raise Exception(msg)
-    if locate:
-        path_outpack = find_file_descend(".outpack", path)
-        has_outpack = path_outpack is not None
-        pass
     else:
-        has_outpack = path.joinpath(".outpack").is_dir()
-        path_outpack = path
-    if not has_outpack:
-        msg = f"Did not find existing outpack root in '{path}'"
-        raise Exception(msg)
-    return OutpackRoot(path_outpack)
+        result = Path(path).absolute()
+        if not result.is_dir():
+            msg = "Expected 'path' to be an existing directory"
+            raise Exception(msg)
+
+        if not result.joinpath(".outpack").is_dir():
+            msg = f"Did not find existing outpack root in '{result}'"
+            raise Exception(msg)
+
+    return OutpackRoot(result)
 
 
 def find_file_by_hash(root, hash):

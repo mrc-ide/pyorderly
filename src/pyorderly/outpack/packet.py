@@ -15,20 +15,31 @@ from pyorderly.outpack.metadata import (
     MetadataCore,
     PacketDepends,
     PacketFile,
+    Parameters,
 )
-from pyorderly.outpack.root import mark_known, root_open
+from pyorderly.outpack.root import OutpackRoot, mark_known
 from pyorderly.outpack.schema import outpack_schema_version, validate
 from pyorderly.outpack.search import as_query, search_unique
-from pyorderly.outpack.tools import git_info
+from pyorderly.outpack.tools import GitInfo, git_info
 from pyorderly.outpack.util import all_normal_files, as_posix_path
 
 
 # TODO: most of these fields should be private.
 class Packet:
+    root: OutpackRoot
+    path: Path
+    id: str
+    parameters: Parameters
+    depends: list[str]
+    files: list[PacketFile]
+    git: GitInfo
+    immutable: dict[str, str]
+    custom: dict | None
+
     def __init__(
-        self, root, path, name, *, parameters=None, id=None, locate=True
+        self, root: OutpackRoot, path, name, *, parameters=None, id=None
     ):
-        self.root = root_open(root, locate=locate)
+        self.root = root
         self.path = Path(path)
         if id is None:
             self.id = outpack_id()

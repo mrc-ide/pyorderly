@@ -10,7 +10,7 @@ from pyorderly.outpack.location_packit import outpack_location_packit
 from pyorderly.outpack.location_path import OutpackLocationPath
 from pyorderly.outpack.location_ssh import OutpackLocationSSH, parse_ssh_url
 from pyorderly.outpack.metadata import MetadataCore
-from pyorderly.outpack.root import OutpackRoot, root_open
+from pyorderly.outpack.root import OutpackRoot, RootLike, root_open
 from pyorderly.outpack.static import (
     LOCATION_LOCAL,
     LOCATION_ORPHAN,
@@ -20,13 +20,13 @@ from pyorderly.outpack.static import (
 LocationSelector: TypeAlias = None | str | list[str]
 
 
-def outpack_location_list(root=None, *, locate=True):
-    root = root_open(root, locate=locate)
+def outpack_location_list(*, root: RootLike = None):
+    root = root_open(root)
     return list(root.config.location.keys())
 
 
-def outpack_location_add(name, type, args, root=None, *, locate=True):
-    root = root_open(root, locate=locate)
+def outpack_location_add(name, type, args, *, root: RootLike = None):
+    root = root_open(root)
 
     if name in LOCATION_RESERVED_NAME:
         msg = f"Cannot add a location with reserved name '{name}'"
@@ -37,7 +37,7 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
     loc = Location(name, type, args)
 
     if type == "path":
-        root_open(loc.args["path"], locate=False)
+        root_open(loc.args["path"])
     elif type == "ssh":
         parse_ssh_url(loc.args["url"])
     elif type in ("custom",):  # pragma: no cover
@@ -49,17 +49,17 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
     update_config(config, root.path)
 
 
-def outpack_location_add_path(name, path, root=None, *, locate=True):
+def outpack_location_add_path(name, path, *, root: RootLike = None):
     if isinstance(path, OutpackRoot):
         path = str(path.path)
     elif isinstance(path, PurePath):
         path = str(path)
 
-    outpack_location_add(name, "path", {"path": path}, root=root, locate=locate)
+    outpack_location_add(name, "path", {"path": path}, root=root)
 
 
-def outpack_location_remove(name, root=None, *, locate=True):
-    root = root_open(root, locate=locate)
+def outpack_location_remove(name, *, root: RootLike = None):
+    root = root_open(root)
 
     if name in LOCATION_RESERVED_NAME:
         msg = f"Cannot remove default location '{name}'"
@@ -80,8 +80,8 @@ def outpack_location_remove(name, root=None, *, locate=True):
     update_config(config, root.path)
 
 
-def outpack_location_rename(old, new, root=None, *, locate=True):
-    root = root_open(root, locate=locate)
+def outpack_location_rename(old, new, root: RootLike = None):
+    root = root_open(root)
 
     if old in LOCATION_RESERVED_NAME:
         msg = f"Cannot rename default location '{old}'"
@@ -106,16 +106,16 @@ def location_resolve_valid(
     allow_no_locations: bool,
 ) -> list[str]:
     if location is None:
-        result = outpack_location_list(root)
+        result = outpack_location_list(root=root)
     elif isinstance(location, str):
-        if location not in outpack_location_list(root):
+        if location not in outpack_location_list(root=root):
             msg = f"Unknown location: '{location}'"
             raise Exception(msg)
         result = [location]
     elif isinstance(location, collections.abc.Iterable) and all(
         isinstance(item, str) for item in location
     ):
-        unknown = set(location).difference(outpack_location_list(root))
+        unknown = set(location).difference(outpack_location_list(root=root))
         if unknown:
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
@@ -153,7 +153,7 @@ def _location_check_exists(root, name):
 
 
 def _location_exists(root, name):
-    return name in outpack_location_list(root)
+    return name in outpack_location_list(root=root)
 
 
 def _location_driver(location_name, root) -> LocationDriver:

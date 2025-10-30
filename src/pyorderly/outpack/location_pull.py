@@ -22,6 +22,7 @@ from pyorderly.outpack.metadata import (
 )
 from pyorderly.outpack.root import (
     OutpackRoot,
+    RootLike,
     find_file_by_hash,
     mark_known,
     root_open,
@@ -32,9 +33,9 @@ from pyorderly.outpack.util import format_list, partition, pl
 
 
 def outpack_location_pull_metadata(
-    location: LocationSelector = None, root=None, *, locate=True
+    location: LocationSelector = None, *, root: RootLike = None
 ):
-    root = root_open(root, locate=locate)
+    root = root_open(root)
     location_name = location_resolve_valid(
         location,
         root,
@@ -139,10 +140,9 @@ def outpack_location_pull_packet(
     *,
     options: SearchOptions | None = None,
     recursive: bool | None = None,
-    root: str | OutpackRoot | None = None,
-    locate: bool = True,
+    root: RootLike = None,
 ):
-    root = root_open(root, locate=locate)
+    root = root_open(root)
 
     if isinstance(ids, str):
         ids = [ids]

@@ -13,7 +13,7 @@ from pyorderly.outpack.init import outpack_init
 from pyorderly.outpack.location import outpack_location_add_path
 from pyorderly.outpack.metadata import MetadataCore, PacketDepends
 from pyorderly.outpack.packet import Packet, insert_packet
-from pyorderly.outpack.root import OutpackRoot, root_open
+from pyorderly.outpack.root import OutpackRoot, RootLike, root_open
 from pyorderly.outpack.schema import outpack_schema_version
 from pyorderly.outpack.util import openable_temporary_file
 from pyorderly.run import orderly_run
@@ -22,7 +22,7 @@ from .ssh_server import SSHServer  # noqa: F401
 
 
 @contextmanager
-def create_packet(root, name, *, packet_id=None, parameters=None):
+def create_packet(root: RootLike, name, *, packet_id=None, parameters=None):
     """
     Create an Outpack packet.
 
@@ -30,7 +30,7 @@ def create_packet(root, name, *, packet_id=None, parameters=None):
     packet can be populated in the block's body. The packet gets completed and
     added to the repository when the context manager is exited.
     """
-    root = root_open(root, locate=False)
+    root = root_open(root)
     with TemporaryDirectory() as src:
         p = Packet(root, src, name, id=packet_id, parameters=parameters)
         try:
@@ -79,7 +79,7 @@ def create_random_packet_chain(root, length, base=None):
 
 def create_temporary_root(path, **kwargs) -> OutpackRoot:
     outpack_init(path, **kwargs)
-    return root_open(path, locate=False)
+    return root_open(path)
 
 
 def create_temporary_roots(

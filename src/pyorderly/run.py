@@ -5,18 +5,23 @@ from pathlib import Path
 from pyorderly.core import Description
 from pyorderly.current import ActiveOrderlyContext, OrderlyCustomMetadata
 from pyorderly.outpack.ids import outpack_id
-from pyorderly.outpack.metadata import MetadataCore
+from pyorderly.outpack.metadata import MetadataCore, Parameters
 from pyorderly.outpack.packet import Packet, insert_packet
-from pyorderly.outpack.root import root_open
+from pyorderly.outpack.root import RootLike, root_open
 from pyorderly.outpack.sandbox import run_in_sandbox
+from pyorderly.outpack.search_options import SearchOptions
 from pyorderly.outpack.util import all_normal_files
 from pyorderly.read import orderly_read
 
 
 def orderly_run(
-    name, *, parameters=None, search_options=None, root=None, locate=True
+    name: str,
+    *,
+    parameters: Parameters | None = None,
+    search_options: SearchOptions | None = None,
+    root: RootLike = None,
 ):
-    root = root_open(root, locate=locate)
+    root = root_open(root)
 
     path_src, entrypoint = _validate_src_directory(name, root)
 
@@ -55,15 +60,21 @@ def orderly_run(
 
 
 def _packet_builder(
-    root, id, name, path, path_src, entrypoint, parameters, search_options
+    root: Path,
+    id: str,
+    name: str,
+    path: Path,
+    path_src: Path,
+    entrypoint: str,
+    parameters: Parameters,
+    search_options: SearchOptions,
 ) -> MetadataCore:
-    root = root_open(root, locate=False)
+    root = root_open(root)
     packet = Packet(
         root,
         path,
         name,
         id=id,
-        locate=False,
         parameters=parameters,
     )
 
@@ -122,7 +133,7 @@ def _validate_src_directory(name, root) -> tuple[Path, str]:
     return path, entrypoint
 
 
-def _validate_parameters(given, defaults):
+def _validate_parameters(given: Parameters | None, defaults) -> Parameters:
     if given is None:
         given = {}
 

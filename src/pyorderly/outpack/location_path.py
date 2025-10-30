@@ -12,8 +12,8 @@ from pyorderly.outpack.util import read_string
 
 
 class OutpackLocationPath(LocationDriver):
-    def __init__(self, path):
-        self.__root = root_open(path, locate=False)
+    def __init__(self, path: os.PathLike):
+        self.__root = root_open(path)
 
     @override
     def __enter__(self):
@@ -43,7 +43,7 @@ class OutpackLocationPath(LocationDriver):
 
     @override
     def fetch_file(self, _packet: MetadataCore, file: PacketFile, dest: str):
-        if self.__root.config.core.use_file_store:
+        if self.__root.files is not None:
             path = self.__root.files.filename(file.hash)
             if not os.path.exists(path):
                 msg = f"Hash '{file.hash}' not found at location"

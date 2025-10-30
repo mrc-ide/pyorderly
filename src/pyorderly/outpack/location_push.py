@@ -6,7 +6,12 @@ from pyorderly.outpack.location import (
     location_resolve_valid,
 )
 from pyorderly.outpack.location_driver import LocationDriver
-from pyorderly.outpack.root import OutpackRoot, find_file_by_hash, root_open
+from pyorderly.outpack.root import (
+    OutpackRoot,
+    RootLike,
+    find_file_by_hash,
+    root_open,
+)
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import as_list
 
@@ -21,10 +26,9 @@ def outpack_location_push(
     ids: str | list[str],
     location: str,
     *,
-    root: str | OutpackRoot | None = None,
-    locate: bool = True,
+    root: RootLike = None,
 ):
-    root = root_open(root, locate=locate)
+    root = root_open(root)
     (location_name,) = location_resolve_valid(
         [location],
         root,

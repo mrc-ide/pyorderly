@@ -27,32 +27,37 @@ def test_can_open_root_with_no_store(tmp_path):
     assert isinstance(r.index, Index)
 
 
-def test_can_open_root_from_a_subdir():
-    r = root_open("example", locate=False)
-    assert root_open("example/src", locate=True).path == r.path
-    assert root_open("example/src/data", locate=True).path == r.path
-
-
-def test_can_open_root_from_wd():
+def test_can_open_root_from_working_directory():
     p = Path("example").resolve()
+
     with transient_working_directory("example"):
-        assert root_open(None, locate=True).path == p
-        assert root_open(None, locate=False).path == p
-
-
-def test_can_error_if_recursion_to_find_root_fails():
-    p = Path("example").resolve()
+        assert root_open(None).path == p
+    with transient_working_directory("example/src"):
+        assert root_open(None).path == p
     with transient_working_directory("example/src/data"):
-        assert root_open(None, locate=True).path == p
+        assert root_open(None).path == p
 
-        with pytest.raises(Exception, match="Did not find existing outpack"):
-            assert root_open(None, locate=False).path == p
+
+def test_cannot_open_root_from_subdirectory():
+    p = Path("example").resolve()
+    assert root_open("example").path == p
+
+    with pytest.raises(Exception, match="Did not find existing outpack"):
+        root_open("example/src")
+
+
+def test_can_error_if_recursion_to_find_root_fails(tmp_path):
+    with transient_working_directory(tmp_path):
+        msg = (
+            r"Did not find existing outpack root in .* or any parent directory"
+        )
+        with pytest.raises(Exception, match=msg):
+            root_open(None)
 
 
 def test_roots_are_handed_back():
     r = root_open("example")
-    assert root_open(r, locate=True) == r
-    assert root_open(r, locate=False) == r
+    assert root_open(r) == r
 
 
 def test_paths_must_be_directories(tmp_path):

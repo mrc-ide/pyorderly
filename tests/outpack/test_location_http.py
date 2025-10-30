@@ -223,6 +223,7 @@ def test_can_push_packet(tmp_path, use_file_store) -> None:
     assert ids[0] in metadata
     assert ids[1] not in metadata
 
+
 @pytest.mark.parametrize("use_file_store", [True, False])
 def test_can_push_multiple_packets(tmp_path, use_file_store) -> None:
     root = create_temporary_root(
