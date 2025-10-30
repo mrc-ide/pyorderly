@@ -12,6 +12,7 @@ from pyorderly.outpack.filestore import FileStore
 from pyorderly.outpack.hash import hash_validate_string
 from pyorderly.outpack.location import (
     LocationDriver,
+    LocationSelector,
     _location_driver,
     location_resolve_valid,
 )
@@ -31,7 +32,9 @@ from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import format_list, partition, pl
 
 
-def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
+def outpack_location_pull_metadata(
+    location: LocationSelector = None, root=None, *, locate=True
+):
     root = root_open(root, locate=locate)
     location_name = location_resolve_valid(
         location,
@@ -528,7 +531,6 @@ def _location_build_packet_locations(
         for packet_id in packets_in_this_location:
             packets_fetch[packet_id] = packets_from_location[packet_id]
     return packets_fetch
-
 
 def _temporary_filestore(root: OutpackRoot) -> FileStore:
     return FileStore(root.path / "orderly" / "pull")
