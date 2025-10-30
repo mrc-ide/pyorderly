@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from pyorderly.outpack.config import Config, read_config, write_config
+from pyorderly.outpack.root import OutpackRoot
 
 
 def outpack_init(
@@ -31,16 +32,15 @@ def outpack_init(
         _validate_same_core_configuration(config.core, read_config(path).core)
     else:
         path_outpack.mkdir(parents=True, exist_ok=True)
-        path_outpack.joinpath("metadata").mkdir(parents=True, exist_ok=True)
-        path_outpack.joinpath("location").mkdir(parents=True, exist_ok=True)
-        path_outpack.joinpath("location/local").mkdir(
-            parents=True, exist_ok=True
-        )
+        path_outpack.joinpath("metadata").mkdir(exist_ok=True)
+        path_outpack.joinpath("location").mkdir(exist_ok=True)
+        path_outpack.joinpath("location/local").mkdir(exist_ok=True)
         if path_archive is not None:
             path.joinpath(path_archive).mkdir(exist_ok=True)
+
         write_config(config, path)
 
-    return path
+    return OutpackRoot(path).path
 
 
 def _validate_same_core_configuration(now, then):
