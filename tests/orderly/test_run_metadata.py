@@ -68,8 +68,6 @@ def test_shared_resource_can_copy_single_name(tmp_path):
 
 
 def test_shared_resource_can_copy_multiple_names(tmp_path):
-    from os.path import join
-
     root = helpers.create_temporary_root(tmp_path)
     helpers.copy_shared_resources(["numbers.txt", "data"], root)
 
@@ -83,8 +81,12 @@ def test_shared_resource_can_copy_multiple_names(tmp_path):
     assert (src / "data" / "numbers.txt").exists()
     assert res == {
         "numbers.txt": "numbers.txt",
-        join("data", "numbers.txt"): join("data", "numbers.txt"),
-        join("data", "weights.txt"): join("data", "weights.txt"),
+        os.path.join("data", "numbers.txt"): os.path.join(
+            "data", "numbers.txt"
+        ),
+        os.path.join("data", "weights.txt"): os.path.join(
+            "data", "weights.txt"
+        ),
     }
 
 
@@ -244,11 +246,11 @@ def test_can_use_parameters_without_packet(tmp_path):
         assert p == pyorderly.Parameters(x=1, y="foo")
 
         with pytest.raises(
-            Exception, match="No value was specified for parameter x."
+            Exception, match="No value was specified for parameter x\\."
         ):
             pyorderly.parameters(x=None, y="foo")
 
         with pytest.raises(
-            Exception, match="No value was specified for parameters x, y."
+            Exception, match="No value was specified for parameters x, y\\."
         ):
             pyorderly.parameters(x=None, y=None)

@@ -86,5 +86,5 @@ def test_can_get_file_hash_from_metadata():
 
 def test_can_error_if_file_not_found_in_metadata():
     d = read_metadata_core("example/.outpack/metadata/20230807-152344-ee606dce")
-    with pytest.raises(Exception, match="Packet .+ does not contain file 'f'"):
+    with pytest.raises(Exception, match=r"Packet .+ does not contain file 'f'"):
         d.file_hash("f")

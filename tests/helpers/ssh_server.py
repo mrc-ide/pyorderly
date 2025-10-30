@@ -81,7 +81,7 @@ class SSHServer(AbstractContextManager):
 
     def _server_loop(self, sock: socket.socket):
         while True:
-            client, addr = sock.accept()
+            client, _addr = sock.accept()
             if self.shutdown.is_set():
                 return
 

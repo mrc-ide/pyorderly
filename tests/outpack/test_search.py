@@ -108,12 +108,12 @@ def test_search_unique_fails_on_non_single_values(tmp_path):
     id = create_random_packet(root)
 
     with pytest.raises(
-        Exception, match="Query is not guaranteed to return a single packet."
+        Exception, match="Query is not guaranteed to return a single packet\\."
     ):
         search_unique("name == 'data'", root=root)
 
     with pytest.raises(
-        Exception, match="Query is not guaranteed to return a single packet."
+        Exception, match="Query is not guaranteed to return a single packet\\."
     ):
         search_unique(f"id != '{id}'", root=root)
 

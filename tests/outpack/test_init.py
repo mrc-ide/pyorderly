@@ -21,7 +21,7 @@ def test_fail_to_create_with_error_if_path_exists(tmp_path):
     root = tmp_path / "root"
     root.touch()
     with pytest.raises(
-        Exception, match="Path '.+' already exists but is not a directory"
+        Exception, match=r"Path '.+' already exists but is not a directory"
     ):
         outpack_init(root)
 
