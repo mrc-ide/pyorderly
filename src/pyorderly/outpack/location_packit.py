@@ -2,7 +2,6 @@ import functools
 import re
 import time
 from dataclasses import dataclass
-from typing import Optional, Union
 from urllib.parse import urljoin
 
 import requests
@@ -28,21 +27,21 @@ class DeviceAuthorizationResponse(DataClassJsonMixin):
     user_code: str
     verification_uri: str
     expires_in: int
-    interval: Optional[int] = None
+    interval: int | None = None
 
 
 @dataclass
 class AccessTokenResponse(DataClassJsonMixin):
     access_token: str
     token_type: str
-    expires_in: Optional[int] = None
+    expires_in: int | None = None
 
 
 @dataclass_json
 @dataclass
 class ErrorResponse(DataClassJsonMixin):
     error: str
-    error_description: Optional[str] = None
+    error_description: str | None = None
 
 
 class OAuthDeviceClient:
@@ -96,7 +95,7 @@ class OAuthDeviceClient:
 
     def fetch_access_token(
         self, parameters: DeviceAuthorizationResponse
-    ) -> Union[AccessTokenResponse, ErrorResponse]:
+    ) -> AccessTokenResponse | ErrorResponse:
         """
         Fetch an access token from the authentication server.
 
@@ -165,7 +164,7 @@ class OAuthDeviceClient:
 # - It should check for expiry of tokens and/or check for authentication errors
 #   and purge offending tokens from it.
 @functools.cache
-def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
+def packit_authorisation(url: str, token: str | None) -> dict[str, str]:
     # If a non-Github token is provided, we assume it is a native Packit token
     # and use that directly.
     if token is not None and not re.match("^gh._", token):
@@ -188,7 +187,7 @@ def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
 
 
 def outpack_location_packit(
-    url: str, token: Optional[str] = None
+    url: str, token: str | None = None
 ) -> OutpackLocationHTTP:
     if not url.endswith("/"):
         url += "/"
