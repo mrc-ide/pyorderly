@@ -1,7 +1,7 @@
 import collections
 import shutil
 from pathlib import PurePath
-from typing import Optional, Union
+from typing import Union
 
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
