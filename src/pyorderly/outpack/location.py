@@ -98,7 +98,7 @@ def outpack_location_rename(old, new, root=None, *, locate=True):
 
 def location_resolve_valid(
     location: LocationSelector,
-    root,
+    root: OutpackRoot,
     *,
     include_local: bool,
     include_orphan: bool,

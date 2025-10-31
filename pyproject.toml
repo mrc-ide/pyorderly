@@ -197,6 +197,7 @@ exclude_lines = [
   "@abstractmethod",
   "@abc.abstractmethod",
   "@overload",
+  "raise NotImplementedError",
 ]
 
 [tool.pytest.ini_options]
