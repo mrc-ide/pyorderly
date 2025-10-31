@@ -1,7 +1,6 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from pyorderly.outpack.packet import Packet
 from pyorderly.outpack.root import OutpackRoot, root_open
@@ -19,7 +18,7 @@ class OrderlyCustomMetadata:
 @dataclass
 class OrderlyContext:
     # The active packet, if one is running
-    packet: Optional[Packet]
+    packet: Packet | None
     # the path to the packet running directory. This is a pathlib Path object
     path: Path
     # the path to the packet source
@@ -33,7 +32,7 @@ class OrderlyContext:
     # Special orderly custom metadata
     orderly: OrderlyCustomMetadata
     # Options used when searching for dependencies
-    search_options: Optional[SearchOptions]
+    search_options: SearchOptions | None
 
     @staticmethod
     def from_packet(packet, path_src, search_options=None):

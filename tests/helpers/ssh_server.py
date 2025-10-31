@@ -5,7 +5,6 @@ import sys
 import threading
 from contextlib import AbstractContextManager, ExitStack
 from pathlib import Path
-from typing import Optional
 
 import paramiko
 
@@ -26,7 +25,7 @@ class SSHServer(AbstractContextManager):
     port: int
     host_key: paramiko.PKey
 
-    def __init__(self, root, allowed_users: Optional[list[str]] = None):
+    def __init__(self, root, allowed_users: list[str] | None = None):
         self.root = root
         self.allowed_users = allowed_users
         self.host_key = paramiko.RSAKey.generate(bits=1024)

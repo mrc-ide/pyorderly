@@ -1,7 +1,7 @@
 import collections
 import shutil
 from pathlib import PurePath
-from typing import Union
+from typing import TypeAlias
 
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
@@ -17,7 +17,7 @@ from pyorderly.outpack.static import (
     LOCATION_RESERVED_NAME,
 )
 
-LocationSelector = Union[None, str, list[str]]
+LocationSelector: TypeAlias = None | str | list[str]
 
 
 def outpack_location_list(root=None, *, locate=True):

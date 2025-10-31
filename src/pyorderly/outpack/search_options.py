@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
@@ -20,7 +19,7 @@ class SearchOptions:
         searching
     """
 
-    location: Optional[list[str]] = None
+    location: list[str] | None = None
     allow_remote: bool = False
     pull_metadata: bool = False
 
