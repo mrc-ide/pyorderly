@@ -409,12 +409,17 @@ def location_build_pull_plan(
 
 
 def _location_build_pull_plan_packets(
-    packet_ids: list[str], root: OutpackRoot, *, recursive: Optional[bool]
+    packet_ids: list[str], root: OutpackRoot, *, recursive: bool
 ) -> PullPlanPackets:
     requested = packet_ids
     index = root.index
+
     if recursive:
-        full = _find_all_dependencies(packet_ids, index.all_metadata())
+        # We allow missing packets at this stage - later when executing the
+        # plan we will fail if we don't have a source for a packet.
+        full = _find_all_dependencies(
+            packet_ids, index.all_metadata(), allow_missing_packets=True
+        )
     else:
         full = packet_ids
 
@@ -427,25 +432,35 @@ def _location_build_pull_plan_packets(
 
 
 def _find_all_dependencies(
-    packet_ids: list[str], metadata: dict[str, MetadataCore]
+    packet_ids: list[str],
+    metadata: dict[str, MetadataCore],
+    *,
+    allow_missing_packets: bool = False,
 ) -> list[str]:
-    ret = set(packet_ids)
-    packets = set(packet_ids)
-    while packets:
-        dependency_ids = {
-            dependencies.packet
-            for packet_id in packets
-            if packet_id in metadata.keys()
-            for dependencies in (
-                []
-                if metadata.get(packet_id) is None
-                else metadata[packet_id].depends
-            )
-        }
-        packets = dependency_ids.difference(ret)
-        ret = packets.union(ret)
+    result = []
 
-    return sorted(ret)
+    seen = set(packet_ids)
+    todo = list(packet_ids)
+
+    while todo:
+        packet_id = todo.pop()
+        result.append(packet_id)
+
+        m = metadata.get(packet_id)
+        if m is not None:
+            for dep in m.depends:
+                if dep.packet not in seen:
+                    seen.add(dep.packet)
+                    todo.append(dep.packet)
+        elif not allow_missing_packets:
+            msg = f"Unknown packet {packet_id}"
+            raise Exception(msg)
+
+    # We want the result to be reverse-topologically sorted, such that
+    # dependencies come before their dependents. Using a lexicographic sort on
+    # the packet IDs is a reasonable implementation of it because the IDs start
+    # with the timestamp.
+    return sorted(result)
 
 
 def _location_build_pull_plan_location(

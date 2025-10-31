@@ -15,11 +15,13 @@ from pyorderly.outpack.location_pull import (
 )
 from pyorderly.outpack.location_push import outpack_location_push
 from pyorderly.outpack.metadata import PacketFile, PacketLocation
+from pyorderly.outpack.root import root_open
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import read_string
 
 from ..helpers import (
     create_random_packet,
+    create_random_packet_chain,
     create_temporary_root,
     create_temporary_roots,
 )
@@ -205,7 +207,7 @@ def test_can_push_packet(tmp_path, use_file_store) -> None:
         use_file_store=use_file_store,
     )
 
-    ids = [create_random_packet(root) for _ in range(3)]
+    ids = [create_random_packet(root) for _ in range(2)]
 
     with start_outpack_server(tmp_path / "server") as url:
         outpack_location_add(
@@ -214,6 +216,35 @@ def test_can_push_packet(tmp_path, use_file_store) -> None:
             {"url": url},
             root=root,
         )
-
         outpack_location_push(ids[0], "upstream", root=root)
-        outpack_location_push(ids[1], "upstream", root=root)
+
+    upstream = root_open(tmp_path / "server")
+    metadata = upstream.index.all_metadata()
+    assert ids[0] in metadata
+    assert ids[1] not in metadata
+
+
+@pytest.mark.parametrize("use_file_store", [True, False])
+def test_can_push_packet_chain(tmp_path, use_file_store) -> None:
+    root = create_temporary_root(
+        tmp_path / "root",
+        use_file_store=use_file_store,
+    )
+
+    chain = create_random_packet_chain(root, 4)
+
+    with start_outpack_server(tmp_path / "server") as url:
+        outpack_location_add(
+            "upstream",
+            "http",
+            {"url": url},
+            root=root,
+        )
+        outpack_location_push(chain["c"], "upstream", root=root)
+
+    upstream = root_open(tmp_path / "server")
+    metadata = upstream.index.all_metadata()
+
+    # Only "c" and its dependencies are pushed to the upstream.
+    # "d" is not.
+    assert metadata.keys() == {chain["a"], chain["b"], chain["c"]}
