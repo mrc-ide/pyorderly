@@ -82,7 +82,7 @@ class OutpackLocationHTTP(LocationDriver):
     @override
     def list_unknown_packets(self, ids: list[str]) -> list[str]:
         response = self._client.post(
-            "/packets/missing",
+            "packets/missing",
             json={
                 "ids": ids,
                 "unpacked": True,
@@ -93,7 +93,7 @@ class OutpackLocationHTTP(LocationDriver):
     @override
     def list_unknown_files(self, hashes: list[str]) -> list[str]:
         response = self._client.post(
-            "/files/missing",
+            "files/missing",
             json={
                 "hashes": hashes,
             },
@@ -108,4 +108,4 @@ class OutpackLocationHTTP(LocationDriver):
     @override
     def push_metadata(self, src: Path, hash: str):
         with open(src, "rb") as f:
-            self._client.post(f"file/{hash}", stream=True, data=f)
+            self._client.post(f"packet/{hash}", stream=True, data=f)

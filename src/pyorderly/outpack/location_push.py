@@ -54,7 +54,12 @@ def location_build_push_plan(
 ) -> LocationPushPlan:
     metadata = root.index.all_metadata()
     all_packets = _find_all_dependencies(packet_ids, metadata)
-    missing_packets = driver.list_unknown_packets(all_packets)
+    unknown_packets = set(driver.list_unknown_packets(all_packets))
+
+    # We need to preserve the topological order of our list of packets. There's
+    # no guarantee that the driver returns the list of packets in the same
+    # order that we gave it, so use the original order from `all_packets`.
+    missing_packets = [p for p in all_packets if p in unknown_packets]
 
     all_files = list(
         {f.hash for id in missing_packets for f in metadata[id].files}
