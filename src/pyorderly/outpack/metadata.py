@@ -48,7 +48,7 @@ class PacketDepends(DataClassJsonMixin):
 
     @staticmethod
     def files_from_dict(files):
-        return [{"here": h, "there": t} for h, t, in files.items()]
+        return [{"here": h, "there": t} for h, t in files.items()]
 
 
 Parameters = dict[str, Union[bool, int, float, str]]

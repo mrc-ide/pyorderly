@@ -86,10 +86,7 @@ def find_file_by_hash(root, hash):
                 if hash_file(path, hash_parsed.algorithm) == hash_parsed:
                     return path
                 else:
-                    msg = (
-                        f"Rejecting file from archive '{f.path}' "
-                        f"in '{meta.name}/{meta.id}'"
-                    )
+                    msg = f"Rejecting file from archive '{f.path}' in '{meta.name}/{meta.id}'"
                     print(msg)
     return None
 

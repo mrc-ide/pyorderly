@@ -18,14 +18,13 @@ pip install pyorderly
 
 ## Development
 
-Useful hatch commands:
+Useful commands:
 
 ```
-hatch shell
-hatch run test
-hatch run cov
-hatch run lint:style
-hatch run lint:fmt
+uv run task test  # Run tests
+uv run task cov   # Run tests and print coverage report
+uv run task check # Check format and types
+uv run task fmt   # Re-format the code
 ```
 
 ### Modifying the parser
@@ -33,20 +32,19 @@ hatch run lint:fmt
 The outpack query parser is implemented in Rust as part of the
 [outpack_server](https://github.com/mrc-ide/outpack_server) repository. When
 developing new features in the query parser, they can be tested out in your
-development environment of `pyorderly` by installing the parser from your local
-checkout:
+development environment of `pyorderly` by passing the `--with` flag to `uv`:
 
 ```
-hatch run pip install /path/to/outpack_server
+uv run --with /path/to/outpack_server ...
 ```
 
 ## Releasing
 
-- Increment the version number using [the `hatch version` command](https://hatch.pypa.io/latest/version/#updating).
+- Increment the version number using [the `uv version` command](https://docs.astral.sh/uv/guides/package/#updating-your-version).
 - Commit the changes and create a PR.
 - Get the PR approved and merged to main.
 - Create a [GitHub release](https://github.com/mrc-ide/pyorderly/releases/new):
-  - Set the tag name as `vX.Y.Z`, matching the version reported by hatch.
+  - Set the tag name as `vX.Y.Z`, matching the version reported by uv.
   - Write some release notes (possibly using the `Generate release notes` button).
   - Publish the release!
 - Sit back and relax while the release gets built and published.

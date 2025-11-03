@@ -113,10 +113,7 @@ def location_resolve_valid(
             raise Exception(msg)
         location = list(location)
     else:
-        msg = (
-            "Invalid input for 'location'; expected None or a list of "
-            "strings"
-        )
+        msg = "Invalid input for 'location'; expected None or a list of strings"
         raise Exception(msg)
 
     if not include_local and LOCATION_LOCAL in location:

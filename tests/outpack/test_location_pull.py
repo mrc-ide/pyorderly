@@ -448,8 +448,7 @@ def test_error_if_dependent_packet_not_known(tmp_path):
     assert e.match(f"Failed to find packet '{ids['d']}")
     assert e.match("Looked in location 'b'")
     assert e.match(
-        "1 missing packet was requested as dependency of the "
-        f"one you asked for: '{ids['d']}'"
+        f"1 missing packet was requested as dependency of the one you asked for: '{ids['d']}'"
     )
 
 
