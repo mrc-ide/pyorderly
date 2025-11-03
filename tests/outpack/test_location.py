@@ -1,6 +1,7 @@
 import pytest
 
 from pyorderly.outpack.location import (
+    _find_all_dependencies,
     location_resolve_valid,
     outpack_location_add,
     outpack_location_add_path,
@@ -9,7 +10,11 @@ from pyorderly.outpack.location import (
     outpack_location_rename,
 )
 
-from ..helpers import create_temporary_root, create_temporary_roots
+from ..helpers import (
+    create_metadata_depends,
+    create_temporary_root,
+    create_temporary_roots,
+)
 
 
 def test_no_locations_except_local_by_default(tmp_path):
@@ -272,3 +277,78 @@ def test_resolve_location_makes_copy(tmp_path):
 
     assert result == ["src"]
     assert candidates == ["src", "local"]
+
+
+def test_can_resolve_dependencies_where_there_are_none():
+    metadata = create_metadata_depends("a")
+    deps = _find_all_dependencies(["a"], metadata)
+    assert deps == ["a"]
+
+    metadata = {
+        **create_metadata_depends("a"),
+        **create_metadata_depends("b", ["a"]),
+    }
+    deps = _find_all_dependencies(["a"], metadata)
+    assert deps == ["a"]
+
+
+def test_can_find_dependencies():
+    metadata = {
+        **create_metadata_depends("a"),
+        **create_metadata_depends("b"),
+        **create_metadata_depends("c"),
+        **create_metadata_depends("d", ["a", "b"]),
+        **create_metadata_depends("e", ["b", "c"]),
+        **create_metadata_depends("f", ["a", "c"]),
+        **create_metadata_depends("g", ["a", "f", "c"]),
+        **create_metadata_depends("h", ["a", "b", "c"]),
+        **create_metadata_depends("i", ["f"]),
+        **create_metadata_depends("j", ["i", "e", "a"]),
+    }
+
+    assert _find_all_dependencies(["a"], metadata) == ["a"]
+    assert _find_all_dependencies(["b"], metadata) == ["b"]
+    assert _find_all_dependencies(["c"], metadata) == ["c"]
+
+    assert _find_all_dependencies(["d"], metadata) == ["a", "b", "d"]
+    assert _find_all_dependencies(["e"], metadata) == ["b", "c", "e"]
+    assert _find_all_dependencies(["f"], metadata) == ["a", "c", "f"]
+
+    assert _find_all_dependencies(["g"], metadata) == ["a", "c", "f", "g"]
+    assert _find_all_dependencies(["h"], metadata) == ["a", "b", "c", "h"]
+    assert _find_all_dependencies(["i"], metadata) == ["a", "c", "f", "i"]
+    assert _find_all_dependencies(["j"], metadata) == [
+        "a",
+        "b",
+        "c",
+        "e",
+        "f",
+        "i",
+        "j",
+    ]
+
+
+def test_can_find_multiple_dependencies_at_once():
+    metadata = {
+        **create_metadata_depends("a"),
+        **create_metadata_depends("b"),
+        **create_metadata_depends("c"),
+        **create_metadata_depends("d", ["a", "b"]),
+        **create_metadata_depends("e", ["b", "c"]),
+        **create_metadata_depends("f", ["a", "c"]),
+        **create_metadata_depends("g", ["a", "f", "c"]),
+        **create_metadata_depends("h", ["a", "b", "c"]),
+        **create_metadata_depends("i", ["f"]),
+        **create_metadata_depends("j", ["i", "e", "a"]),
+    }
+
+    assert _find_all_dependencies([], metadata) == []
+    assert _find_all_dependencies(["c", "b", "a"], metadata) == ["a", "b", "c"]
+    assert _find_all_dependencies(["d", "e", "f"], metadata) == [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+    ]

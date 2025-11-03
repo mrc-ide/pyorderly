@@ -13,11 +13,11 @@ from pyorderly.outpack.hash import hash_validate_string
 from pyorderly.outpack.location import (
     LocationDriver,
     LocationSelector,
+    _find_all_dependencies,
     _location_driver,
     location_resolve_valid,
 )
 from pyorderly.outpack.metadata import (
-    MetadataCore,
     PacketFileWithLocation,
     PacketLocation,
 )
@@ -429,38 +429,6 @@ def _location_build_pull_plan_packets(
     return PullPlanPackets(
         requested=requested, full=full, skip=skip, fetch=fetch
     )
-
-
-def _find_all_dependencies(
-    packet_ids: list[str],
-    metadata: dict[str, MetadataCore],
-    *,
-    allow_missing_packets: bool = False,
-) -> list[str]:
-    result = []
-
-    seen = set(packet_ids)
-    todo = list(packet_ids)
-
-    while todo:
-        packet_id = todo.pop()
-        result.append(packet_id)
-
-        m = metadata.get(packet_id)
-        if m is not None:
-            for dep in m.depends:
-                if dep.packet not in seen:
-                    seen.add(dep.packet)
-                    todo.append(dep.packet)
-        elif not allow_missing_packets:
-            msg = f"Unknown packet {packet_id}"
-            raise Exception(msg)
-
-    # We want the result to be reverse-topologically sorted, such that
-    # dependencies come before their dependents. Using a lexicographic sort on
-    # the packet IDs is a reasonable implementation of it because the IDs start
-    # with the timestamp.
-    return sorted(result)
 
 
 def _location_build_pull_plan_location(

@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from typing import Union
 
-from pyorderly.outpack.location import _location_driver, location_resolve_valid
+from pyorderly.outpack.location import (
+    _find_all_dependencies,
+    _location_driver,
+    location_resolve_valid,
+)
 from pyorderly.outpack.location_driver import LocationDriver
-from pyorderly.outpack.location_pull import _find_all_dependencies
 from pyorderly.outpack.root import OutpackRoot, find_file_by_hash, root_open
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import as_list
