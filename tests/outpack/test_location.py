@@ -352,3 +352,18 @@ def test_can_find_multiple_dependencies_at_once():
         "e",
         "f",
     ]
+
+
+def test_can_ignore_missing_dependencies():
+    metadata = {
+        **create_metadata_depends("a", ["b", "c"]),
+        **create_metadata_depends("b", ["d"]),
+        **create_metadata_depends("d"),
+    }
+
+    with pytest.raises(Exception, match="Unknown packet c"):
+        _find_all_dependencies(["a"], metadata)
+
+    assert _find_all_dependencies(
+        ["a"], metadata, allow_missing_packets=True
+    ) == ["a", "b", "c", "d"]
