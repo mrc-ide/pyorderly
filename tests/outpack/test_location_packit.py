@@ -1,16 +1,11 @@
-import re
+from types import SimpleNamespace
 
 import pytest
 import responses
 from responses import matchers
-from responses.registries import OrderedRegistry
 
 from pyorderly.outpack.location import outpack_location_add
 from pyorderly.outpack.location_packit import (
-    GITHUB_ACCESS_TOKEN_URL,
-    GITHUB_CLIENT_ID,
-    GITHUB_DEVICE_CODE_URL,
-    OAuthDeviceClient,
     outpack_location_packit,
     packit_authorisation,
 )
@@ -41,96 +36,27 @@ def test_can_pass_packit_token():
     location.list()
 
 
-@responses.activate(assert_all_requests_are_fired=True)
-def test_can_pass_github_personal_token():
-    responses.post(
-        "https://example.com/packit/api/auth/login/api",
-        match=[matchers.json_params_matcher({"token": "ghp_token"})],
-        json={"token": "mytoken"},
-    )
-    responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
-        match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
-        json={"status": "success", "data": []},
-    )
-
-    location = outpack_location_packit("https://example.com", token="ghp_token")
-    location.list()
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_authentication_is_cached():
-    auth_response = responses.post(
-        "https://example.com/packit/api/auth/login/api",
-        match=[matchers.json_params_matcher({"token": "ghp_token"})],
-        json={"token": "mytoken"},
-    )
-    list_response = responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
-        match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
-        json={"status": "success", "data": []},
-    )
-
-    location = outpack_location_packit("https://example.com", token="ghp_token")
-    location.list()
-
-    assert auth_response.call_count == 1
-    assert list_response.call_count == 1
-
-    location.list()
-
-    assert auth_response.call_count == 1
-    assert list_response.call_count == 2
-
-
-@responses.activate(
-    registry=OrderedRegistry, assert_all_requests_are_fired=True
-)
-def test_can_perform_interactive_authentication(capsys):
-    responses.post(
-        GITHUB_DEVICE_CODE_URL,
+def register_oauth_responses(token):
+    device_code = responses.post(
+        "https://example.com/packit/api/deviceAuth",
         json={
             "device_code": "xxxxx",
             "user_code": "1234-5678",
-            "verification_uri": "https://github.com/login/device",
+            "verification_uri": "https://example.com/device",
             "expires_in": 3600,
             "interval": 0,
         },
-        match=[
-            matchers.urlencoded_params_matcher(
-                {
-                    "client_id": GITHUB_CLIENT_ID,
-                    "scope": "read:org",
-                }
-            )
-        ],
     )
+    access_token = responses.post(
+        "https://example.com/packit/api/deviceAuth/token",
+        json={"access_token": token, "token_type": "bearer"},
+    )
+    return SimpleNamespace(device_code=device_code, access_token=access_token)
 
-    m = matchers.urlencoded_params_matcher(
-        {
-            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
-            "device_code": "xxxxx",
-            "client_id": GITHUB_CLIENT_ID,
-        }
-    )
 
-    responses.post(
-        GITHUB_ACCESS_TOKEN_URL,
-        json={"error": "authorization_pending"},
-        match=[m],
-    )
-
-    responses.post(
-        GITHUB_ACCESS_TOKEN_URL,
-        json={"access_token": "ghp_token", "token_type": "bearer"},
-        match=[m],
-    )
-
-    responses.post(
-        "https://example.com/packit/api/auth/login/api",
-        match=[matchers.json_params_matcher({"token": "ghp_token"})],
-        json={"token": "mytoken"},
-    )
+@responses.activate(assert_all_requests_are_fired=True)
+def test_can_perform_interactive_authentication(capsys):
+    register_oauth_responses(token="mytoken")
 
     responses.get(
         "https://example.com/packit/api/outpack/metadata/list",
@@ -146,59 +72,35 @@ def test_can_perform_interactive_authentication(capsys):
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_oauth_failed_authentication():
-    responses.post(
-        GITHUB_DEVICE_CODE_URL,
-        json={
-            "device_code": "xxxxx",
-            "user_code": "1234-5678",
-            "verification_uri": "https://github.com/login/device",
-            "expires_in": 3600,
-            "interval": 0,
-        },
+def test_authentication_is_cached():
+    mocks = register_oauth_responses("mytoken")
+
+    list_response = responses.get(
+        "https://example.com/packit/api/outpack/metadata/list",
+        match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
+        json={"status": "success", "data": []},
     )
 
-    responses.post(GITHUB_ACCESS_TOKEN_URL, json={"error": "access_denied"})
+    location = outpack_location_packit("https://example.com")
+    location.list()
 
-    with OAuthDeviceClient(
-        GITHUB_CLIENT_ID,
-        GITHUB_DEVICE_CODE_URL,
-        GITHUB_ACCESS_TOKEN_URL,
-    ) as client:
-        msg = "Error while fetching access token: access_denied"
-        with pytest.raises(Exception, match=msg):
-            client.authenticate("read:org")
+    assert mocks.device_code.call_count == 1
+    assert mocks.access_token.call_count == 1
+    assert list_response.call_count == 1
+
+    location.list()
+
+    assert mocks.device_code.call_count == 1
+    assert mocks.access_token.call_count == 1
+    assert list_response.call_count == 2
 
 
-@responses.activate(assert_all_requests_are_fired=True)
-def test_oauth_failed_authentication_with_description():
-    responses.post(
-        GITHUB_DEVICE_CODE_URL,
-        json={
-            "device_code": "xxxxx",
-            "user_code": "1234-5678",
-            "verification_uri": "https://github.com/login/device",
-            "expires_in": 3600,
-            "interval": 0,
-        },
-    )
+def test_github_personal_token_is_rejected():
+    location = outpack_location_packit("https://example.com", token="ghp_token")
 
-    responses.post(
-        GITHUB_ACCESS_TOKEN_URL,
-        json={
-            "error": "access_denied",
-            "error_description": "Access was denied",
-        },
-    )
-
-    with OAuthDeviceClient(
-        GITHUB_CLIENT_ID,
-        GITHUB_DEVICE_CODE_URL,
-        GITHUB_ACCESS_TOKEN_URL,
-    ) as client:
-        msg = "Error while fetching access token: Access was denied (access_denied)"
-        with pytest.raises(Exception, match=re.escape(msg)):
-            client.authenticate("read:org")
+    msg = "Using a GitHub token to login to Packit isn't supported anymore\\."
+    with pytest.raises(Exception, match=msg):
+        location.list()
 
 
 @responses.activate(assert_all_requests_are_fired=True)
