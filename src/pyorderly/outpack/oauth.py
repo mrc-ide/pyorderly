@@ -112,7 +112,6 @@ class OAuthDeviceClient:
         self,
         parameters: DeviceAuthorizationResponse,
     ) -> AccessTokenResponse:
-        interval = parameters.interval
         if parameters.interval is None:  # pragma: no cover
             interval = 5
         else:
