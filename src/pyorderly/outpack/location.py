@@ -188,9 +188,9 @@ def _find_all_dependencies(
 ) -> list[str]:
     result = []
 
+    # This is a standard breath first search through the packet graph.
     seen = set(packet_ids)
     todo = list(packet_ids)
-
     while todo:
         packet_id = todo.pop()
         result.append(packet_id)
