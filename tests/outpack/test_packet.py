@@ -60,7 +60,7 @@ def test_cant_end_packet_twice(tmp_path):
 
     p = Packet(root, src, "data")
     p.end()
-    with pytest.raises(Exception, match="Packet '.+' already ended"):
+    with pytest.raises(Exception, match=r"Packet '.+' already ended"):
         p.end()
 
 
@@ -154,7 +154,7 @@ def test_can_detect_changes_to_immutable_files(tmp_path):
 
     with pytest.raises(
         Exception,
-        match="File was changed after being added: data.csv",
+        match="File was changed after being added: data\\.csv",
     ):
         with create_packet(root, "data") as p:
             p.path.joinpath("data.csv").write_text("a,b\n1,2\n3,4\n")
@@ -188,7 +188,7 @@ def test_can_detect_modification_of_immutable_file(tmp_path):
     p1.mark_file_immutable("data.csv")
     with open(src / "data.csv", "w") as f:
         f.write("a,b\n1,2\n3,4\n5,6\n")
-    with pytest.raises(Exception, match="Hash of '.+' does not match"):
+    with pytest.raises(Exception, match=r"Hash of '.+' does not match"):
         p1.mark_file_immutable("data.csv")
     p = Packet(root, src, "data")
     with open(src / "data.csv", "w") as f:
@@ -212,7 +212,7 @@ def test_can_detect_modification_of_immutable_file_if_readded(tmp_path):
     p.mark_file_immutable("data.csv")
     with open(src / "data.csv", "a") as f:
         f.write("5,6\n")
-    with pytest.raises(Exception, match="Hash of .+ does not match"):
+    with pytest.raises(Exception, match=r"Hash of .+ does not match"):
         p.mark_file_immutable("data.csv")
 
 

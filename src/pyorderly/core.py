@@ -112,7 +112,7 @@ def resource(files):
 
 
 def shared_resource(
-    files: Union[str, list[str], dict[str, str]]
+    files: Union[str, list[str], dict[str, str]],
 ) -> dict[str, str]:
     """Copy shared resources into a packet directory.
 

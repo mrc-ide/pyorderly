@@ -177,6 +177,11 @@ source_pkgs = ["pyorderly", "tests"]
 branch = true
 parallel = true
 
+# Reports run using subprocesses. We need this in order to gather coverage in
+# the child processes.
+# https://pytest-cov.readthedocs.io/en/latest/subprocess-support.html
+patch = ["subprocess"]
+
 # The wildcards are needed in order for the omit path to work correctly even
 # when spawning subprocess in different directories.
 omit = [

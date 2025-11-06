@@ -51,12 +51,12 @@ class ConfigCore:
 class Location:
     name: str
     type: str
-    args: Optional[dict] = None
+    args: dict
 
     def __init__(self, name, type, args=None):
         self.name = name
         self.type = type
-        self.args = args
+        self.args = args if args is not None else {}
 
         match_value(self.type, LOCATION_TYPES, "type")
         required = set()
@@ -67,7 +67,7 @@ class Location:
         elif type == "custom":
             required = {"driver"}
 
-        present = set() if self.args is None else set(self.args.keys())
+        present = self.args.keys()
         missing = required - present
         if missing:
             missing_text = "', '".join(missing)

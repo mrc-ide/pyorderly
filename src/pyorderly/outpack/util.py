@@ -66,7 +66,8 @@ def assert_file_exists(path, *, workdir=None, name="File"):
             missing = [str(p) for p in path if not os.path.exists(p)]
         else:
             missing = [] if os.path.exists(path) else [path]
-    if len(missing):
+
+    if missing:
         missing_str = ", ".join(missing)
         msg = f"{name} does not exist: {missing_str}"
         raise Exception(msg)

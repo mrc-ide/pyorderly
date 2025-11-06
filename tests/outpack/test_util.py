@@ -217,17 +217,15 @@ def test_openable_temporary_file():
 
 
 def test_as_posix_path():
-    from os.path import join
-
-    input = join("foo", "bar", "baz")
+    input = os.path.join("foo", "bar", "baz")
     assert as_posix_path(input) == "foo/bar/baz"
 
-    input = [join("hello", "world"), join("foo", "bar", "baz")]
+    input = [os.path.join("hello", "world"), os.path.join("foo", "bar", "baz")]
     assert as_posix_path(input) == ["hello/world", "foo/bar/baz"]
 
     input = {
-        join("here", "aaa"): join("there", "bbb"),
-        join("foo", "bar"): join("baz", "qux"),
+        os.path.join("here", "aaa"): os.path.join("there", "bbb"),
+        os.path.join("foo", "bar"): os.path.join("baz", "qux"),
     }
     assert as_posix_path(input) == {
         "here/aaa": "there/bbb",

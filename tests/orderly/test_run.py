@@ -74,20 +74,20 @@ def test_validate_report_src_directory(tmp_path):
     path_src.mkdir()
 
     x = path_src / "x"
-    with pytest.raises(Exception, match="The path '.+/x' does not exist"):
+    with pytest.raises(Exception, match=r"The path '.+/x' does not exist"):
         _validate_src_directory("x", root)
 
     x.mkdir()
     with pytest.raises(
         Exception,
-        match="The path '.+/x' exists but does not contain 'x.py'",
+        match=r"The path '.+/x' exists but does not contain 'x\.py'",
     ):
         _validate_src_directory("x", root)
 
     y = path_src / "y"
     y.touch()
     with pytest.raises(
-        Exception, match="The path '.+/y' exists but is not a directory"
+        Exception, match=r"The path '.+/y' exists but is not a directory"
     ):
         _validate_src_directory("y", root)
 
@@ -186,7 +186,7 @@ with open("report.py", "w") as f:
 """
 
     with pytest.raises(
-        Exception, match="File was changed after being added: report.py"
+        Exception, match="File was changed after being added: report\\.py"
     ):
         helpers.run_snippet("report", code, root)
 
@@ -203,7 +203,7 @@ with open("data.txt", "w") as f:
     helpers.write_file(tmp_path / "src" / "report" / "data.txt", "old data")
 
     with pytest.raises(
-        Exception, match="File was changed after being added: data.txt"
+        Exception, match="File was changed after being added: data\\.txt"
     ):
         helpers.run_snippet("report", code, root)
 
@@ -409,13 +409,13 @@ def test_can_validate_parameters():
     assert _validate_parameters(None, {"a": 1}) == {"a": 1}
     with pytest.raises(Exception, match="Parameters given, but none declared"):
         _validate_parameters({"a": 1}, {})
-    with pytest.raises(Exception, match="Missing parameters: a"):
+    with pytest.raises(Exception, match=r"Missing parameters: a"):
         _validate_parameters({}, {"a": None})
-    with pytest.raises(Exception, match="Missing parameters: ., .$"):
+    with pytest.raises(Exception, match=r"Missing parameters: ., .$"):
         _validate_parameters({}, {"a": None, "b": None})
-    with pytest.raises(Exception, match="Missing parameters: b$"):
+    with pytest.raises(Exception, match=r"Missing parameters: b$"):
         _validate_parameters({}, {"a": 1, "b": None})
-    with pytest.raises(Exception, match="Unknown parameters: b$"):
+    with pytest.raises(Exception, match=r"Unknown parameters: b$"):
         _validate_parameters({"b": 1}, {"a": 1})
     err = "Expected parameter a to be a simple value"
     with pytest.raises(Exception, match=err):
@@ -446,7 +446,7 @@ def test_pycache_is_not_copied_from_source(tmp_path):
 import glob
 return glob.glob("**/*", recursive=True)
 """
-    id, files = helpers.run_snippet("report", code, root)
+    _id, files = helpers.run_snippet("report", code, root)
 
     assert set(files) == {
         "report.py",
