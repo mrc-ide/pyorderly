@@ -1,0 +1,138 @@
+pyorderly.outpack.oauth
+=======================
+
+.. py:module:: pyorderly.outpack.oauth
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.oauth.DeviceAuthorizationResponse
+   pyorderly.outpack.oauth.AccessTokenResponse
+   pyorderly.outpack.oauth.ErrorResponse
+   pyorderly.outpack.oauth.OAuthDeviceClient
+
+
+Module Contents
+---------------
+
+.. py:class:: DeviceAuthorizationResponse
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
+   .. py:attribute:: device_code
+      :type:  str
+
+
+   .. py:attribute:: user_code
+      :type:  str
+
+
+   .. py:attribute:: verification_uri
+      :type:  str
+
+
+   .. py:attribute:: expires_in
+      :type:  int
+
+
+   .. py:attribute:: interval
+      :type:  Optional[int]
+      :value: None
+
+
+
+.. py:class:: AccessTokenResponse
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
+   .. py:attribute:: access_token
+      :type:  str
+
+
+   .. py:attribute:: token_type
+      :type:  str
+
+
+   .. py:attribute:: expires_in
+      :type:  Optional[int]
+      :value: None
+
+
+
+.. py:class:: ErrorResponse
+
+   Bases: :py:obj:`dataclasses_json.DataClassJsonMixin`
+
+
+   DataClassJsonMixin is an ABC that functions as a Mixin.
+
+   As with other ABCs, it should not be instantiated directly.
+
+
+   .. py:attribute:: error
+      :type:  str
+
+
+   .. py:attribute:: error_description
+      :type:  Optional[str]
+      :value: None
+
+
+
+.. py:class:: OAuthDeviceClient(client_id: str, device_code_url: str, access_token_url: str)
+
+   .. py:method:: __enter__()
+
+
+   .. py:method:: __exit__(*args)
+
+
+   .. py:method:: authenticate() -> AccessTokenResponse
+
+
+   .. py:method:: start_device_authorization() -> DeviceAuthorizationResponse
+
+      Initiate the device authorization flow.
+
+      This function returns a user code and verification URI which should be
+      presented to the user. Additionally, it returns a device code which may
+      be used to poll the access token endpoint until the authentication flow
+      is complete.
+
+      https://datatracker.ietf.org/doc/html/rfc8628#section-3.1
+      https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+
+
+
+   .. py:method:: fetch_access_token(parameters: DeviceAuthorizationResponse) -> Union[AccessTokenResponse, ErrorResponse]
+
+      Fetch an access token from the authentication server.
+
+      If authentication succeeds, an AccessTokenResponse is returned.
+      Otherwise an ErrorResponse is returned. Depending on the error's code,
+      the caller may call this function again (after a delay) to poll for new
+      tokens.
+
+      https://datatracker.ietf.org/doc/html/rfc8628#section-3.4
+      https://datatracker.ietf.org/doc/html/rfc8628#section-3.5
+
+
+
+   .. py:method:: poll_access_token(parameters: DeviceAuthorizationResponse) -> AccessTokenResponse
+
+
