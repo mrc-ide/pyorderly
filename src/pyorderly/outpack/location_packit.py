@@ -24,7 +24,10 @@ def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
     # and use that directly.
     if token is not None:
         if re.match("^gh._", token):
-            msg = "Using a GitHub token to login to Packit isn't supported anymore."
+            msg = (
+                "Using a GitHub token to login to Packit isn't supported anymore. "
+                "Either use a Packit token or omit the token to use interactive authentication."
+            )
             raise Exception(msg)
         else:
             return {"Authorization": f"Bearer {token}"}
