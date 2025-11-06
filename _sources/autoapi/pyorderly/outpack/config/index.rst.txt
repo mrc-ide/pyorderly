@@ -62,9 +62,7 @@ Module Contents
 
 
    .. py:attribute:: args
-      :type:  Optional[dict]
-      :value: None
-
+      :type:  dict
 
 
 .. py:class:: Config
