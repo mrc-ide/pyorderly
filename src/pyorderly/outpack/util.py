@@ -62,18 +62,15 @@ def transient_working_directory(path):
 
 def assert_file_exists(path: str | list[str], *, workdir=None, name="File"):
     with transient_working_directory(workdir):
-        if isinstance(path, list):
-            missing = [str(p) for p in path if not os.path.exists(p)]
-        else:
-            missing = [] if os.path.exists(path) else [path]
+        missing = [p for p in path if not os.path.exists(p)]
 
     if missing:
-        missing_str = ", ".join(missing)
+        missing_str = ", ".join(str(p) for p in missing)
         msg = f"{name} does not exist: {missing_str}"
         raise Exception(msg)
 
 
-def assert_relative_path(path: str, name: str):
+def assert_relative_path(path: str | os.PathLike, name: str):
     path = Path(path)
 
     # On Windows, this is not equivalent to path.is_absolute().

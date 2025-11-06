@@ -25,7 +25,8 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "dataclasses-json",
+  "keyring",
+  "pydantic",
   "importlib_resources",
   "jsonschema",
   "pygit2",
@@ -53,6 +54,7 @@ dependencies = [
   "pytest-cov",
   "pytest-unordered",
   "pytest_mock",
+  "freezegun",
   "responses",
   "sphinx",
   "sphinx-autoapi",

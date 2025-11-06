@@ -34,7 +34,7 @@ def outpack_location_add(name, type, args, root=None, *, locate=True):
 
     _location_check_new_name(root, name)
 
-    loc = Location(name, type, args)
+    loc = Location(name=name, type=type, args=args)
 
     if type == "path":
         root_open(loc.args["path"], locate=False)
@@ -170,7 +170,9 @@ def _location_driver(location_name, root) -> LocationDriver:
         return OutpackLocationHTTP(location.args["url"])
     elif location.type == "packit":
         return outpack_location_packit(
-            location.args["url"], location.args.get("token")
+            url=location.args["url"],
+            token=location.args.get("token"),
+            save_token=location.args.get("save_token", True),
         )
     elif location.type == "custom":
         msg = "custom remote not yet supported"

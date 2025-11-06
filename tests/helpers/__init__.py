@@ -126,19 +126,15 @@ def create_metadata_depends(id: str, depends: list[str] | None = None):
     if depends is None:
         depends = []
     dependencies = [
-        PacketDepends(dependency_id, "", []) for dependency_id in depends
+        PacketDepends(packet=dependency_id, query="", files=[])
+        for dependency_id in depends
     ]
     return {
         id: MetadataCore(
-            outpack_schema_version(),
-            id,
-            "name_" + random_characters(4),
-            {},
-            {},
-            [],
-            dependencies,
-            None,
-            None,
+            schema_version=outpack_schema_version(),
+            id=id,
+            name="name_" + random_characters(4),
+            depends=dependencies,
         )
     }
 

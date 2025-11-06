@@ -1,10 +1,14 @@
+import json
 import re
+from datetime import UTC, datetime, timedelta
 
 import pytest
 import responses
 from responses import matchers
 
-from pyorderly.outpack.oauth import OAuthDeviceClient
+from pyorderly.outpack.oauth import Credentials, OAuthDeviceClient, TokenCache
+
+from ..helpers.keyring import MemoryKeyring
 
 TEST_CLIENT_ID = "client-id"
 TEST_DEVICE_CODE_URL = "https://example.com/device/code"
@@ -105,3 +109,76 @@ def test_failed_authentication_with_description():
         msg = "Error while fetching access token: Access was denied (access_denied)"
         with pytest.raises(Exception, match=re.escape(msg)):
             client.authenticate()
+
+
+@pytest.mark.parametrize(
+    "expires_in,expected",
+    [
+        (None, False),
+        (timedelta(seconds=-60), True),
+        (timedelta(seconds=60), False),
+    ],
+)
+def test_credentials_is_expired(expires_in, expected):
+    if expires_in is None:
+        expires_at = None
+    else:
+        expires_at = datetime.now(UTC) + expires_in
+
+    credentials = Credentials(access_token="", expires_at=expires_at)
+    assert credentials.is_expired() == expected
+
+
+def test_credentials_cache():
+    cache = TokenCache(name="pyorderly", backend=MemoryKeyring())
+
+    assert cache.get("https://example.com") is None
+
+    credentials = Credentials(access_token="foobar")
+    cache.save("https://example.com", credentials)
+
+    assert cache.get("https://example.com") == credentials
+    assert cache.get("https://other.com") is None
+
+
+def test_expired_credentials_is_ignored(frozen_time):
+    url = "https://example.com"
+    cache = TokenCache(name="pyorderly", backend=MemoryKeyring())
+    expires_at = datetime.now(UTC) + timedelta(seconds=30)
+
+    credentials = Credentials(access_token="foobar", expires_at=expires_at)
+    cache.save(url, credentials)
+
+    assert cache.get(url) == credentials
+
+    frozen_time.tick(timedelta(seconds=15))
+
+    assert cache.get(url) == credentials
+
+    frozen_time.tick(timedelta(seconds=60))
+
+    assert cache.get(url) is None
+
+
+def test_invalid_credentials_are_ignored():
+    url = "https://example.com"
+    backend = MemoryKeyring()
+    cache = TokenCache(name="pyorderly", backend=backend)
+
+    # Check that writing to the backend directly does what we expect
+    credentials = {"access_token": "foo"}
+    backend.set_password("pyorderly", url, json.dumps(credentials))
+    assert cache.get("https://example.com").access_token == "foo"
+
+    backend.set_password("pyorderly", url, "notvalidjson")
+    assert cache.get("https://example.com") is None
+
+    backend.set_password("pyorderly", url, json.dumps({}))
+    assert cache.get("https://example.com") is None
+
+    backend.set_password(
+        "pyorderly",
+        url,
+        json.dumps({"access_token": "xx", "expires_at": "sss"}),
+    )
+    assert cache.get("https://example.com") is None

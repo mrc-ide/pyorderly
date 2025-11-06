@@ -94,9 +94,9 @@ def find_file_by_hash(root, hash):
 
 
 def mark_known(root, packet_id, location, hash, time):
-    dat = PacketLocation(packet_id, time, str(hash))
-    validate(dat.to_dict(), "outpack/location.json")
+    dat = PacketLocation(packet=packet_id, time=time, hash=str(hash))
+    validate(dat.model_dump(), "outpack/location.json")
     dest = root.path / ".outpack" / "location" / location / packet_id
     dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, "w") as f:
-        f.write(dat.to_json(separators=(",", ":")))
+        f.write(dat.model_dump_json())

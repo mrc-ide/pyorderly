@@ -241,7 +241,9 @@ def test_can_depend_on_a_packet(tmp_path):
     assert len(meta.depends) == 1
     assert meta.depends[0].packet == id
     assert meta.depends[0].query == query
-    assert meta.depends[0].files == [PacketDependsPath("here.txt", "data.txt")]
+    assert meta.depends[0].files == [
+        PacketDependsPath(here="here.txt", there="data.txt")
+    ]
 
 
 def test_can_throw_if_dependency_not_satisfiable(tmp_path):

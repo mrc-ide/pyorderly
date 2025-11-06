@@ -71,7 +71,11 @@ class Packet:
         for f in result.files.keys():
             self.mark_file_immutable(f)
 
-        d = PacketDepends(id, str(query), PacketDepends.files_from_dict(files))
+        d = PacketDepends(
+            packet=id,
+            query=str(query),
+            files=PacketDepends.files_from_dict(files),
+        )
         self.depends.append(d)
         return result
 
@@ -102,25 +106,25 @@ class Packet:
         _check_immutable_files(self.files, self.immutable)
         self.metadata = self._build_metadata()
 
-        validate(self.metadata.to_dict(), "outpack/metadata.json")
+        validate(self.metadata.model_dump(), "outpack/metadata.json")
         if not succesful:
             self.path.joinpath("outpack.json").write_text(
-                self.metadata.to_json()
+                self.metadata.model_dump_json()
             )
 
         return self.metadata
 
     def _build_metadata(self):
         return MetadataCore(
-            outpack_schema_version(),
-            self.id,
-            self.name,
-            self.parameters,
-            self.time,
-            self.files,
-            self.depends,
-            self.git,
-            self.custom,
+            schema_version=outpack_schema_version(),
+            id=self.id,
+            name=self.name,
+            parameters=self.parameters,
+            time=self.time,
+            files=self.files,
+            depends=self.depends,
+            git=self.git,
+            custom=self.custom,
         )
 
 
@@ -139,7 +143,7 @@ def insert_packet(root, path, meta):
             p_dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(path / p.path, p_dest)
 
-    json = meta.to_json(separators=(",", ":"))
+    json = meta.model_dump_json()
     hash_meta = hash_string(json, root.config.core.hash_algorithm)
     path_meta = root.path / ".outpack" / "metadata" / meta.id
     path_meta.parent.mkdir(parents=True, exist_ok=True)

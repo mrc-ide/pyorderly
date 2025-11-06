@@ -1,12 +1,8 @@
-from dataclasses import dataclass
-
 import pygit2
-from dataclasses_json import dataclass_json
+from pydantic import BaseModel
 
 
-@dataclass_json
-@dataclass
-class GitInfo:
+class GitInfo(BaseModel):
     sha: str
     branch: str
     url: list[str]
@@ -20,4 +16,4 @@ def git_info(path):
     sha = str(repo.head.target)
     branch = repo.head.shorthand
     url = [x.url for x in repo.remotes]
-    return GitInfo(sha, branch, url)
+    return GitInfo(sha=sha, branch=branch, url=url)

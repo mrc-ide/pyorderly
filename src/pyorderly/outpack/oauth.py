@@ -1,12 +1,16 @@
 import time
-from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 
+import keyring
+import pydantic
 import requests
-from dataclasses_json import DataClassJsonMixin, dataclass_json
+from keyring.backend import KeyringBackend
+from pydantic import BaseModel
 
 
-@dataclass
-class DeviceAuthorizationResponse(DataClassJsonMixin):
+class DeviceAuthorizationResponse(BaseModel):
+    """https://datatracker.ietf.org/doc/html/rfc8628#section-3.2."""
+
     device_code: str
     user_code: str
     verification_uri: str
@@ -14,18 +18,50 @@ class DeviceAuthorizationResponse(DataClassJsonMixin):
     interval: int | None = None
 
 
-@dataclass
-class AccessTokenResponse(DataClassJsonMixin):
+class AccessTokenResponse(BaseModel):
+    """https://datatracker.ietf.org/doc/html/rfc6749#section-5.1."""
+
     access_token: str
-    token_type: str
+    refresh_token: str | None = None
     expires_in: int | None = None
 
 
-@dataclass_json
-@dataclass
-class ErrorResponse(DataClassJsonMixin):
+class ErrorResponse(BaseModel):
+    """https://datatracker.ietf.org/doc/html/rfc6749#section-5.2."""
+
     error: str
     error_description: str | None = None
+
+
+class Credentials(BaseModel):
+    """
+    Credentials obtained from an OAuth provider.
+
+    This is roughly the same as an AccessTokenResponse, except that the
+    expiry time is absolute rather than relative.
+    """
+
+    access_token: str
+    refresh_token: str | None = None
+    expires_at: datetime | None = None
+
+    @staticmethod
+    def from_response(response: AccessTokenResponse) -> "Credentials":
+        if response.expires_in is not None:
+            expires_in = timedelta(seconds=response.expires_in)
+            expires_at = datetime.now(UTC) + expires_in
+        else:
+            expires_at = None
+
+        return Credentials(
+            access_token=response.access_token,
+            refresh_token=response.refresh_token,
+            expires_at=expires_at,
+        )
+
+    def is_expired(self) -> bool:
+        now = datetime.now(UTC)
+        return self.expires_at is not None and self.expires_at < now
 
 
 class OAuthDeviceClient:
@@ -40,7 +76,7 @@ class OAuthDeviceClient:
         self._access_token_url = access_token_url
         self._session = requests.Session()
 
-    def __enter__(self):
+    def __enter__(self) -> "OAuthDeviceClient":
         self._session.__enter__()
         return self
 
@@ -73,7 +109,7 @@ class OAuthDeviceClient:
             headers={"Accept": "application/json"},
         )
         r.raise_for_status()
-        return DeviceAuthorizationResponse.from_dict(r.json())
+        return DeviceAuthorizationResponse.model_validate(r.json(), strict=True)
 
     def fetch_access_token(
         self, parameters: DeviceAuthorizationResponse
@@ -102,10 +138,10 @@ class OAuthDeviceClient:
         data = r.json()
 
         if "error" in data:
-            return ErrorResponse.from_dict(r.json())
+            return ErrorResponse.model_validate(data, strict=True)
         else:
             r.raise_for_status()
-            return AccessTokenResponse.from_dict(r.json())
+            return AccessTokenResponse.model_validate(data, strict=True)
 
     def poll_access_token(
         self,
@@ -132,3 +168,33 @@ class OAuthDeviceClient:
                 raise Exception(msg)
 
             time.sleep(interval)
+
+
+class TokenCache:
+    name: str
+    backend: KeyringBackend
+
+    def __init__(self, name: str, backend: KeyringBackend | None = None):
+        self.name = name
+        if backend is None:
+            self.backend = keyring.get_keyring()
+        else:
+            self.backend = backend
+
+    def get(self, url: str) -> Credentials | None:
+        data = self.backend.get_password(self.name, url)
+        if data is None:
+            return None
+
+        try:
+            credentials = Credentials.model_validate_json(data, strict=True)
+        except pydantic.ValidationError:
+            return None
+
+        if credentials.is_expired():
+            return None
+
+        return credentials
+
+    def save(self, url: str, credentials: Credentials) -> None:
+        self.backend.set_password(self.name, url, credentials.model_dump_json())

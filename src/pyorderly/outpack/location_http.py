@@ -62,7 +62,8 @@ class OutpackLocationHTTP(LocationDriver):
         response = self._client.get("metadata/list").json()
         data = response["data"]
         return {
-            entry["packet"]: PacketLocation.from_dict(entry) for entry in data
+            entry["packet"]: PacketLocation.model_validate(entry)
+            for entry in data
         }
 
     @override

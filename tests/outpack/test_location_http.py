@@ -42,7 +42,7 @@ def test_can_list_packets(tmp_path):
         # outpack_server doesn't roundtrip the floating-point time field very
         # well, which leads to flaky tests.
         return {
-            id: {k: v for k, v in entry.to_dict().items() if k != "time"}
+            id: {k: v for k, v in entry.model_dump().items() if k != "time"}
             for id, entry in data.items()
         }
 

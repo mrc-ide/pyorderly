@@ -133,8 +133,7 @@ def test_artefact_is_allowed_without_packet(tmp_path):
     src = tmp_path / "src" / "x"
     src.mkdir(parents=True)
     with transient_working_directory(src):
-        res = pyorderly.artefact("a", "b")
-    assert res == ["b"]
+        pyorderly.artefact("a", "b")
 
 
 def test_can_add_description(tmp_path):

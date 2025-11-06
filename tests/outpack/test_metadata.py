@@ -74,7 +74,9 @@ def test_can_create_packet_file_metadata_from_file():
     expected_size = {"windows": 23, "unix": 21}
     platform = "windows" if sys.platform.startswith("win") else "unix"
     assert res == PacketFile(
-        path, expected_size[platform], expected_hash[platform]
+        path=path,
+        size=expected_size[platform],
+        hash=expected_hash[platform],
     )
 
 
