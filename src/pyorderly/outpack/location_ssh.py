@@ -104,7 +104,7 @@ class OutpackLocationSSH(LocationDriver):
         return self._stack.__exit__(*args)
 
     @override
-    def list(self) -> dict[str, PacketLocation]:
+    def list_packets(self) -> dict[str, PacketLocation]:
         path = self._root / ".outpack" / "location" / LOCATION_LOCAL
         result = {}
         for packet in self._sftp.listdir(str(path)):
@@ -113,7 +113,7 @@ class OutpackLocationSSH(LocationDriver):
         return result
 
     @override
-    def metadata(self, ids: builtins.list[str]) -> dict[str, str]:
+    def metadata(self, ids: list[str]) -> dict[str, str]:
         path = self._root / ".outpack" / "metadata"
         result = {}
 

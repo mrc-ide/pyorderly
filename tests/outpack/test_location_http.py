@@ -46,8 +46,8 @@ def test_can_list_packets(tmp_path):
 
     with start_outpack_server(tmp_path) as url:
         location = OutpackLocationHTTP(url)
-        assert location.list().keys() == set(ids)
-        assert filter_out_time(location.list()) == filter_out_time(packets)
+        assert location.list_packets().keys() == set(ids)
+        assert filter_out_time(location.list_packets()) == filter_out_time(packets)
 
 
 def test_can_fetch_metadata(tmp_path):

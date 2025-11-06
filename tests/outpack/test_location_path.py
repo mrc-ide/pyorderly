@@ -13,7 +13,7 @@ from ..helpers import create_random_packet, create_temporary_root
 def test_can_construct_location_path_object(tmp_path):
     root = create_temporary_root(tmp_path)
     loc = OutpackLocationPath(root.path)
-    dat = loc.list()
+    dat = loc.list_packets()
     assert dat == {}
 
 
@@ -40,7 +40,7 @@ def test_location_path_returns_list_of_packet_ids(tmp_path):
     path = root.path
     loc = OutpackLocationPath(path)
 
-    dat = loc.list()
+    dat = loc.list_packets()
     assert all(packet_id in dat.keys() for packet_id in ids)
 
     expected_hashes = [packet.hash for packet in dat.values()]

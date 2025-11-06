@@ -42,7 +42,7 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
     )
     for name in location_name:
         with _location_driver(name, root) as driver:
-            available = list(driver.list().values())
+            available = list(driver.list_packets().values())
             known_packets = {
                 k: v
                 for loc in root.index.all_locations().values()
