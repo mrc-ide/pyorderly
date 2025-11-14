@@ -188,7 +188,7 @@ def _find_all_dependencies(
 ) -> list[str]:
     result = []
 
-    # This is a standard breath first search through the packet graph.
+    # This is a standard depth first search through the packet graph.
     seen = set(packet_ids)
     todo = list(packet_ids)
     while todo:
@@ -206,7 +206,11 @@ def _find_all_dependencies(
             raise Exception(msg)
 
     # We want the result to be reverse-topologically sorted, such that
-    # dependencies come before their dependents. Using a lexicographic sort on
-    # the packet IDs is a reasonable implementation of it because the IDs start
-    # with the timestamp.
+    # dependencies come before their dependents. In principle, we could get
+    # such an order directly from the graph traversal, but doing this with
+    # multiple start points is not as easy as it seems.
+    #
+    # Using a lexicographic sort on the packet IDs is a reasonable alternative
+    # because the IDs start with their timestamp, and dependencies have smaller
+    # timestamps than dependents.
     return sorted(result)
