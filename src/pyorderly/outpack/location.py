@@ -1,6 +1,7 @@
 import collections
 import shutil
 from pathlib import PurePath
+from typing import Union
 
 from pyorderly.outpack.config import Location, update_config
 from pyorderly.outpack.location_driver import LocationDriver
@@ -8,12 +9,15 @@ from pyorderly.outpack.location_http import OutpackLocationHTTP
 from pyorderly.outpack.location_packit import outpack_location_packit
 from pyorderly.outpack.location_path import OutpackLocationPath
 from pyorderly.outpack.location_ssh import OutpackLocationSSH, parse_ssh_url
+from pyorderly.outpack.metadata import MetadataCore
 from pyorderly.outpack.root import OutpackRoot, root_open
 from pyorderly.outpack.static import (
     LOCATION_LOCAL,
     LOCATION_ORPHAN,
     LOCATION_RESERVED_NAME,
 )
+
+LocationSelector = Union[None, str, list[str]]
 
 
 def outpack_location_list(root=None, *, locate=True):
@@ -94,15 +98,20 @@ def outpack_location_rename(old, new, root=None, *, locate=True):
 
 
 def location_resolve_valid(
-    location, root, *, include_local, include_orphan, allow_no_locations
-):
+    location: LocationSelector,
+    root: OutpackRoot,
+    *,
+    include_local: bool,
+    include_orphan: bool,
+    allow_no_locations: bool,
+) -> list[str]:
     if location is None:
-        location = outpack_location_list(root)
+        result = outpack_location_list(root)
     elif isinstance(location, str):
         if location not in outpack_location_list(root):
             msg = f"Unknown location: '{location}'"
             raise Exception(msg)
-        location = [location]
+        result = [location]
     elif isinstance(location, collections.abc.Iterable) and all(
         isinstance(item, str) for item in location
     ):
@@ -111,7 +120,7 @@ def location_resolve_valid(
             unknown_text = "', '".join(unknown)
             msg = f"Unknown location: '{unknown_text}'"
             raise Exception(msg)
-        location = list(location)
+        result = list(location)
     else:
         msg = (
             "Invalid input for 'location'; expected None or a list of "
@@ -119,16 +128,16 @@ def location_resolve_valid(
         )
         raise Exception(msg)
 
-    if not include_local and LOCATION_LOCAL in location:
-        location.remove(LOCATION_LOCAL)
-    if not include_orphan and LOCATION_ORPHAN in location:  # pragma: no cover
-        location.remove(LOCATION_ORPHAN)
+    if not include_local and LOCATION_LOCAL in result:
+        result.remove(LOCATION_LOCAL)
+    if not include_orphan and LOCATION_ORPHAN in result:  # pragma: no cover
+        result.remove(LOCATION_ORPHAN)
 
-    if len(location) == 0 and not allow_no_locations:
+    if len(result) == 0 and not allow_no_locations:
         msg = "No suitable location found"
         raise Exception(msg)
 
-    return location
+    return result
 
 
 def _location_check_new_name(root, name):
@@ -169,3 +178,39 @@ def _location_driver(location_name, root) -> LocationDriver:
 
     msg = "invalid location type"
     raise Exception(msg)
+
+
+def _find_all_dependencies(
+    packet_ids: list[str],
+    metadata: dict[str, MetadataCore],
+    *,
+    allow_missing_packets: bool = False,
+) -> list[str]:
+    result = []
+
+    # This is a standard depth first search through the packet graph.
+    seen = set(packet_ids)
+    todo = list(packet_ids)
+    while todo:
+        packet_id = todo.pop()
+        result.append(packet_id)
+
+        m = metadata.get(packet_id)
+        if m is not None:
+            for dep in m.depends:
+                if dep.packet not in seen:
+                    seen.add(dep.packet)
+                    todo.append(dep.packet)
+        elif not allow_missing_packets:
+            msg = f"Unknown packet {packet_id}"
+            raise Exception(msg)
+
+    # We want the result to be reverse-topologically sorted, such that
+    # dependencies come before their dependents. In principle, we could get
+    # such an order directly from the graph traversal, but doing this with
+    # multiple start points is not as easy as it seems.
+    #
+    # Using a lexicographic sort on the packet IDs is a reasonable alternative
+    # because the IDs start with their timestamp, and dependencies have smaller
+    # timestamps than dependents.
+    return sorted(result)

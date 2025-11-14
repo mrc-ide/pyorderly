@@ -12,11 +12,12 @@ from pyorderly.outpack.filestore import FileStore
 from pyorderly.outpack.hash import hash_validate_string
 from pyorderly.outpack.location import (
     LocationDriver,
+    LocationSelector,
+    _find_all_dependencies,
     _location_driver,
     location_resolve_valid,
 )
 from pyorderly.outpack.metadata import (
-    MetadataCore,
     PacketFileWithLocation,
     PacketLocation,
 )
@@ -31,7 +32,9 @@ from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import format_list, partition, pl
 
 
-def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
+def outpack_location_pull_metadata(
+    location: LocationSelector = None, root=None, *, locate=True
+):
     root = root_open(root, locate=locate)
     location_name = location_resolve_valid(
         location,
@@ -42,7 +45,7 @@ def outpack_location_pull_metadata(location=None, root=None, *, locate=True):
     )
     for name in location_name:
         with _location_driver(name, root) as driver:
-            available = list(driver.list().values())
+            available = list(driver.list_packets().values())
             known_packets = {
                 k: v
                 for loc in root.index.all_locations().values()
@@ -406,12 +409,17 @@ def location_build_pull_plan(
 
 
 def _location_build_pull_plan_packets(
-    packet_ids: list[str], root: OutpackRoot, *, recursive: Optional[bool]
+    packet_ids: list[str], root: OutpackRoot, *, recursive: bool
 ) -> PullPlanPackets:
     requested = packet_ids
     index = root.index
+
     if recursive:
-        full = _find_all_dependencies(packet_ids, index.all_metadata())
+        # We allow missing packets at this stage - later when executing the
+        # plan we will fail if we don't have a source for a packet.
+        full = _find_all_dependencies(
+            packet_ids, index.all_metadata(), allow_missing_packets=True
+        )
     else:
         full = packet_ids
 
@@ -421,28 +429,6 @@ def _location_build_pull_plan_packets(
     return PullPlanPackets(
         requested=requested, full=full, skip=skip, fetch=fetch
     )
-
-
-def _find_all_dependencies(
-    packet_ids: list[str], metadata: dict[str, MetadataCore]
-) -> list[str]:
-    ret = set(packet_ids)
-    packets = set(packet_ids)
-    while packets:
-        dependency_ids = {
-            dependencies.packet
-            for packet_id in packets
-            if packet_id in metadata.keys()
-            for dependencies in (
-                []
-                if metadata.get(packet_id) is None
-                else metadata[packet_id].depends
-            )
-        }
-        packets = dependency_ids.difference(ret)
-        ret = packets.union(ret)
-
-    return sorted(ret)
 
 
 def _location_build_pull_plan_location(

@@ -13,12 +13,15 @@ from pyorderly.outpack.location_pull import (
     outpack_location_pull_metadata,
     outpack_location_pull_packet,
 )
+from pyorderly.outpack.location_push import outpack_location_push
 from pyorderly.outpack.metadata import PacketFile, PacketLocation
+from pyorderly.outpack.root import root_open
 from pyorderly.outpack.static import LOCATION_LOCAL
 from pyorderly.outpack.util import read_string
 
 from ..helpers import (
     create_random_packet,
+    create_random_packet_chain,
     create_temporary_root,
     create_temporary_roots,
 )
@@ -45,8 +48,10 @@ def test_can_list_packets(tmp_path):
 
     with start_outpack_server(tmp_path) as url:
         location = OutpackLocationHTTP(url)
-        assert location.list().keys() == set(ids)
-        assert filter_out_time(location.list()) == filter_out_time(packets)
+        assert location.list_packets().keys() == set(ids)
+        assert filter_out_time(location.list_packets()) == filter_out_time(
+            packets
+        )
 
 
 def test_can_fetch_metadata(tmp_path):
@@ -193,3 +198,77 @@ def test_http_client_errors():
         client.get("/packit-error")
     with pytest.raises(HTTPError, match="400 Error: Custom error message"):
         client.get("/outpack-error")
+
+
+@pytest.mark.parametrize("use_file_store", [True, False])
+def test_can_push_packet(tmp_path, use_file_store) -> None:
+    root = create_temporary_root(
+        tmp_path / "root",
+        use_file_store=use_file_store,
+    )
+
+    ids = [create_random_packet(root) for _ in range(2)]
+
+    with start_outpack_server(tmp_path / "server") as url:
+        outpack_location_add(
+            "upstream",
+            "http",
+            {"url": url},
+            root=root,
+        )
+        outpack_location_push(ids[0], "upstream", root=root)
+
+    upstream = root_open(tmp_path / "server")
+    metadata = upstream.index.all_metadata()
+    assert ids[0] in metadata
+    assert ids[1] not in metadata
+
+
+@pytest.mark.parametrize("use_file_store", [True, False])
+def test_can_push_multiple_packets(tmp_path, use_file_store) -> None:
+    root = create_temporary_root(
+        tmp_path / "root",
+        use_file_store=use_file_store,
+    )
+
+    ids = [create_random_packet(root) for _ in range(2)]
+
+    with start_outpack_server(tmp_path / "server") as url:
+        outpack_location_add(
+            "upstream",
+            "http",
+            {"url": url},
+            root=root,
+        )
+        outpack_location_push(ids, "upstream", root=root)
+
+    upstream = root_open(tmp_path / "server")
+    metadata = upstream.index.all_metadata()
+    assert ids[0] in metadata
+    assert ids[1] in metadata
+
+
+@pytest.mark.parametrize("use_file_store", [True, False])
+def test_can_push_packet_chain(tmp_path, use_file_store) -> None:
+    root = create_temporary_root(
+        tmp_path / "root",
+        use_file_store=use_file_store,
+    )
+
+    chain = create_random_packet_chain(root, 4)
+
+    with start_outpack_server(tmp_path / "server") as url:
+        outpack_location_add(
+            "upstream",
+            "http",
+            {"url": url},
+            root=root,
+        )
+        outpack_location_push(chain["c"], "upstream", root=root)
+
+    upstream = root_open(tmp_path / "server")
+    metadata = upstream.index.all_metadata()
+
+    # Only "c" and its dependencies are pushed to the upstream.
+    # "d" is not.
+    assert metadata.keys() == {chain["a"], chain["b"], chain["c"]}

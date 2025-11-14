@@ -33,7 +33,7 @@ def test_can_pass_packit_token():
     )
 
     location = outpack_location_packit("https://example.com", token="mytoken")
-    location.list()
+    location.list_packets()
 
 
 def register_oauth_responses(token):
@@ -65,7 +65,7 @@ def test_can_perform_interactive_authentication(capsys):
     )
 
     location = outpack_location_packit("https://example.com")
-    location.list()
+    location.list_packets()
 
     captured = capsys.readouterr()
     assert "enter the code <1234-5678>" in captured.out
@@ -82,13 +82,13 @@ def test_authentication_is_cached():
     )
 
     location = outpack_location_packit("https://example.com")
-    location.list()
+    location.list_packets()
 
     assert mocks.device_code.call_count == 1
     assert mocks.access_token.call_count == 1
     assert list_response.call_count == 1
 
-    location.list()
+    location.list_packets()
 
     assert mocks.device_code.call_count == 1
     assert mocks.access_token.call_count == 1
@@ -100,7 +100,7 @@ def test_github_personal_token_is_rejected():
 
     msg = "Using a GitHub token to login to Packit isn't supported anymore\\."
     with pytest.raises(Exception, match=msg):
-        location.list()
+        location.list_packets()
 
 
 @responses.activate(assert_all_requests_are_fired=True)
