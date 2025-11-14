@@ -86,9 +86,9 @@ def _store_packet_metadata(
 
 def _get_remove_location_hint(location_name):
     return (
-        f'Probably all you can do at this point is '
-        f'remove this location from your configuration '
-        f'by running '
+        f"Probably all you can do at this point is "
+        f"remove this location from your configuration "
+        f"by running "
         f'outpack_location_remove("{location_name}")'
     )
 
@@ -191,8 +191,7 @@ non-recursive pull, as this might leave an incomplete tree"""
         for idx, packet in enumerate(plan.packets.values()):
             if use_archive:
                 print(
-                    f"Writing files for '{packet.packet}' (packet {idx + 1}/"
-                    f"{n_packets})"
+                    f"Writing files for '{packet.packet}' (packet {idx + 1}/{n_packets})"
                 )
                 _location_pull_files_archive(packet.packet, store, root)
 
@@ -235,10 +234,7 @@ def location_pull_files(
         exists, missing = partition(lambda file: store.exists(file.hash), files)
 
         if exists:
-            print(
-                f"Found {len(exists)} {pl(exists, 'file')} in the "
-                f"file store"
-            )
+            print(f"Found {len(exists)} {pl(exists, 'file')} in the file store")
     else:
         print("Looking for suitable files already on disk")
         store = _temporary_filestore(root)
@@ -297,8 +293,7 @@ def _location_pull_hash_store(
     # TODO: show a nice progress bar for users
     for idx, file in enumerate(files):
         print(
-            f"Fetching file {idx + 1}/{no_of_files} "
-            f"({humanize.naturalsize(file.size)}) from '{location_name}'"
+            f"Fetching file {idx + 1}/{no_of_files} ({humanize.naturalsize(file.size)}) from '{location_name}'"
         )
         with store.tmp() as path:
             packet = root.index.metadata(file.packet_id)

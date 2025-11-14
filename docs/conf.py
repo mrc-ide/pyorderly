@@ -5,12 +5,12 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-import pyorderly.__about__ as info
+import importlib
 
-project = info.__name__
+project = "pyorderly"
 copyright = "2023-present Imperial College of Science, Technology and Medicine"
 author = "Rich FitzJohn"
-release = info.__version__
+release = importlib.metadata.version("pyorderly")
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

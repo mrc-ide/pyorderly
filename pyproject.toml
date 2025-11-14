@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
 
 [project]
 name = "pyorderly"
-dynamic = ["version"]
+version = "0.2.0"
 description = "Reproducible and collaborative reporting"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -43,72 +43,50 @@ Documentation = "https://github.com/mrc-ide/pyorderly#readme"
 Issues = "https://github.com/mrc-ide/pyorderly/issues"
 Source = "https://github.com/mrc-ide/pyorderly"
 
-[tool.hatch.version]
-path = "src/pyorderly/__about__.py"
-
-[tool.hatch.envs.default]
-dependencies = [
-  "coverage[toml]>=6.5",
-  "myst-parser",
-  "pytest",
-  "pytest-cov",
-  "pytest-unordered",
-  "pytest_mock",
-  "responses",
+[dependency-groups]
+dev = [
+   "taskipy",
+   "pytest",
+   "pytest-cov",
+   "pytest-mock",
+   "pytest-unordered",
+   "responses",
+]
+lint = [
+   "mypy",
+   "ruff",
+   "types-jsonschema",
+   "types-paramiko",
+   "types-requests",
+]
+docs = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-copybutton",
   "sphinx-rtd-theme",
+  "myst-parser",
 ]
-[tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-test-cov = "pytest --cov --cov-report= --cov-config=pyproject.toml {args:tests}"
+
+[tool.uv]
+default-groups = "all"
+
+[tool.taskipy.tasks]
+test = "pytest"
+test-cov = "pytest --cov --cov-report= --cov-config=pyproject.toml"
 cov-report = "coverage report --show-missing"
-cov = [
-  "test-cov",
-  "cov-report",
-]
 cov-report-xml = "coverage xml"
-cov-ci = [
-  "test-cov",
-  "cov-report-xml",
-]
-generate-docs = [
-  "sphinx-autogen ./docs/*.md",
-  "sphinx-build -b html ./docs ./docs/_build"
-]
+cov = "task test-cov && task cov-report"
+cov-ci = "task test-cov && task cov-report-xml"
 
-[[tool.hatch.envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+typing = "mypy src tests"
+style = "ruff check && ruff format --diff"
+check = "task typing && task style"
+fmt = "ruff check --fix && ruff format"
 
-[tool.hatch.envs.lint]
-extra-dependencies = [
-  "black>=23.1.0",
-  "mypy>=1.0.0",
-  "ruff>=0.0.243",
-]
-[tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src tests}"
-style = [
-  "ruff check {args:.}",
-  "black --check --diff {args:.}",
-]
-fmt = [
-  "black {args:.}",
-  "ruff check --fix {args:.}",
-  "style",
-]
-all = [
-  "style",
-  "typing",
-]
-
-[tool.black]
-line-length = 80
-skip-string-normalization = true
+generate-docs = "sphinx-autogen ./docs/*.md && sphinx-build -b html ./docs ./docs/_build"
 
 [tool.ruff]
-line-length = 120
+line-length = 80
 
 [tool.ruff.lint]
 select = [
@@ -155,7 +133,13 @@ ignore = [
   # Allow print until we find the alternative to R's cli
   "T201",
   # Allow use of non-cryptographic `random` module.
-  "S311"
+  "S311",
+
+  # Disable the line length limit. This is already enforced by the formatter,
+  # although the formatter treats it as a best effort whereas the linter treats
+  # it as a hard limit. In the few cases where the formatter cannot apply the
+  # limit the linter would throw an error if we didn't disable this.
+  "E501",
 ]
 
 [tool.ruff.lint.flake8-tidy-imports]
@@ -214,14 +198,3 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "tblib"
 ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-# https://github.com/getsentry/responses/issues/751
-module = "responses"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-# https://github.com/getsentry/responses/issues/751
-module = "responses.registries"
-ignore_missing_imports = true
-
