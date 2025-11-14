@@ -3,7 +3,6 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Union
 
 from dataclasses_json import dataclass_json
 
@@ -26,7 +25,7 @@ class Artefact:
 class Description:
     display: str
     long: str
-    custom: dict[str, Union[str, int, bool]]
+    custom: dict[str, str | int | bool]
 
     @staticmethod
     def empty():
@@ -112,7 +111,7 @@ def resource(files):
 
 
 def shared_resource(
-    files: Union[str, list[str], dict[str, str]],
+    files: str | list[str] | dict[str, str],
 ) -> dict[str, str]:
     """Copy shared resources into a packet directory.
 

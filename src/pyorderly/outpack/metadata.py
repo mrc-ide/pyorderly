@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Union
+from typing import TypeAlias
 
 from dataclasses_json import DataClassJsonMixin
 
@@ -51,7 +51,7 @@ class PacketDepends(DataClassJsonMixin):
         return [{"here": h, "there": t} for h, t, in files.items()]
 
 
-Parameters = dict[str, Union[bool, int, float, str]]
+Parameters: TypeAlias = dict[str, bool | int | float | str]
 
 
 @dataclass
@@ -63,8 +63,8 @@ class MetadataCore(DataClassJsonMixin):
     time: dict[str, float]
     files: list[PacketFile]
     depends: list[PacketDepends]
-    git: Optional[GitInfo]
-    custom: Optional[dict]
+    git: GitInfo | None
+    custom: dict | None
 
     def file_hash(self, name):
         for x in self.files:

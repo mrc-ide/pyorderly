@@ -6,7 +6,6 @@ import textwrap
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Optional
 
 import pytest
 
@@ -123,7 +122,7 @@ def copy_shared_resources(names, root):
             shutil.copyfile(src, dst)
 
 
-def create_metadata_depends(id: str, depends: Optional[list[str]] = None):
+def create_metadata_depends(id: str, depends: list[str] | None = None):
     if depends is None:
         depends = []
     dependencies = [
@@ -160,7 +159,7 @@ def rep(x, each):
             "Repeats must be int or same length as the thing you want to repeat"
         )
         raise Exception(msg)
-    for item, times in zip(x, each):
+    for item, times in zip(x, each, strict=True):
         ret.extend([item] * times)
 
     return ret

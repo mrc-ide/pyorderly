@@ -3,7 +3,6 @@ import subprocess
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Union
 
 import pytest
 import requests
@@ -61,7 +60,7 @@ def _wait_ready(p, url, args, timeout=2):
 
 
 @contextmanager
-def start_outpack_server(root: Union[Path, OutpackRoot], port: int = 8080):
+def start_outpack_server(root: Path | OutpackRoot, port: int = 8080):
     binary = shutil.which("outpack")
     if binary is None:
         pytest.skip("outpack_server not installed")

@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from itertools import filterfalse, tee
 from pathlib import Path, PurePath
-from typing import Optional, TypeVar, Union
+from typing import TypeVar
 
 
 def find_file_descend(filename, path):
@@ -60,9 +60,7 @@ def transient_working_directory(path):
             os.chdir(origin)
 
 
-def assert_file_exists(
-    path: Union[str, list[str]], *, workdir=None, name="File"
-):
+def assert_file_exists(path: str | list[str], *, workdir=None, name="File"):
     with transient_working_directory(workdir):
         if isinstance(path, list):
             missing = [str(p) for p in path if not os.path.exists(p)]
@@ -117,7 +115,7 @@ def match_value(arg, choices, name):
         raise Exception(msg)
 
 
-def relative_path_array(files: Union[str, list[str]], name: str) -> list[str]:
+def relative_path_array(files: str | list[str], name: str) -> list[str]:
     if not isinstance(files, list):
         files = [files]
 
@@ -128,7 +126,7 @@ def relative_path_array(files: Union[str, list[str]], name: str) -> list[str]:
 
 
 def relative_path_mapping(
-    files: Union[str, list[str], dict[str, str]], name: str
+    files: str | list[str] | dict[str, str], name: str
 ) -> dict[str, str]:
     if isinstance(files, str):
         files = {files: files}
@@ -176,7 +174,7 @@ def partition(pred, iterable):
 
 
 @contextmanager
-def openable_temporary_file(*, mode: str = "w+b", dir: Optional[str] = None):
+def openable_temporary_file(*, mode: str = "w+b", dir: str | None = None):
     # On Windows, a NamedTemporaryFile with `delete=True` cannot be reopened,
     # which makes its name pretty useless. On Python 3.12, a new
     # delete_on_close flag is solves this issue, but we can't depend on that
@@ -216,7 +214,7 @@ def as_posix_path(paths: Paths) -> Paths:
 T = TypeVar("T")
 
 
-def as_list(x: Union[T, list[T]]) -> list[T]:
+def as_list(x: T | list[T]) -> list[T]:
     if isinstance(x, list):
         return x
     else:

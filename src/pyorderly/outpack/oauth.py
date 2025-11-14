@@ -1,6 +1,5 @@
 import time
 from dataclasses import dataclass
-from typing import Optional, Union
 
 import requests
 from dataclasses_json import DataClassJsonMixin, dataclass_json
@@ -12,21 +11,21 @@ class DeviceAuthorizationResponse(DataClassJsonMixin):
     user_code: str
     verification_uri: str
     expires_in: int
-    interval: Optional[int] = None
+    interval: int | None = None
 
 
 @dataclass
 class AccessTokenResponse(DataClassJsonMixin):
     access_token: str
     token_type: str
-    expires_in: Optional[int] = None
+    expires_in: int | None = None
 
 
 @dataclass_json
 @dataclass
 class ErrorResponse(DataClassJsonMixin):
     error: str
-    error_description: Optional[str] = None
+    error_description: str | None = None
 
 
 class OAuthDeviceClient:
@@ -78,7 +77,7 @@ class OAuthDeviceClient:
 
     def fetch_access_token(
         self, parameters: DeviceAuthorizationResponse
-    ) -> Union[AccessTokenResponse, ErrorResponse]:
+    ) -> AccessTokenResponse | ErrorResponse:
         """
         Fetch an access token from the authentication server.
 

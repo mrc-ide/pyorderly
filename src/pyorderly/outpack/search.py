@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Optional, Union
+from typing import Any
 
 import outpack_query_parser as parser
 
@@ -48,7 +48,7 @@ class QueryEnv:
         self,
         root: OutpackRoot,
         options: SearchOptions,
-        this: Optional[Parameters],
+        this: Parameters | None,
     ):
         self.index = QueryIndex(root, options)
         self.this = this
@@ -83,7 +83,7 @@ class QueryIndex:
         self.options = options
 
 
-def as_query(query: Union[Query, str]) -> Query:
+def as_query(query: Query | str) -> Query:
     if isinstance(query, Query):
         return query
     else:
@@ -93,11 +93,11 @@ def as_query(query: Union[Query, str]) -> Query:
 
 
 def search(
-    query: Union[Query, str],
+    query: Query | str,
     *,
-    root: Union[OutpackRoot, str, os.PathLike],
-    options: Optional[SearchOptions] = None,
-    this: Optional[Parameters] = None,
+    root: OutpackRoot | str | os.PathLike,
+    options: SearchOptions | None = None,
+    this: Parameters | None = None,
 ) -> set[str]:
     """
     Search an outpack repository for all packets that match the given query.
@@ -119,11 +119,11 @@ def search(
 
 
 def search_unique(
-    query: Union[Query, str],
+    query: Query | str,
     *,
-    root: Union[OutpackRoot, str, os.PathLike],
-    options: Optional[SearchOptions] = None,
-    this: Optional[Parameters] = None,
+    root: OutpackRoot | str | os.PathLike,
+    options: SearchOptions | None = None,
+    this: Parameters | None = None,
 ):
     """
     Search an outpack repository for a packet that matches the given query.
@@ -151,7 +151,7 @@ def search_unique(
 
 def eval_test_value(
     node, env: QueryEnv, metadata: MetadataCore
-) -> Optional[Union[bool, int, float, str]]:
+) -> bool | int | float | str | None:
     if isinstance(node, parser.Literal):
         return node.value
     elif isinstance(node, parser.LookupId):
