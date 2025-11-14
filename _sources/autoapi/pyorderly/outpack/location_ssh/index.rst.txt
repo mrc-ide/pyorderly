@@ -57,12 +57,32 @@ Module Contents
 
 
 
-   .. py:method:: list() -> dict[str, pyorderly.outpack.metadata.PacketLocation]
+   .. py:method:: list_packets() -> dict[str, pyorderly.outpack.metadata.PacketLocation]
 
 
    .. py:method:: metadata(ids: list[str]) -> dict[str, str]
 
 
    .. py:method:: fetch_file(packet: pyorderly.outpack.metadata.MetadataCore, file: pyorderly.outpack.metadata.PacketFile, dest: str)
+
+
+   .. py:method:: list_unknown_packets(ids: list[str]) -> list[str]
+      :abstractmethod:
+
+
+
+   .. py:method:: list_unknown_files(hashes: list[str]) -> list[str]
+      :abstractmethod:
+
+
+
+   .. py:method:: push_file(src: pathlib.Path, hash: str)
+      :abstractmethod:
+
+
+
+   .. py:method:: push_metadata(src: pathlib.Path, hash: str)
+      :abstractmethod:
+
 
 

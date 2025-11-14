@@ -99,6 +99,16 @@
              
   <section id="module-pyorderly.outpack.location">
 <span id="pyorderly-outpack-location"></span><h1>pyorderly.outpack.location<a class="headerlink" href="#module-pyorderly.outpack.location" title="Link to this heading"></a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyorderly.outpack.location.LocationSelector" title="pyorderly.outpack.location.LocationSelector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LocationSelector</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -118,7 +128,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pyorderly.outpack.location.outpack_location_rename" title="pyorderly.outpack.location.outpack_location_rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outpack_location_rename</span></code></a>(old, new[, root, locate])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pyorderly.outpack.location.location_resolve_valid" title="pyorderly.outpack.location.location_resolve_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">location_resolve_valid</span></code></a>(location, root, *, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyorderly.outpack.location.location_resolve_valid" title="pyorderly.outpack.location.location_resolve_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">location_resolve_valid</span></code></a>(→ list[str])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -126,6 +136,11 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="pyorderly.outpack.location.LocationSelector">
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.location.</span></span><span class="sig-name descname"><span class="pre">LocationSelector</span></span><a class="headerlink" href="#pyorderly.outpack.location.LocationSelector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pyorderly.outpack.location.outpack_location_list">
 <span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.location.</span></span><span class="sig-name descname"><span class="pre">outpack_location_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">locate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.location.outpack_location_list" title="Link to this definition"></a></dt>
@@ -153,7 +168,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyorderly.outpack.location.location_resolve_valid">
-<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.location.</span></span><span class="sig-name descname"><span class="pre">location_resolve_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_orphan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_no_locations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.location.location_resolve_valid" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.location.</span></span><span class="sig-name descname"><span class="pre">location_resolve_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LocationSelector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../root/index.html#pyorderly.outpack.root.OutpackRoot" title="pyorderly.outpack.root.OutpackRoot"><span class="pre">pyorderly.outpack.root.OutpackRoot</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_local</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_orphan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_no_locations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.location.location_resolve_valid" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

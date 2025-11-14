@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="pyorderly.outpack.metadata" href="../metadata/index.html" />
-    <link rel="prev" title="pyorderly.outpack.location_pull" href="../location_pull/index.html" /> 
+    <link rel="prev" title="pyorderly.outpack.location_push" href="../location_push/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -152,8 +152,8 @@ before and after its methods are called.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.list">
-<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#pyorderly.outpack.metadata.PacketLocation" title="pyorderly.outpack.metadata.PacketLocation"><span class="pre">pyorderly.outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.list" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.list_packets">
+<span class="sig-name descname"><span class="pre">list_packets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../metadata/index.html#pyorderly.outpack.metadata.PacketLocation" title="pyorderly.outpack.metadata.PacketLocation"><span class="pre">pyorderly.outpack.metadata.PacketLocation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.list_packets" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -166,6 +166,26 @@ before and after its methods are called.</p>
 <span class="sig-name descname"><span class="pre">fetch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#pyorderly.outpack.metadata.MetadataCore" title="pyorderly.outpack.metadata.MetadataCore"><span class="pre">pyorderly.outpack.metadata.MetadataCore</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../metadata/index.html#pyorderly.outpack.metadata.PacketFile" title="pyorderly.outpack.metadata.PacketFile"><span class="pre">pyorderly.outpack.metadata.PacketFile</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.fetch_file" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.list_unknown_packets">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_unknown_packets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.list_unknown_packets" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.list_unknown_files">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_unknown_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hashes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.list_unknown_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.push_file">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.push_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyorderly.outpack.location_ssh.OutpackLocationSSH.push_metadata">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">push_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.location_ssh.OutpackLocationSSH.push_metadata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -175,7 +195,7 @@ before and after its methods are called.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../location_pull/index.html" class="btn btn-neutral float-left" title="pyorderly.outpack.location_pull" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../location_push/index.html" class="btn btn-neutral float-left" title="pyorderly.outpack.location_push" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../metadata/index.html" class="btn btn-neutral float-right" title="pyorderly.outpack.metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

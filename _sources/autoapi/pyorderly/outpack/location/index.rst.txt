@@ -4,6 +4,14 @@ pyorderly.outpack.location
 .. py:module:: pyorderly.outpack.location
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location.LocationSelector
+
+
 Functions
 ---------
 
@@ -20,6 +28,8 @@ Functions
 Module Contents
 ---------------
 
+.. py:data:: LocationSelector
+
 .. py:function:: outpack_location_list(root=None, *, locate=True)
 
 .. py:function:: outpack_location_add(name, type, args, root=None, *, locate=True)
@@ -30,5 +40,5 @@ Module Contents
 
 .. py:function:: outpack_location_rename(old, new, root=None, *, locate=True)
 
-.. py:function:: location_resolve_valid(location, root, *, include_local, include_orphan, allow_no_locations)
+.. py:function:: location_resolve_valid(location: LocationSelector, root: pyorderly.outpack.root.OutpackRoot, *, include_local: bool, include_orphan: bool, allow_no_locations: bool) -> list[str]
 

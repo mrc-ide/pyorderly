@@ -1,0 +1,40 @@
+pyorderly.outpack.location_push
+===============================
+
+.. py:module:: pyorderly.outpack.location_push
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_push.LocationPushPlan
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   pyorderly.outpack.location_push.outpack_location_push
+   pyorderly.outpack.location_push.location_build_push_plan
+
+
+Module Contents
+---------------
+
+.. py:class:: LocationPushPlan
+
+   .. py:attribute:: packets
+      :type:  list[str]
+
+
+   .. py:attribute:: files
+      :type:  list[str]
+
+
+.. py:function:: outpack_location_push(ids: Union[str, list[str]], location: str, *, root: Union[str, pyorderly.outpack.root.OutpackRoot, None] = None, locate: bool = True)
+
+.. py:function:: location_build_push_plan(driver: pyorderly.outpack.location_driver.LocationDriver, packet_ids: list[str], root: pyorderly.outpack.root.OutpackRoot) -> LocationPushPlan
+

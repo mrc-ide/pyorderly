@@ -28,7 +28,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: outpack_location_pull_metadata(location=None, root=None, *, locate=True)
+.. py:function:: outpack_location_pull_metadata(location: pyorderly.outpack.location.LocationSelector = None, root=None, *, locate=True)
 
 .. py:function:: outpack_location_pull_packet(ids: Union[str, list[str]], *, options: Optional[pyorderly.outpack.search_options.SearchOptions] = None, recursive: Optional[bool] = None, root: Union[str, pyorderly.outpack.root.OutpackRoot, None] = None, locate: bool = True)
 

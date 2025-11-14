@@ -52,7 +52,7 @@ Module Contents
 
 
    .. py:attribute:: size
-      :type:  float
+      :type:  int
 
 
    .. py:attribute:: hash

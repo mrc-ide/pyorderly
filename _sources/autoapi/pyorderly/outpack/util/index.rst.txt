@@ -4,6 +4,15 @@ pyorderly.outpack.util
 .. py:module:: pyorderly.outpack.util
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   pyorderly.outpack.util.Paths
+   pyorderly.outpack.util.T
+
+
 Functions
 ---------
 
@@ -27,6 +36,7 @@ Functions
    pyorderly.outpack.util.partition
    pyorderly.outpack.util.openable_temporary_file
    pyorderly.outpack.util.as_posix_path
+   pyorderly.outpack.util.as_list
 
 
 Module Contents
@@ -44,7 +54,7 @@ Module Contents
 
 .. py:function:: transient_working_directory(path)
 
-.. py:function:: assert_file_exists(path, *, workdir=None, name='File')
+.. py:function:: assert_file_exists(path: Union[str, list[str]], *, workdir=None, name='File')
 
 .. py:function:: assert_relative_path(path: str, name: str)
 
@@ -73,13 +83,17 @@ Module Contents
 
 .. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
 
-.. py:function:: as_posix_path(paths: str) -> str
-                 as_posix_path(paths: list[str]) -> list[str]
-                 as_posix_path(paths: dict[str, str]) -> dict[str, str]
+.. py:data:: Paths
+
+.. py:function:: as_posix_path(paths: Paths) -> Paths
 
    Convert a native path into a posix path.
 
    This is used when exporting paths into packet metadata, ensuring the
    produced packets are portable across platforms.
 
+
+.. py:data:: T
+
+.. py:function:: as_list(x: Union[T, list[T]]) -> list[T]
 

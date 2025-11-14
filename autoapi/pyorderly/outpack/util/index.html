@@ -99,6 +99,19 @@
              
   <section id="module-pyorderly.outpack.util">
 <span id="pyorderly-outpack-util"></span><h1>pyorderly.outpack.util<a class="headerlink" href="#module-pyorderly.outpack.util" title="Link to this heading"></a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyorderly.outpack.util.Paths" title="pyorderly.outpack.util.Paths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Paths</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyorderly.outpack.util.T" title="pyorderly.outpack.util.T"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -154,8 +167,11 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pyorderly.outpack.util.openable_temporary_file" title="pyorderly.outpack.util.openable_temporary_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">openable_temporary_file</span></code></a>(*[, mode, dir])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pyorderly.outpack.util.as_posix_path" title="pyorderly.outpack.util.as_posix_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_posix_path</span></code></a>(…)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pyorderly.outpack.util.as_posix_path" title="pyorderly.outpack.util.as_posix_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_posix_path</span></code></a>(→ Paths)</p></td>
 <td><p>Convert a native path into a posix path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pyorderly.outpack.util.as_list" title="pyorderly.outpack.util.as_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_list</span></code></a>(→ list[T])</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -194,7 +210,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyorderly.outpack.util.assert_file_exists">
-<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">assert_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'File'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.util.assert_file_exists" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">assert_file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'File'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.util.assert_file_exists" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -251,17 +267,28 @@ If <em>pred</em> is slow, consider wrapping it with functools.lru_cache().</p>
 <span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">openable_temporary_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'w+b'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyorderly.outpack.util.openable_temporary_file" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="pyorderly.outpack.util.Paths">
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">Paths</span></span><a class="headerlink" href="#pyorderly.outpack.util.Paths" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pyorderly.outpack.util.as_posix_path">
-<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">as_posix_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pyorderly.outpack.util.as_posix_path" title="Link to this definition"></a></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">as_posix_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">as_posix_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">as_posix_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Paths</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Paths</span></span></span><a class="headerlink" href="#pyorderly.outpack.util.as_posix_path" title="Link to this definition"></a></dt>
 <dd><p>Convert a native path into a posix path.</p>
 <p>This is used when exporting paths into packet metadata, ensuring the
 produced packets are portable across platforms.</p>
 </dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyorderly.outpack.util.T">
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">T</span></span><a class="headerlink" href="#pyorderly.outpack.util.T" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyorderly.outpack.util.as_list">
+<span class="sig-prename descclassname"><span class="pre">pyorderly.outpack.util.</span></span><span class="sig-name descname"><span class="pre">as_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyorderly.outpack.util.as_list" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 </section>
