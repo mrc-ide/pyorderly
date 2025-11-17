@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from pyorderly.outpack.config import Config, read_config, write_config
+from pyorderly.outpack.config import (
+    Config,
+    ConfigCore,
+    read_config,
+    write_config,
+)
 from pyorderly.outpack.root import OutpackRoot
 
 
@@ -43,11 +48,11 @@ def outpack_init(
     return OutpackRoot(path).path
 
 
-def _validate_same_core_configuration(now, then):
+def _validate_same_core_configuration(now: ConfigCore, then: ConfigCore):
     if now == then:
         return
-    a = then.to_dict()
-    b = now.to_dict()
+    a = then.model_dump()
+    b = now.model_dump()
     err = [
         f"* '{f}' was {a[f]} but {b[f]} requested"
         for f in a.keys()

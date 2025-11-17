@@ -20,7 +20,7 @@ def test_can_read_config():
 
 def test_can_write_json(tmp_path):
     cfg = read_config("example")
-    assert Config.from_json(cfg.to_json()) == cfg
+    assert Config.model_validate_json(cfg.model_dump_json()) == cfg
 
     tmp_path.joinpath(".outpack").mkdir()
     write_config(cfg, tmp_path)

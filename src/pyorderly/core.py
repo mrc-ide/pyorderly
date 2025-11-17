@@ -1,35 +1,28 @@
 import os.path
 import shutil
-from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
-
-from dataclasses_json import dataclass_json
 
 from pyorderly.current import get_active_context
 from pyorderly.outpack import util
 from pyorderly.outpack.copy_files import copy_files
 from pyorderly.outpack.search import search_unique
-from pyorderly.outpack.util import pl
+from pyorderly.outpack.util import StrictModel, pl
 
 
-@dataclass_json()
-@dataclass
-class Artefact:
+class Artefact(StrictModel):
     name: str
     files: list[str]
 
 
-@dataclass_json()
-@dataclass
-class Description:
-    display: str
-    long: str
-    custom: dict[str, str | int | bool]
+class Description(StrictModel):
+    display: str | None
+    long: str | None
+    custom: dict[str, str | int | bool] | None
 
     @staticmethod
-    def empty():
-        return Description(None, None, None)
+    def empty() -> "Description":
+        return Description(display=None, long=None, custom=None)
 
 
 class Parameters(SimpleNamespace):
@@ -77,7 +70,7 @@ def parameters(**kwargs) -> Parameters:
         return Parameters(**kwargs)
 
 
-def resource(files):
+def resource(files: str | list[str]) -> None:
     """Declare that a file, or group of files, are an orderly resource.
 
     By explicitly declaring files as resources, orderly will mark the
@@ -94,7 +87,7 @@ def resource(files):
 
     """
     files = util.relative_path_array(files, "resource")
-    util.assert_file_exists(files)
+    util.assert_files_exist(files)
     ctx = get_active_context()
     src = ctx.path if ctx.is_active else None
     files_expanded = util.expand_dirs(files, workdir=src)
@@ -179,7 +172,7 @@ def _copy_shared_resources(
     return result
 
 
-def artefact(name, files):
+def artefact(name: str, files: str | list[str]) -> None:
     """Declare an artefact.
 
     By doing this you turn on a number of orderly features:
@@ -211,11 +204,15 @@ def artefact(name, files):
     files = util.relative_path_array(files, "artefact")
     ctx = get_active_context()
     if ctx.is_active:
-        ctx.orderly.artefacts.append(Artefact(name, files))
-    return files
+        ctx.orderly.artefacts.append(Artefact(name=name, files=files))
 
 
-def description(*, display=None, long=None, custom=None):
+def description(
+    *,
+    display: str | None = None,
+    long: str | None = None,
+    custom: dict | None = None,
+) -> None:
     """Describe the current report.
 
     Parameters
@@ -238,7 +235,9 @@ def description(*, display=None, long=None, custom=None):
     ctx = get_active_context()
     if ctx.is_active:
         _prevent_multiple_calls(ctx.orderly.description, "description")
-        ctx.orderly.description = Description(display, long, custom)
+        ctx.orderly.description = Description(
+            display=display, long=long, custom=custom
+        )
 
 
 def dependency(name, query, files):

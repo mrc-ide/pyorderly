@@ -19,17 +19,17 @@ def test_can_read_metadata():
     assert len(d.files) == 3
     assert d.files[0] == PacketFile(
         path="data.csv",
-        size=21.0,
+        size=21,
         hash="sha256:2a85eb5a027c8d2255e672d1592cc38c82cc0b08279b545a573ceccce9eb27cd",
     )
     assert d.files[1] == PacketFile(
         path="log.json",
-        size=896.0,
+        size=896,
         hash="sha256:cfb4d4931dcbaef0e0edb2f77b8ed75a15e8b98eb4ce935909fe3c0f277440c9",
     )
     assert d.files[2] == PacketFile(
         path="orderly.R",
-        size=104.0,
+        size=104,
         hash="sha256:6ee430041e1b83b72bac79a2e548a0450117dc763cc6ca71aca3bd2dbda6f520",
     )
     assert len(d.depends) == 0
@@ -74,7 +74,9 @@ def test_can_create_packet_file_metadata_from_file():
     expected_size = {"windows": 23, "unix": 21}
     platform = "windows" if sys.platform.startswith("win") else "unix"
     assert res == PacketFile(
-        path, expected_size[platform], expected_hash[platform]
+        path=path,
+        size=expected_size[platform],
+        hash=expected_hash[platform],
     )
 
 

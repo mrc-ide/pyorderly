@@ -1,12 +1,13 @@
 import time
-from dataclasses import dataclass
 
 import requests
-from dataclasses_json import DataClassJsonMixin, dataclass_json
+
+from pyorderly.outpack.util import StrictModel
 
 
-@dataclass
-class DeviceAuthorizationResponse(DataClassJsonMixin):
+class DeviceAuthorizationResponse(StrictModel):
+    """https://datatracker.ietf.org/doc/html/rfc8628#section-3.2."""
+
     device_code: str
     user_code: str
     verification_uri: str
@@ -14,16 +15,17 @@ class DeviceAuthorizationResponse(DataClassJsonMixin):
     interval: int | None = None
 
 
-@dataclass
-class AccessTokenResponse(DataClassJsonMixin):
+class AccessTokenResponse(StrictModel):
+    """https://datatracker.ietf.org/doc/html/rfc6749#section-5.1."""
+
     access_token: str
     token_type: str
     expires_in: int | None = None
 
 
-@dataclass_json
-@dataclass
-class ErrorResponse(DataClassJsonMixin):
+class ErrorResponse(StrictModel):
+    """https://datatracker.ietf.org/doc/html/rfc6749#section-5.2."""
+
     error: str
     error_description: str | None = None
 
@@ -40,7 +42,7 @@ class OAuthDeviceClient:
         self._access_token_url = access_token_url
         self._session = requests.Session()
 
-    def __enter__(self):
+    def __enter__(self) -> "OAuthDeviceClient":
         self._session.__enter__()
         return self
 
@@ -73,7 +75,7 @@ class OAuthDeviceClient:
             headers={"Accept": "application/json"},
         )
         r.raise_for_status()
-        return DeviceAuthorizationResponse.from_dict(r.json())
+        return DeviceAuthorizationResponse.model_validate_json(r.content)
 
     def fetch_access_token(
         self, parameters: DeviceAuthorizationResponse
@@ -99,13 +101,10 @@ class OAuthDeviceClient:
             headers={"Accept": "application/json"},
         )
 
-        data = r.json()
-
-        if "error" in data:
-            return ErrorResponse.from_dict(r.json())
+        if r.ok:
+            return AccessTokenResponse.model_validate_json(r.content)
         else:
-            r.raise_for_status()
-            return AccessTokenResponse.from_dict(r.json())
+            return ErrorResponse.model_validate_json(r.content)
 
     def poll_access_token(
         self,

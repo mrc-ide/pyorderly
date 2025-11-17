@@ -25,7 +25,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-  "dataclasses-json",
+  "pydantic",
   "importlib_resources",
   "jsonschema",
   "pygit2",

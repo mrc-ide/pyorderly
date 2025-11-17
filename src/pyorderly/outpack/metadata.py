@@ -1,15 +1,14 @@
-from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeAlias
 
-from dataclasses_json import DataClassJsonMixin
+from pydantic import Field
 
 from pyorderly.outpack.hash import hash_file
 from pyorderly.outpack.tools import GitInfo
+from pyorderly.outpack.util import StrictModel
 
 
-@dataclass
-class PacketFile(DataClassJsonMixin):
+class PacketFile(StrictModel):
     path: str
     size: int
     hash: str
@@ -19,10 +18,9 @@ class PacketFile(DataClassJsonMixin):
         f = Path(directory).joinpath(path)
         s = f.stat().st_size
         h = str(hash_file(f, hash_algorithm))
-        return PacketFile(path, s, h)
+        return PacketFile(path=path, size=s, hash=h)
 
 
-@dataclass
 class PacketFileWithLocation(PacketFile):
     location: str
     packet_id: str
@@ -30,18 +28,20 @@ class PacketFileWithLocation(PacketFile):
     @staticmethod
     def from_packet_file(file: PacketFile, location: str, packet_id: str):
         return PacketFileWithLocation(
-            file.path, file.size, file.hash, location, packet_id
+            path=file.path,
+            size=file.size,
+            hash=file.hash,
+            location=location,
+            packet_id=packet_id,
         )
 
 
-@dataclass
-class PacketDependsPath(DataClassJsonMixin):
+class PacketDependsPath(StrictModel):
     here: str
     there: str
 
 
-@dataclass
-class PacketDepends(DataClassJsonMixin):
+class PacketDepends(StrictModel):
     packet: str
     query: str
     files: list[PacketDependsPath]
@@ -54,17 +54,16 @@ class PacketDepends(DataClassJsonMixin):
 Parameters: TypeAlias = dict[str, bool | int | float | str]
 
 
-@dataclass
-class MetadataCore(DataClassJsonMixin):
+class MetadataCore(StrictModel):
     schema_version: str
     id: str
     name: str
-    parameters: Parameters
-    time: dict[str, float]
-    files: list[PacketFile]
-    depends: list[PacketDepends]
-    git: GitInfo | None
-    custom: dict | None
+    parameters: Parameters = Field(default_factory=dict)
+    time: dict[str, float] = Field(default_factory=dict)
+    files: list[PacketFile] = Field(default_factory=list)
+    depends: list[PacketDepends] = Field(default_factory=list)
+    git: GitInfo | None = Field(default=None)
+    custom: dict | None = Field(default=None)
 
     def file_hash(self, name):
         for x in self.files:
@@ -74,8 +73,7 @@ class MetadataCore(DataClassJsonMixin):
         raise Exception(msg)
 
 
-@dataclass
-class PacketLocation(DataClassJsonMixin):
+class PacketLocation(StrictModel):
     packet: str
     time: float
     hash: str
@@ -83,9 +81,9 @@ class PacketLocation(DataClassJsonMixin):
 
 def read_metadata_core(path) -> MetadataCore:
     with open(path) as f:
-        return MetadataCore.from_json(f.read().strip())
+        return MetadataCore.model_validate_json(f.read())
 
 
 def read_packet_location(path) -> PacketLocation:
     with open(path) as f:
-        return PacketLocation.from_json(f.read().strip())
+        return PacketLocation.model_validate_json(f.read())

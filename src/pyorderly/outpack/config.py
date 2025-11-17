@@ -1,22 +1,28 @@
 import os.path
-from dataclasses import dataclass, field
+from typing import Any
 
-from dataclasses_json import config, dataclass_json
+from pydantic import (
+    Field,
+    field_serializer,
+    field_validator,
+    model_validator,
+    validate_call,
+)
 
-from pyorderly.outpack.schema import outpack_schema_version
+from pyorderly.outpack.schema import outpack_schema_version, validate
 from pyorderly.outpack.static import LOCATION_TYPES
-from pyorderly.outpack.util import match_value
+from pyorderly.outpack.util import StrictModel, match_value
 
 
 def read_config(root_path):
     with open(_config_path(root_path)) as f:
         s = f.read()
-    return Config.from_json(s.strip())
+    return Config.model_validate_json(s)
 
 
 def write_config(config, root_path):
     with open(_config_path(root_path), "w") as f:
-        f.write(config.to_json())
+        f.write(config.model_dump_json())
 
 
 def update_config(config, root_path):
@@ -24,17 +30,7 @@ def update_config(config, root_path):
     write_config(config, root_path)
 
 
-def _encode_location_dict(d):
-    return [x.to_dict() for x in d.values()]
-
-
-def _decode_location_dict(d):
-    return {x["name"]: Location.from_dict(x) for x in d}
-
-
-@dataclass_json()
-@dataclass
-class ConfigCore:
+class ConfigCore(StrictModel):
     hash_algorithm: str
     path_archive: str | None
     use_file_store: bool
@@ -45,25 +41,24 @@ class ConfigCore:
 # used as a field name and argument; this keeps the class close to the
 # json names, and means that things read nicely (location.type rather
 # than location.location_type). A similar issue occurs with 'hash'
-@dataclass_json
-@dataclass
-class Location:
+class Location(StrictModel):
     name: str
     type: str
-    args: dict
+    args: dict[str, Any] = Field(default_factory=dict)
 
-    def __init__(self, name, type, args=None):
-        self.name = name
-        self.type = type
-        self.args = args if args is not None else {}
-
+    @model_validator(mode="after")
+    def check_type(self):
         match_value(self.type, LOCATION_TYPES, "type")
+        return self
+
+    @model_validator(mode="after")
+    def check_location_args(self):
         required = set()
-        if type == "path":
+        if self.type == "path":
             required = {"path"}
-        elif type == "http":
+        elif self.type == "http":
             required = {"url"}
-        elif type == "custom":
+        elif self.type == "custom":
             required = {"driver"}
 
         present = self.args.keys()
@@ -72,18 +67,27 @@ class Location:
             missing_text = "', '".join(missing)
             msg = f"Fields missing from args: '{missing_text}'"
             raise Exception(msg)
+        return self
 
 
-@dataclass_json()
-@dataclass
-class Config:
+class Config(StrictModel):
     schema_version: str
     core: ConfigCore
-    location: dict[str, Location] = field(
-        metadata=config(
-            encoder=_encode_location_dict, decoder=_decode_location_dict
-        )
-    )
+
+    # This field is serialized as a list of locations rather than a
+    # dictionary. See functions below.
+    location: dict[str, Location]
+
+    @field_validator("location", mode="before")
+    @classmethod
+    @validate_call
+    def _validate_location(cls, d: list[Location]) -> dict[str, Location]:
+        return {x.name: x for x in d}
+
+    @field_serializer("location", mode="plain")
+    @classmethod
+    def _serialize_location(cls, d: dict[str, Location]) -> list[Location]:
+        return list(d.values())
 
     @staticmethod
     def new(
@@ -97,10 +101,17 @@ class Config:
             raise Exception(msg)
         version = outpack_schema_version()
         core = ConfigCore(
-            "sha256", path_archive, use_file_store, require_complete_tree
+            hash_algorithm="sha256",
+            path_archive=path_archive,
+            use_file_store=use_file_store,
+            require_complete_tree=require_complete_tree,
         )
-        local = Location("local", "local")
-        return Config(version, core, {"local": local})
+        local = Location(name="local", type="local")
+        return Config(
+            schema_version=version,
+            core=core,
+            location=[local],
+        )
 
 
 def _config_path(root_path):

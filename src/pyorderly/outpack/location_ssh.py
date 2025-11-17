@@ -84,7 +84,7 @@ class OutpackLocationSSH(LocationDriver):
             path = self._root / ".outpack" / "config.json"
             try:
                 with sftp.open(str(path)) as f:
-                    self.config = Config.from_json(f.read().strip())
+                    self.config = Config.model_validate_json(f.read())
             except OSError as e:
                 if e.errno == errno.ENOENT:
                     msg = f"Path '{self._root}' on remote {self._hostname} is not a valid outpack repository"
@@ -108,7 +108,7 @@ class OutpackLocationSSH(LocationDriver):
         result = {}
         for packet in self._sftp.listdir(str(path)):
             with self._sftp.open(str(path / packet)) as f:
-                result[packet] = PacketLocation.from_json(f.read().strip())
+                result[packet] = PacketLocation.model_validate_json(f.read())
         return result
 
     @override

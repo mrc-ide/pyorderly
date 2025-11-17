@@ -7,7 +7,7 @@ import pytest
 from pyorderly.outpack.util import (
     all_normal_files,
     as_posix_path,
-    assert_file_exists,
+    assert_files_exist,
     assert_relative_path,
     expand_dirs,
     find_file_descend,
@@ -55,16 +55,13 @@ def test_can_test_for_files_existing(tmp_path):
         pass
     with open(tmp_path / "c", "w"):
         pass
-    assert_file_exists(["a", "b", "c"], workdir=tmp_path)
-    assert_file_exists(["a"], workdir=tmp_path)
-    assert_file_exists("a", workdir=tmp_path)
+    assert_files_exist(["a", "b", "c"], workdir=tmp_path)
+    assert_files_exist(["a"], workdir=tmp_path)
 
     with pytest.raises(Exception, match="File does not exist: x"):
-        assert_file_exists(["a", "b", "x", "c"], workdir=tmp_path)
+        assert_files_exist(["a", "b", "x", "c"], workdir=tmp_path)
     with pytest.raises(Exception, match="File does not exist: x"):
-        assert_file_exists(["x"], workdir=tmp_path)
-    with pytest.raises(Exception, match="File does not exist: x"):
-        assert_file_exists("x", workdir=tmp_path)
+        assert_files_exist(["x"], workdir=tmp_path)
 
 
 def test_can_test_for_relative_path():
