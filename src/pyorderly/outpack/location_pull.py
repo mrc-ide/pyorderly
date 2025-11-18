@@ -4,7 +4,6 @@ import time
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Optional, Union
 
 import humanize
 
@@ -136,11 +135,11 @@ def _mark_all_known(
 
 
 def outpack_location_pull_packet(
-    ids: Union[str, list[str]],
+    ids: str | list[str],
     *,
-    options: Optional[SearchOptions] = None,
-    recursive: Optional[bool] = None,
-    root: Union[str, OutpackRoot, None] = None,
+    options: SearchOptions | None = None,
+    recursive: bool | None = None,
+    root: str | OutpackRoot | None = None,
     locate: bool = True,
 ):
     root = root_open(root, locate=locate)
@@ -356,9 +355,9 @@ class PullPlanPackets:
 
 def location_build_pull_plan(
     packet_ids: list[str],
-    locations: Optional[list[str]],
+    locations: list[str] | None,
     *,
-    files: Optional[dict[str, list[str]]] = None,
+    files: dict[str, list[str]] | None = None,
     recursive: bool,
     root: OutpackRoot,
 ) -> LocationPullPlan:
@@ -432,7 +431,7 @@ def _location_build_pull_plan_packets(
 
 
 def _location_build_pull_plan_location(
-    packets: PullPlanPackets, locations: Optional[list[str]], root: OutpackRoot
+    packets: PullPlanPackets, locations: list[str] | None, root: OutpackRoot
 ) -> list[str]:
     location_names = location_resolve_valid(
         locations,

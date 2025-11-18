@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 from pyorderly.outpack.location import (
     _find_all_dependencies,
@@ -19,10 +18,10 @@ class LocationPushPlan:
 
 
 def outpack_location_push(
-    ids: Union[str, list[str]],
+    ids: str | list[str],
     location: str,
     *,
-    root: Union[str, OutpackRoot, None] = None,
+    root: str | OutpackRoot | None = None,
     locate: bool = True,
 ):
     root = root_open(root, locate=locate)

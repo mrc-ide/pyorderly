@@ -1,6 +1,5 @@
 import functools
 import re
-from typing import Optional
 from urllib.parse import urljoin
 
 from pyorderly.outpack.location_http import (
@@ -19,7 +18,7 @@ from pyorderly.outpack.oauth import OAuthDeviceClient
 # - It should check for expiry of tokens and/or check for authentication errors
 #   and purge offending tokens from it.
 @functools.cache
-def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
+def packit_authorisation(url: str, token: str | None) -> dict[str, str]:
     # If a non-Github token is provided, we assume it is a native Packit token
     # and use that directly.
     if token is not None:
@@ -45,7 +44,7 @@ def packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]:
 
 
 def outpack_location_packit(
-    url: str, token: Optional[str] = None
+    url: str, token: str | None = None
 ) -> OutpackLocationHTTP:
     if not url.endswith("/"):
         url += "/"

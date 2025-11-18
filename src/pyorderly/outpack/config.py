@@ -1,6 +1,5 @@
 import os.path
 from dataclasses import dataclass, field
-from typing import Optional
 
 from dataclasses_json import config, dataclass_json
 
@@ -37,7 +36,7 @@ def _decode_location_dict(d):
 @dataclass
 class ConfigCore:
     hash_algorithm: str
-    path_archive: Optional[str]
+    path_archive: str | None
     use_file_store: bool
     require_complete_tree: bool
 

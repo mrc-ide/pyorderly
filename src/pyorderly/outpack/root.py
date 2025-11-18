@@ -2,7 +2,6 @@ import os
 import shutil
 from errno import ENOENT
 from pathlib import Path
-from typing import Optional, Union
 
 from pyorderly.outpack.config import read_config
 from pyorderly.outpack.filestore import FileStore
@@ -14,7 +13,7 @@ from pyorderly.outpack.util import find_file_descend
 
 
 class OutpackRoot:
-    files: Optional[FileStore] = None
+    files: FileStore | None = None
 
     def __init__(self, path):
         self.path = Path(path)
@@ -49,7 +48,7 @@ class OutpackRoot:
 
 
 def root_open(
-    path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False
+    path: OutpackRoot | str | os.PathLike | None, *, locate: bool = False
 ) -> OutpackRoot:
     if isinstance(path, OutpackRoot):
         return path
