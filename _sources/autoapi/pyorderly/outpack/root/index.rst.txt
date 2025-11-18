@@ -28,7 +28,7 @@ Module Contents
 .. py:class:: OutpackRoot(path)
 
    .. py:attribute:: files
-      :type:  Optional[pyorderly.outpack.filestore.FileStore]
+      :type:  pyorderly.outpack.filestore.FileStore | None
       :value: None
 
 
@@ -45,7 +45,7 @@ Module Contents
    .. py:method:: export_file(id, there, here, dest)
 
 
-.. py:function:: root_open(path: Union[OutpackRoot, str, os.PathLike, None], *, locate: bool = False) -> OutpackRoot
+.. py:function:: root_open(path: OutpackRoot | str | os.PathLike | None, *, locate: bool = False) -> OutpackRoot
 
 .. py:function:: find_file_by_hash(root, hash)
 

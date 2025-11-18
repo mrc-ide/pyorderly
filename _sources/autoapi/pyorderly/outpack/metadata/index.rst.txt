@@ -132,7 +132,9 @@ Module Contents
 
 
 
-.. py:data:: Parameters
+.. py:type:: Parameters
+   :canonical: dict[str, bool | int | float | str]
+
 
 .. py:class:: MetadataCore
 
@@ -173,11 +175,11 @@ Module Contents
 
 
    .. py:attribute:: git
-      :type:  Optional[pyorderly.outpack.tools.GitInfo]
+      :type:  pyorderly.outpack.tools.GitInfo | None
 
 
    .. py:attribute:: custom
-      :type:  Optional[dict]
+      :type:  dict | None
 
 
    .. py:method:: file_hash(name)

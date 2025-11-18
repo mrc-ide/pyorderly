@@ -34,7 +34,7 @@ Module Contents
       :type:  list[str]
 
 
-.. py:function:: outpack_location_push(ids: Union[str, list[str]], location: str, *, root: Union[str, pyorderly.outpack.root.OutpackRoot, None] = None, locate: bool = True)
+.. py:function:: outpack_location_push(ids: str | list[str], location: str, *, root: str | pyorderly.outpack.root.OutpackRoot | None = None, locate: bool = True)
 
 .. py:function:: location_build_push_plan(driver: pyorderly.outpack.location_driver.LocationDriver, packet_ids: list[str], root: pyorderly.outpack.root.OutpackRoot) -> LocationPushPlan
 

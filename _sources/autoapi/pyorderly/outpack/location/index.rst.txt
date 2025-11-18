@@ -28,7 +28,9 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: LocationSelector
+.. py:type:: LocationSelector
+   :canonical: None | str | list[str]
+
 
 .. py:function:: outpack_location_list(root=None, *, locate=True)
 

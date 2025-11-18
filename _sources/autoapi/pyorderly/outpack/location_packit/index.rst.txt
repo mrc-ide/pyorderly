@@ -16,7 +16,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: packit_authorisation(url: str, token: Optional[str]) -> dict[str, str]
+.. py:function:: packit_authorisation(url: str, token: str | None) -> dict[str, str]
 
-.. py:function:: outpack_location_packit(url: str, token: Optional[str] = None) -> pyorderly.outpack.location_http.OutpackLocationHTTP
+.. py:function:: outpack_location_packit(url: str, token: str | None = None) -> pyorderly.outpack.location_http.OutpackLocationHTTP
 

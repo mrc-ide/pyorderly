@@ -45,7 +45,7 @@ Module Contents
 
 
    .. py:attribute:: interval
-      :type:  Optional[int]
+      :type:  int | None
       :value: None
 
 
@@ -69,7 +69,7 @@ Module Contents
 
 
    .. py:attribute:: expires_in
-      :type:  Optional[int]
+      :type:  int | None
       :value: None
 
 
@@ -89,7 +89,7 @@ Module Contents
 
 
    .. py:attribute:: error_description
-      :type:  Optional[str]
+      :type:  str | None
       :value: None
 
 
@@ -119,7 +119,7 @@ Module Contents
 
 
 
-   .. py:method:: fetch_access_token(parameters: DeviceAuthorizationResponse) -> Union[AccessTokenResponse, ErrorResponse]
+   .. py:method:: fetch_access_token(parameters: DeviceAuthorizationResponse) -> AccessTokenResponse | ErrorResponse
 
       Fetch an access token from the authentication server.
 

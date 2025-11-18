@@ -51,7 +51,7 @@ Module Contents
 
 
    .. py:attribute:: custom
-      :type:  dict[str, Union[str, int, bool]]
+      :type:  dict[str, str | int | bool]
 
 
    .. py:method:: empty()
@@ -110,7 +110,7 @@ Module Contents
 
 
 
-.. py:function:: shared_resource(files: Union[str, list[str], dict[str, str]]) -> dict[str, str]
+.. py:function:: shared_resource(files: str | list[str] | dict[str, str]) -> dict[str, str]
 
    Copy shared resources into a packet directory.
 

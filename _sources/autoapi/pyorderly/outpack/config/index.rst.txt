@@ -40,7 +40,7 @@ Module Contents
 
 
    .. py:attribute:: path_archive
-      :type:  Optional[str]
+      :type:  str | None
 
 
    .. py:attribute:: use_file_store

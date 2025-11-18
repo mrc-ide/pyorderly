@@ -33,7 +33,7 @@ Module Contents
 
 
    .. py:attribute:: location
-      :type:  Optional[list[str]]
+      :type:  list[str] | None
       :value: None
 
 

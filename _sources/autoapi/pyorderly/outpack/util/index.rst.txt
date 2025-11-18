@@ -54,7 +54,7 @@ Module Contents
 
 .. py:function:: transient_working_directory(path)
 
-.. py:function:: assert_file_exists(path: Union[str, list[str]], *, workdir=None, name='File')
+.. py:function:: assert_file_exists(path: str | list[str], *, workdir=None, name='File')
 
 .. py:function:: assert_relative_path(path: str, name: str)
 
@@ -62,9 +62,9 @@ Module Contents
 
 .. py:function:: match_value(arg, choices, name)
 
-.. py:function:: relative_path_array(files: Union[str, list[str]], name: str) -> list[str]
+.. py:function:: relative_path_array(files: str | list[str], name: str) -> list[str]
 
-.. py:function:: relative_path_mapping(files: Union[str, list[str], dict[str, str]], name: str) -> dict[str, str]
+.. py:function:: relative_path_mapping(files: str | list[str] | dict[str, str], name: str) -> dict[str, str]
 
 .. py:function:: read_string(path)
 
@@ -81,7 +81,7 @@ Module Contents
    If *pred* is slow, consider wrapping it with functools.lru_cache().
 
 
-.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: Optional[str] = None)
+.. py:function:: openable_temporary_file(*, mode: str = 'w+b', dir: str | None = None)
 
 .. py:data:: Paths
 
@@ -95,5 +95,5 @@ Module Contents
 
 .. py:data:: T
 
-.. py:function:: as_list(x: Union[T, list[T]]) -> list[T]
+.. py:function:: as_list(x: T | list[T]) -> list[T]
 
