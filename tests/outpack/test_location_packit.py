@@ -27,7 +27,7 @@ def clear_authentication_cache():
 @responses.activate(assert_all_requests_are_fired=True)
 def test_can_pass_packit_token():
     responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
+        "https://example.com/api/outpack/metadata/list",
         json={"status": "success", "data": []},
         match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
     )
@@ -38,7 +38,7 @@ def test_can_pass_packit_token():
 
 def register_oauth_responses(token):
     device_code = responses.post(
-        "https://example.com/packit/api/deviceAuth",
+        "https://example.com/api/deviceAuth",
         json={
             "device_code": "xxxxx",
             "user_code": "1234-5678",
@@ -48,7 +48,7 @@ def register_oauth_responses(token):
         },
     )
     access_token = responses.post(
-        "https://example.com/packit/api/deviceAuth/token",
+        "https://example.com/api/deviceAuth/token",
         json={"access_token": token, "token_type": "bearer"},
     )
     return SimpleNamespace(device_code=device_code, access_token=access_token)
@@ -59,7 +59,7 @@ def test_can_perform_interactive_authentication(capsys):
     register_oauth_responses(token="mytoken")
 
     responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
+        "https://example.com/api/outpack/metadata/list",
         match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
         json={"status": "success", "data": []},
     )
@@ -76,7 +76,7 @@ def test_authentication_is_cached():
     mocks = register_oauth_responses("mytoken")
 
     list_response = responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
+        "https://example.com/api/outpack/metadata/list",
         match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
         json={"status": "success", "data": []},
     )
@@ -106,7 +106,7 @@ def test_github_personal_token_is_rejected():
 @responses.activate(assert_all_requests_are_fired=True)
 def test_can_add_packit_location(tmp_path):
     responses.get(
-        "https://example.com/packit/api/outpack/metadata/list",
+        "https://example.com/api/outpack/metadata/list",
         json={"status": "success", "data": []},
         match=[matchers.header_matcher({"Authorization": "Bearer mytoken"})],
     )

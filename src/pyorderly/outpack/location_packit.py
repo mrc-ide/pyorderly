@@ -34,8 +34,8 @@ def packit_authorisation(url: str, token: str | None) -> dict[str, str]:
     print(f"Logging in to {url}")
     with OAuthDeviceClient(
         client_id="pyorderly",
-        device_code_url=urljoin(url, "packit/api/deviceAuth"),
-        access_token_url=urljoin(url, "packit/api/deviceAuth/token"),
+        device_code_url=urljoin(url, "api/deviceAuth"),
+        access_token_url=urljoin(url, "api/deviceAuth/token"),
     ) as client:
         token = client.authenticate().access_token
 
@@ -50,6 +50,6 @@ def outpack_location_packit(
         url += "/"
 
     return OutpackLocationHTTP(
-        urljoin(url, "packit/api/outpack/"),
+        urljoin(url, "api/outpack/"),
         lambda: packit_authorisation(url, token),
     )
